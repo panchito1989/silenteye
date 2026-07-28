@@ -3,14 +3,14 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'silenteye-3rrwnq'
+app = 'silenteye'
 primary_region = 'dfw'
 
 [build]
   dockerfile = 'Dockerfile'
 
 [env]
-  CORS_ORIGINS = 'https://silenteye-3rrwnq.fly.dev,https://silent-eye-frontend.vercel.app,https://silenteye.mx,https://www.silenteye.mx'
+  CORS_ORIGINS = 'https://silenteye.fly.dev,https://silenteye-3rrwnq.fly.dev,https://silent-eye-frontend.vercel.app,https://silenteye.mx,https://www.silenteye.mx'
   NODE_ENV = 'production'
   PORT = '8080'
   TCP_PORT = '5000'
