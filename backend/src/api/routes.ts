@@ -26,6 +26,7 @@ import {
   isStripTokenFromBody,
 } from './auth.js';
 import { issueTicket } from '../services/ws-ticket-store.js';
+import { appendCustody, verifyChain, sha256Hex } from '../services/custody-service.js';
 
 /**
  * Build the `token` field of an auth response. Returns the JWT string in
@@ -1761,6 +1762,10 @@ api.put('/incidents/:id/status', authMiddleware, requireRole('admin', 'helper', 
   }
   updateQuery += ` RETURNING *`;
 
+  // Capture the prior status for the custody seal (from → to).
+  const priorStatusRes = await pool.query('SELECT status FROM incidents WHERE id = $1', [id]);
+  const priorStatus: string | null = priorStatusRes.rows[0]?.status ?? null;
+
   const r = await pool.query(updateQuery, params);
   if (!r.rows[0]) {
     res.status(404).json({ error: t(req, 'incidentNotFound') });
@@ -1768,6 +1773,16 @@ api.put('/incidents/:id/status', authMiddleware, requireRole('admin', 'helper', 
   }
 
   const incident = r.rows[0];
+
+  await appendCustody({
+    entityType: 'incident',
+    entityId: id,
+    action: 'status.change',
+    actorId: userId,
+    actorRole: role,
+    incidentId: id,
+    details: { from: priorStatus, to: status },
+  });
 
   // Get all incident followers to broadcast + notify
   const followersResult = await pool.query(
@@ -1876,6 +1891,18 @@ api.get('/incidents/:id/report.pdf', authMiddleware, requireRole('admin'), async
     res.status(404).json({ error: t(req, 'incidentNotFound') });
     return;
   }
+
+  // Record the export in the custody chain before we read the seal, so the
+  // printed seal reflects this very export event.
+  await appendCustody({
+    entityType: 'export',
+    entityId: id,
+    action: 'evidence.export',
+    actorId: (req as any).user?.userId ?? null,
+    actorRole: (req as any).user?.role ?? null,
+    incidentId: id,
+    details: { format: 'pdf' },
+  });
 
   // Fetch responders
   const respResult = await pool.query(
@@ -1990,14 +2017,65 @@ api.get('/incidents/:id/report.pdf', authMiddleware, requireRole('admin'), async
     }
   }
 
+  // Chain-of-custody seal — proves the evidence trail for this incident has
+  // not been altered. Best-effort: if verification fails to run, skip silently.
+  try {
+    const seal = await verifyChain(id);
+    doc.moveDown(1);
+    doc.fontSize(14).font('Helvetica-Bold').fillColor('#000').text('Sello de Cadena de Custodia');
+    doc.moveDown(0.3);
+    doc.fontSize(10).font('Helvetica').fillColor('#333');
+    doc.font('Helvetica-Bold').text('Integridad: ', { continued: true });
+    if (seal.ok) {
+      doc.fillColor('#047857').font('Helvetica').text('ÍNTEGRA — cadena verificada');
+    } else {
+      doc.fillColor('#b91c1c').font('Helvetica').text(`ALTERADA — ruptura en secuencia ${seal.brokenAtSeq ?? '?'} (${seal.reason ?? ''})`);
+    }
+    doc.fillColor('#333').font('Helvetica-Bold').text('Eventos de este incidente: ', { continued: true });
+    doc.font('Helvetica').text(String(seal.incidentCount ?? 0));
+    if (seal.head) {
+      doc.font('Helvetica-Bold').fillColor('#333').text('Sello (SHA-256): ');
+      doc.font('Courier').fontSize(8).fillColor('#555').text(seal.head);
+    }
+  } catch {
+    /* seal is best-effort; never block the report */
+  }
+
   // Footer
   doc.moveDown(2);
+  doc.fontSize(8).font('Helvetica');
   doc.strokeColor('#e0e0e0').lineWidth(1).moveTo(50, doc.y).lineTo(562, doc.y).stroke();
   doc.moveDown(0.5);
   doc.fontSize(8).fillColor('#999').text(`Generado por SilentEye el ${new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}`, { align: 'center' });
   doc.text('Este documento es para uso interno y puede contener información sensible.', { align: 'center' });
 
   doc.end();
+}));
+
+// ── Chain of custody ─────────────────────────────────────────────────────────
+// Recompute the hash-linked evidence ledger and report whether it is intact.
+// Global integrity is always validated; ?incident_id also returns that
+// incident's event count.
+api.get('/custody/verify', authMiddleware, readRateLimit, requireRole('admin'), asyncHandler(async (req, res) => {
+  const incidentId = req.query.incident_id ? String(req.query.incident_id) : undefined;
+  if (incidentId && !isValidUuid(incidentId)) {
+    res.status(400).json({ error: 'incident_id inválido' });
+    return;
+  }
+  res.json(await verifyChain(incidentId));
+}));
+
+// The custody trail for one incident, newest first (for display / audit).
+api.get('/custody/incident/:id', authMiddleware, readRateLimit, requireRole('admin'), asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidUuid(id)) { res.status(400).json({ error: 'Invalid incident ID' }); return; }
+  const { rows } = await pool.query(
+    `SELECT seq, entity_type, entity_id, action, actor_id, actor_role,
+            content_hash, chain_hash, details, created_at
+     FROM custody_chain WHERE incident_id = $1 ORDER BY seq DESC LIMIT 500`,
+    [id],
+  );
+  res.json(rows);
 }));
 
 // Admin: send witness request to all responders of an incident
@@ -2121,6 +2199,78 @@ api.get('/alerts', authMiddleware, requireRole('admin', 'helper', 'driver'), asy
   const driverUserId = role === 'driver' || role === 'helper' ? userId : undefined;
   const alerts = await getAlerts(limit, since, driverUserId);
   res.json(alerts);
+}));
+
+// ── Jammer hotspots ───────────────────────────────────────────────────
+// Spatial-temporal clustering of GNSS-jamming events (Teltonika event 66 /
+// alt 246). Jammers used in cargo theft operate from recurring locations;
+// clustering the raw jamming alerts reveals those hotspots. Isolated one-off
+// events (minpoints < 2) are dropped as noise. Requires PostGIS.
+api.get('/jammers/hotspots', authMiddleware, readRateLimit, requireRole('admin', 'fleet_owner'), asyncHandler(async (req, res) => {
+  const postgis = await hasPostGis();
+  if (!postgis) {
+    res.json([]); // no PostGIS → clustering unavailable, degrade gracefully
+    return;
+  }
+  const days = Math.min(Math.max(parseInt(String(req.query.days || 30), 10) || 30, 1), 365);
+  // eps ≈ 0.005° (~550 m) groups events at the same jammer location; minpoints 2
+  // requires a location to repeat before it counts as a hotspot.
+  const { rows } = await pool.query(
+    `WITH j AS (
+       SELECT geom, created_at
+       FROM alerts
+       WHERE alert_type IN ('gnss_jamming', 'jamming')
+         AND created_at > NOW() - ($1::int * INTERVAL '1 day')
+     ),
+     c AS (
+       SELECT geom, created_at,
+              ST_ClusterDBSCAN(geom, 0.005, 2) OVER () AS cid
+       FROM j
+     ),
+     g AS (
+       SELECT cid,
+              COUNT(*)::int              AS event_count,
+              ST_Centroid(ST_Collect(geom)) AS centroid,
+              ST_MaxDistance(ST_Collect(geom), ST_Centroid(ST_Collect(geom))) AS spread_deg,
+              MIN(created_at)            AS first_seen,
+              MAX(created_at)            AS last_seen
+       FROM c
+       WHERE cid IS NOT NULL
+       GROUP BY cid
+     )
+     SELECT cid AS cluster_id, event_count,
+            ST_Y(centroid) AS lat, ST_X(centroid) AS lng,
+            spread_deg, first_seen, last_seen
+     FROM g
+     ORDER BY event_count DESC
+     LIMIT 200`,
+    [days],
+  );
+  const now = Date.now();
+  const hotspots = rows.map((r: any) => {
+    const eventCount = Number(r.event_count);
+    const lastSeenMs = new Date(r.last_seen).getTime();
+    const ageDays = (now - lastSeenMs) / 86_400_000;
+    // Severity 0-100: frequency (up to 60) + recency (up to 40)
+    const freqScore = Math.min(60, eventCount * 8);
+    const recencyScore = ageDays < 7 ? 40 : ageDays < 30 ? 25 : 10;
+    const severity = Math.min(100, freqScore + recencyScore);
+    const band = severity >= 70 ? 'alto' : severity >= 40 ? 'medio' : 'bajo';
+    // spread_deg → meters (approx), floored so tight clusters still render a circle
+    const radiusM = Math.max(300, Math.round(Number(r.spread_deg || 0) * 111_320));
+    return {
+      cluster_id: Number(r.cluster_id),
+      event_count: eventCount,
+      lat: Number(r.lat),
+      lng: Number(r.lng),
+      radius_m: radiusM,
+      severity,
+      band,
+      first_seen: r.first_seen,
+      last_seen: r.last_seen,
+    };
+  });
+  res.json(hotspots);
 }));
 
 api.delete('/alerts/:id', authMiddleware, requireRole('admin'), asyncHandler(async (req, res) => {
@@ -3271,11 +3421,23 @@ api.post('/incidents/:id/media', authMiddleware, mediaUploadLimit, asyncHandler(
 
   if (!(await requireIncidentAccess(req, res, id))) return;
 
+  const contentHash = sha256Hex(image_data);
   const r = await pool.query(
-    `INSERT INTO incident_media (incident_id, user_id, media_type, image_data, latitude, longitude)
-     VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, media_type, captured_at`,
-    [id, userId, media_type || 'photo', image_data, latitude || null, longitude || null]
+    `INSERT INTO incident_media (incident_id, user_id, media_type, image_data, latitude, longitude, content_sha256)
+     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, media_type, captured_at`,
+    [id, userId, media_type || 'photo', image_data, latitude || null, longitude || null, contentHash]
   );
+
+  await appendCustody({
+    entityType: 'incident_media',
+    entityId: r.rows[0].id,
+    action: 'capture',
+    actorId: userId,
+    actorRole: (req as any).user?.role,
+    incidentId: id,
+    contentHash,
+    details: { media_type: r.rows[0].media_type },
+  });
 
   res.json(r.rows[0]);
 }));
@@ -3352,11 +3514,23 @@ api.post('/incidents/:id/faces', authMiddleware, mediaUploadLimit, asyncHandler(
     return;
   }
 
+  const faceContentHash = sha256Hex(face_crop);
   const r = await pool.query(
-    `INSERT INTO face_detections (incident_id, media_id, user_id, face_crop, encoding, confidence, box_x, box_y, box_w, box_h)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id, confidence, created_at`,
-    [id, media_id, userId, face_crop, encoding, confidence || 0, box?.x || null, box?.y || null, box?.w || null, box?.h || null]
+    `INSERT INTO face_detections (incident_id, media_id, user_id, face_crop, encoding, confidence, box_x, box_y, box_w, box_h, content_sha256)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, confidence, created_at`,
+    [id, media_id, userId, face_crop, encoding, confidence || 0, box?.x || null, box?.y || null, box?.w || null, box?.h || null, faceContentHash]
   );
+
+  await appendCustody({
+    entityType: 'face_detection',
+    entityId: r.rows[0].id,
+    action: 'detect',
+    actorId: userId,
+    actorRole: (req as any).user?.role,
+    incidentId: id,
+    contentHash: faceContentHash,
+    details: { media_id, confidence: confidence || 0 },
+  });
 
   // Auto-match against existing suspects
   const suspects = await pool.query(
@@ -3790,6 +3964,16 @@ api.post('/suspects', authMiddleware, requireRole('admin', 'helper'), suspectCre
       action: 'suspect.create',
       targetType: 'suspect',
       targetId: suspect.id,
+      details: { face_detection_id, alias: alias || null },
+    });
+    await appendCustody({
+      entityType: 'suspect',
+      entityId: suspect.id,
+      action: 'suspect.create',
+      actorId: userId,
+      actorRole: (req as any).user?.role,
+      incidentId: face.incident_id,
+      contentHash: sha256Hex(face.face_crop),
       details: { face_detection_id, alias: alias || null },
     });
     res.json({ ...suspect, linked_to_existing: false });
