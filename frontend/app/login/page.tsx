@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { saveSession } from '@/lib/session';
 import { useLocale } from '@/hooks/useLocale';
 
@@ -32,6 +32,8 @@ function LoginContent() {
   const [emailSent, setEmailSent] = useState(false);
   const [emailHint, setEmailHint] = useState('');
   const { t } = useLocale();
+  const searchParams = useSearchParams();
+  const adminMode = searchParams.get('mode') === 'admin';
 
   const isEmailFlow = method === 'gps' || method === 'email';
 
@@ -162,6 +164,51 @@ function LoginContent() {
     setEmailSent(false);
     setEmailHint('');
   };
+
+  // Admin login (email + password). Reached via ?mode=admin (the secret
+  // 5-tap trigger on the landing page). Kept off the public tabs on purpose.
+  if (adminMode) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
+        <div className="w-full max-w-sm">
+          <a href="/" className="flex items-center gap-2.5 mb-8">
+            <div className="w-8 h-8 bg-zinc-900 rounded-lg flex items-center justify-center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <span className="text-lg font-bold tracking-tight text-zinc-900">SilentEye</span>
+          </a>
+          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 mb-1">Acceso administrador</h1>
+          <p className="text-[15px] text-zinc-400 mb-8">Ingresa con tu correo y contraseña.</p>
+          <label className="block text-[13px] font-semibold text-zinc-700 mb-1.5">Correo</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="admin@silenteye.mx"
+            className="w-full px-3.5 py-2.5 rounded-lg bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-300 text-[15px] focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all mb-4"
+          />
+          <label className="block text-[13px] font-semibold text-zinc-700 mb-1.5">Contraseña</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') loginWithPassword(); }}
+            placeholder="••••••••"
+            className="w-full px-3.5 py-2.5 rounded-lg bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-300 text-[15px] focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all mb-4"
+          />
+          <button
+            onClick={loginWithPassword}
+            disabled={loading}
+            className="w-full py-2.5 rounded-lg text-white text-sm font-semibold disabled:opacity-40 transition-colors bg-zinc-900 hover:bg-zinc-800"
+          >
+            {loading ? 'Entrando…' : 'Entrar'}
+          </button>
+          {error && <p className="text-red-600 text-[13px] mt-3">{error}</p>}
+          <a href="/login" className="block text-center text-[13px] text-zinc-400 hover:text-zinc-600 mt-5">← Otros métodos de acceso</a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white flex">
