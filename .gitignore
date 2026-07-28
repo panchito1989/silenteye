@@ -39,3 +39,10 @@ coverage/
 # Google Cloud service account keys
 *-service-account*.json
 silenteye-*.json
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Claude Code (local/temporary — not shared)
+.claude/settings.local.json
+.claude/worktrees/
