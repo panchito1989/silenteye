@@ -29,6 +29,7 @@ import { issueTicket } from '../services/ws-ticket-store.js';
 import { appendCustody, verifyChain, sha256Hex } from '../services/custody-service.js';
 import { findStagingCandidates } from '../services/fusion-service.js';
 import { isGeeReady, getGeeDiagnostics } from '../services/gee-service.js';
+import { uploadJpegBase64, getReadUrl } from '../services/storage-service.js';
 
 /**
  * Build the `token` field of an auth response. Returns the JWT string in
@@ -3531,10 +3532,14 @@ api.post('/incidents/:id/media', authMiddleware, mediaUploadLimit, asyncHandler(
   if (!(await requireIncidentAccess(req, res, id))) return;
 
   const contentHash = sha256Hex(image_data);
+  // Offload the JPEG to the private bucket when configured; otherwise keep the
+  // base64 in the DB (unchanged behaviour). content_sha256 hashes the same
+  // bytes either way, so the custody chain is storage-agnostic.
+  const storageKey = await uploadJpegBase64(image_data, `incident-media/${id}`);
   const r = await pool.query(
-    `INSERT INTO incident_media (incident_id, user_id, media_type, image_data, latitude, longitude, content_sha256)
-     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, media_type, captured_at`,
-    [id, userId, media_type || 'photo', image_data, latitude || null, longitude || null, contentHash]
+    `INSERT INTO incident_media (incident_id, user_id, media_type, image_data, storage_key, latitude, longitude, content_sha256)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, media_type, captured_at`,
+    [id, userId, media_type || 'photo', storageKey ? null : image_data, storageKey, latitude || null, longitude || null, contentHash]
   );
 
   await appendCustody({
@@ -3559,11 +3564,26 @@ api.get('/incidents/:id/media', authMiddleware, asyncHandler(async (req, res) =>
   if (!(await requireIncidentAccess(req, res, id))) return;
 
   const r = await pool.query(
-    `SELECT id, media_type, image_data, latitude, longitude, captured_at
+    `SELECT id, media_type, image_data, storage_key, latitude, longitude, captured_at
      FROM incident_media WHERE incident_id = $1 ORDER BY captured_at ASC`,
     [id]
   );
-  res.json(r.rows);
+  // Bucket-backed rows return a short-lived signed URL (image_url); legacy rows
+  // return their base64 (image_data). Consumers should prefer image_url.
+  const out = await Promise.all(r.rows.map(async (row: {
+    id: string; media_type: string; image_data: string | null; storage_key: string | null;
+    latitude: number | null; longitude: number | null; captured_at: string;
+  }) => {
+    const base = {
+      id: row.id, media_type: row.media_type,
+      latitude: row.latitude, longitude: row.longitude, captured_at: row.captured_at,
+    };
+    if (row.storage_key) {
+      return { ...base, image_url: await getReadUrl(row.storage_key) };
+    }
+    return { ...base, image_data: row.image_data };
+  }));
+  res.json(out);
 }));
 
 // ── Save detected face (encoding + crop from browser face-api.js) ────────────

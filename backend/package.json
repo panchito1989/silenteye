@@ -12,6 +12,8 @@
     "reset:keep-admin": "node ../node_modules/tsx/dist/cli.mjs src/db/reset-keep-admin.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1096.0",
+    "@aws-sdk/s3-request-presigner": "^3.1096.0",
     "@google/earthengine": "^1.7.21",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
