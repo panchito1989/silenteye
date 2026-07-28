@@ -2,6 +2,7 @@ import { pool } from '../db/pool.js';
 import { hasPostGis } from '../db/postgis-check.js';
 import { logger } from '../utils/logger.js';
 import { broadcastAlert } from './websocket.js';
+import { relayPanicToConvoy } from './convoy-service.js';
 import type { NormalizedAlert } from '../gps/alert-detector.js';
 
 const ALERT_RADIUS_M = parseInt(process.env.PANIC_ALERT_RADIUS_M || '2000', 10) || 2000; // 1–3 km
@@ -86,6 +87,13 @@ export async function processAlert(alert: NormalizedAlert): Promise<StoredAlert 
       nearbyUserIds = nearby.rows.map((r: { id: string }) => r.id);
     }
     broadcastAlert(stored, nearbyUserIds);
+
+    // Safety in numbers: a panic from a truck mid-trip is relayed to its
+    // virtual-convoy peers. Fire-and-forget — never blocks alert processing.
+    if (priority === 2 || alertType === 'panic') {
+      void relayPanicToConvoy(stored);
+    }
+
     const priLabel = priority === 2 ? 'PANIC' : priority === 1 ? 'HIGH' : 'LOW';
     logger.info(`[ALERT][${priLabel}][${alertType.toUpperCase()}][${deviceImei}][${latitude.toFixed(5)},${longitude.toFixed(5)}]`);
 

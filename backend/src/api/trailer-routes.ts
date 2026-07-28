@@ -9,6 +9,7 @@ import { Router, type Request, type Response, type NextFunction } from 'express'
 import rateLimit from 'express-rate-limit';
 import { pool } from '../db/pool.js';
 import { logger } from '../utils/logger.js';
+import { findConvoyCandidates } from '../services/convoy-service.js';
 import {
   CARGO_TYPES,
   RISK_CATEGORIES,
@@ -176,6 +177,20 @@ trailerRouter.put('/:vehicleId/routes/:routeId/status', writeLimit, requireRole(
   );
   if (rows.length === 0) return res.status(404).json({ error: 'Ruta no encontrada' });
   res.json(rows[0]);
+}));
+
+// ── Virtual convoy ────────────────────────────────────────────────────
+// Convoy candidates (routes sharing corridor + direction + timing) plus this
+// route's risk-zone exposure. Cross-fleet visibility → admin/fleet_owner only.
+const CONVOY_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+trailerRouter.get('/:vehicleId/routes/:routeId/convoy', readLimit, requireRole('admin', 'fleet_owner'), asyncHandler(async (req, res) => {
+  const { vehicleId, routeId } = req.params;
+  if (!CONVOY_UUID_RE.test(vehicleId) || !CONVOY_UUID_RE.test(routeId)) {
+    return res.status(400).json({ error: 'ID inválido' });
+  }
+  const owns = await pool.query('SELECT 1 FROM trailer_routes WHERE id = $1 AND trailer_id = $2', [routeId, vehicleId]);
+  if (owns.rowCount === 0) return res.status(404).json({ error: 'Ruta no encontrada' });
+  res.json(await findConvoyCandidates(routeId));
 }));
 
 // ── Risk zones ────────────────────────────────────────────────────────
