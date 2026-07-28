@@ -27,6 +27,8 @@ import {
 } from './auth.js';
 import { issueTicket } from '../services/ws-ticket-store.js';
 import { appendCustody, verifyChain, sha256Hex } from '../services/custody-service.js';
+import { findStagingCandidates } from '../services/fusion-service.js';
+import { isGeeReady, getGeeDiagnostics } from '../services/gee-service.js';
 
 /**
  * Build the `token` field of an auth response. Returns the JWT string in
@@ -2273,6 +2275,113 @@ api.get('/jammers/hotspots', authMiddleware, readRateLimit, requireRole('admin',
   res.json(hotspots);
 }));
 
+// ── SAR + jamming fusion: cargo-theft staging candidates ───────────────────────
+// Runs the satellite terrain-change engine centred on a jammer hotspot and
+// scores fresh anomalies (bare soil / vegetation loss) by how likely they are
+// to be an unloading yard. Heavy + slow (GEE) → on-demand, admin-only. Results
+// are INVESTIGATIVE LEADS, not proof.
+api.post('/jammers/hotspots/analyze', authMiddleware, writeRateLimit, requireRole('admin'), asyncHandler(async (req, res) => {
+  if (!isGeeReady()) {
+    res.status(503).json({ error: 'Análisis satelital no disponible (GEE no inicializado)', gee: getGeeDiagnostics() });
+    return;
+  }
+  const lat = Number(req.body?.lat);
+  const lng = Number(req.body?.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+    res.status(400).json({ error: 'lat/lng inválidos' });
+    return;
+  }
+  const radiusKm = Math.min(Math.max(Number(req.body?.radius_km) || 5, 1), 15);
+  const jammerSeverity = Math.min(Math.max(Number(req.body?.jammer_severity) || 50, 0), 100);
+  // Default the jamming pivot to ~120 days ago if the caller doesn't pass one.
+  let eventDate: string = typeof req.body?.event_date === 'string' ? req.body.event_date : '';
+  const parsed = eventDate ? new Date(eventDate) : null;
+  if (!parsed || isNaN(parsed.getTime())) {
+    eventDate = new Date(Date.now() - 120 * 86_400_000).toISOString();
+  }
+  const { userId } = (req as any).user;
+
+  let fusion;
+  try {
+    fusion = await findStagingCandidates({ lat, lng, radiusKm, eventDate, jammerSeverity });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (msg === 'GEE_NOT_INITIALIZED') {
+      res.status(503).json({ error: 'Análisis satelital no disponible (GEE no inicializado)', gee: getGeeDiagnostics() });
+      return;
+    }
+    logger.error('[FUSION] analyze failed:', err);
+    res.status(502).json({ error: 'El análisis satelital falló', detail: msg });
+    return;
+  }
+
+  // Re-analysis replaces stale 'new' candidates for THIS hotspot, but never
+  // touches ones an investigator already triaged.
+  await pool.query(
+    `DELETE FROM staging_candidates WHERE status = 'new' AND jammer_lat = $1 AND jammer_lng = $2`,
+    [lat, lng],
+  );
+  const eventDateOnly = new Date(eventDate).toISOString().slice(0, 10);
+  const inserted: unknown[] = [];
+  for (const c of fusion.candidates) {
+    const r = await pool.query(
+      `INSERT INTO staging_candidates
+         (latitude, longitude, fusion_score, anomaly_type, anomaly_severity, area_m2, confidence,
+          ndvi_change, bsi_change, vv_change, vh_change, distance_m,
+          jammer_lat, jammer_lng, jammer_severity, event_date, source_sensor, created_by)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
+       RETURNING id, latitude, longitude, fusion_score, anomaly_type, anomaly_severity, area_m2,
+                 confidence, distance_m, source_sensor, status, created_at`,
+      [
+        c.latitude, c.longitude, c.fusionScore, c.anomalyType, c.anomalySeverity, c.areaM2, c.confidence,
+        c.ndviChange, c.bsiChange, c.vvChange ?? null, c.vhChange ?? null, c.distanceM,
+        lat, lng, jammerSeverity, eventDateOnly, c.sourceSensor, userId,
+      ],
+    );
+    inserted.push(r.rows[0]);
+  }
+
+  res.json({ candidates: inserted, metadata: fusion.metadata });
+}));
+
+// List persisted staging candidates (optionally filtered by status).
+api.get('/staging-candidates', authMiddleware, readRateLimit, requireRole('admin'), asyncHandler(async (req, res) => {
+  const status = typeof req.query.status === 'string' ? req.query.status : null;
+  const valid = ['new', 'investigating', 'confirmed', 'dismissed'];
+  const params: unknown[] = [];
+  let where = '';
+  if (status && valid.includes(status)) {
+    params.push(status);
+    where = 'WHERE status = $1';
+  }
+  const { rows } = await pool.query(
+    `SELECT id, latitude, longitude, fusion_score, anomaly_type, anomaly_severity, area_m2,
+            confidence, distance_m, jammer_lat, jammer_lng, jammer_severity, event_date,
+            source_sensor, status, notes, created_at
+     FROM staging_candidates ${where}
+     ORDER BY fusion_score DESC LIMIT 500`,
+    params,
+  );
+  res.json(rows);
+}));
+
+// Triage a candidate: move it through new → investigating → confirmed/dismissed.
+api.put('/staging-candidates/:id', authMiddleware, writeRateLimit, requireRole('admin'), asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!isValidUuid(id)) { res.status(400).json({ error: 'Invalid ID' }); return; }
+  const status = req.body?.status;
+  const valid = ['new', 'investigating', 'confirmed', 'dismissed'];
+  if (!valid.includes(status)) { res.status(400).json({ error: `status inválido (${valid.join(', ')})` }); return; }
+  const notes = typeof req.body?.notes === 'string' ? req.body.notes.slice(0, 2000) : null;
+  const r = await pool.query(
+    `UPDATE staging_candidates SET status = $2, notes = COALESCE($3, notes), updated_at = NOW()
+     WHERE id = $1 RETURNING id, status, notes, updated_at`,
+    [id, status, notes],
+  );
+  if (!r.rows[0]) { res.status(404).json({ error: 'Candidato no encontrado' }); return; }
+  res.json(r.rows[0]);
+}));
+
 api.delete('/alerts/:id', authMiddleware, requireRole('admin'), asyncHandler(async (req, res) => {
   const { id } = req.params;
   const r = await pool.query('DELETE FROM alerts WHERE id = $1 RETURNING id', [id]);
@@ -3458,7 +3567,10 @@ api.get('/incidents/:id/media', authMiddleware, asyncHandler(async (req, res) =>
 }));
 
 // ── Save detected face (encoding + crop from browser face-api.js) ────────────
-api.post('/incidents/:id/faces', authMiddleware, mediaUploadLimit, asyncHandler(async (req, res) => {
+// Facial detection is an INTERNAL fleet/admin tool. Citizens must not create
+// biometric encodings of third parties from the SOS flow (LFPDPPP: sensitive
+// data, no obtainable consent). Gated to internal roles.
+api.post('/incidents/:id/faces', authMiddleware, requireRole('admin', 'helper', 'fleet_owner'), mediaUploadLimit, asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { userId } = (req as any).user;
   if (!isValidUuid(id)) {
@@ -3566,7 +3678,7 @@ api.post('/incidents/:id/faces', authMiddleware, mediaUploadLimit, asyncHandler(
 }));
 
 // ── Get faces for an incident ────────────────────────────────────────────────
-api.get('/incidents/:id/faces', authMiddleware, asyncHandler(async (req, res) => {
+api.get('/incidents/:id/faces', authMiddleware, requireRole('admin', 'helper', 'fleet_owner'), asyncHandler(async (req, res) => {
   const { id } = req.params;
   if (!isValidUuid(id)) { res.status(400).json({ error: 'Invalid incident ID' }); return; }
 

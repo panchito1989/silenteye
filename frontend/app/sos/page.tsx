@@ -139,6 +139,11 @@ export default function SOSPage() {
 
   const userName = sessionUser?.name || sessionUser?.phone || '';
   const dashType = sessionUser?.permissions?.dashboardType;
+  // Facial capture / suspect gallery are internal (fleet/admin) tools only.
+  // Citizens must never capture third-party biometric data from the SOS flow —
+  // it is legally hazardous (LFPDPPP: sensitive biometric data, no obtainable
+  // consent from the person photographed). The backend also enforces this.
+  const isInternal = ['admin', 'helper', 'fleet_owner'].includes(sessionUser?.role || '');
 
   // Continuous geolocation — try high accuracy first, fallback to low
   useEffect(() => {
@@ -563,18 +568,20 @@ export default function SOSPage() {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
             911
           </a>
-          <button
-            onClick={() => setShowSuspects(true)}
-            className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
-          >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
-            Sospechosos
-          </button>
+          {isInternal && (
+            <button
+              onClick={() => setShowSuspects(true)}
+              className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+              Sospechosos
+            </button>
+          )}
         </div>
       </main>
 
-      {/* GPS Panic — Camera activation banner */}
-      {gpsPanicPrompt && (
+      {/* GPS Panic — Camera activation banner (facial capture is internal-only) */}
+      {isInternal && gpsPanicPrompt && (
         <div className="fixed inset-x-0 top-0 z-[10000] safe-area-top">
           <div className="bg-red-600 animate-pulse">
             <button
@@ -721,13 +728,13 @@ export default function SOSPage() {
         </div>
       )}
 
-      {/* Suspect Gallery overlay */}
-      {showSuspects && token && (
+      {/* Suspect Gallery overlay (internal-only) */}
+      {isInternal && showSuspects && token && (
         <SuspectGallery token={token} onClose={() => setShowSuspects(false)} role={sessionUser?.role} />
       )}
 
-      {/* SOS Camera overlay */}
-      {result && (
+      {/* SOS Camera overlay (facial capture is internal-only) */}
+      {isInternal && result && (
         <SOSCamera
           token={token || ''}
           incidentId={result.incidentId}
