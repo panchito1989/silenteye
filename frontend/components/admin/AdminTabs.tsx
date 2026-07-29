@@ -17,12 +17,12 @@ export default function AdminTabs({ activeTab, onTabChange }: AdminTabsProps) {
     { id: 'alerts', label: t.admin.tabs.alerts },
     { id: 'gps_activity', label: t.admin.gpsActivity.title },
     { id: 'map', label: t.common.realTime },
+    { id: 'jammers', label: 'Jammers' },
     { id: 'vehicles', label: t.common.vehicles },
     { id: 'drivers', label: t.admin.tabs.drivers },
     { id: 'suspects', label: 'Sospechosos' },
     { id: 'comandancia', label: t.admin.tabs.comandancia },
     { id: 'trailers', label: 'Trailers' },
-    { id: 'jammers', label: 'Zonas de jammer' },
   ];
 
   return (
