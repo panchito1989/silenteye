@@ -18,6 +18,7 @@ import DriversSection from '@/components/admin/DriversSection';
 import ComandanciaSection from '@/components/admin/ComandanciaSection';
 import GpsActivitySection from '@/components/admin/GpsActivitySection';
 import TrailersSection from '@/components/admin/TrailersSection';
+import JammerMapClient from '@/components/JammerMapClient';
 const SuspectGallery = dynamic(() => import('@/components/SuspectGallery'), { ssr: false });
 import { useSession } from '@/hooks/useSession';
 import { useWebSocket } from '@/hooks/useWebSocket';
@@ -133,6 +134,19 @@ export default function AdminPage() {
           {activeTab === 'trailers' && (
             <div className="bg-zinc-50 rounded-xl p-3 sm:p-6 border border-zinc-200">
               <TrailersSection />
+            </div>
+          )}
+
+          {activeTab === 'jammers' && (
+            <div className="bg-zinc-50 rounded-xl p-3 sm:p-6 border border-zinc-200">
+              <div className="mb-4">
+                <h2 className="text-lg font-bold text-zinc-900">Zonas de jammer</h2>
+                <p className="text-sm text-zinc-500 mt-1 max-w-2xl">
+                  Puntos donde se detectan de forma recurrente bloqueadores de señal GNSS (event 66/246),
+                  el paso previo típico en el robo a carga. Clic en un hotspot para analizar el terreno vía satélite.
+                </p>
+              </div>
+              <JammerMapClient />
             </div>
           )}
 
