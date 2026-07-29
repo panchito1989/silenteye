@@ -54,10 +54,10 @@ const es = {
   // ── Landing Page ──
   landing: {
     hero: {
-      tagline: 'Plataforma GPS · Autos · Motos · Camiones · Trailers · Flotillas',
-      title1: 'Te roban el auto.',
-      title2: 'En 3 segundos, la red SilentEye en 2 km recibe tu ubicación.',
-      subtitle: 'Conecta tu GPS Teltonika, Queclink, Concox, Cobán o Sinotrack. Cuando se dispara la alerta, tu ubicación en vivo se difunde a la red — sin centrales, sin llamadas.',
+      tagline: 'Seguridad vehicular en tiempo real · México',
+      title1: 'Reacciona al robo en',
+      title2: '3 segundos, no en 25 minutos.',
+      subtitle: 'SilentEye conecta tu GPS y, al dispararse la alerta, difunde la ubicación en vivo de tu vehículo a tu red de respuesta al instante — sin centrales, sin llamadas, sin apps.',
       cta: 'Comenzar gratis',
       mockupLabel: 'dashboard / mapa en vivo',
       online: 'en línea',

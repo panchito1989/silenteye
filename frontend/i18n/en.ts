@@ -56,10 +56,10 @@ const en: Translations = {
   // ── Landing Page ──
   landing: {
     hero: {
-      tagline: 'GPS Platform · Cars · Motorcycles · Trucks · Trailers · Fleets',
-      title1: 'Your car gets stolen.',
-      title2: 'In 3 seconds, the SilentEye network within 2 km receives your location.',
-      subtitle: 'Connect your Teltonika, Queclink, Concox, Cobán or Sinotrack GPS. When the alert fires, your live location reaches the network — no dispatch center, no waiting.',
+      tagline: 'Real-time vehicle security · Mexico',
+      title1: 'React to theft in',
+      title2: '3 seconds, not 25 minutes.',
+      subtitle: 'SilentEye connects your GPS and, the instant the alert fires, broadcasts your vehicle\'s live location to your response network — no dispatch center, no phone calls, no apps.',
       cta: 'Get started free',
       mockupLabel: 'dashboard / live map',
       online: 'online',

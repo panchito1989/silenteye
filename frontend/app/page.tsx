@@ -114,28 +114,6 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Audience segmentation — sends visitors to the right landing fast */}
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <span className="text-[12px] font-semibold text-zinc-400 uppercase tracking-wider">¿Qué proteges?</span>
-              <Link
-                href="/rastreo-satelital-camiones"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium text-zinc-700 bg-white border border-zinc-200 rounded-full hover:border-blue-300 hover:bg-blue-50/50 transition-colors"
-              >
-                Camiones / Trailers
-              </Link>
-              <Link
-                href="/cotizar-flota"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium text-zinc-700 bg-white border border-zinc-200 rounded-full hover:border-blue-300 hover:bg-blue-50/50 transition-colors"
-              >
-                Flotilla 4+ unidades
-              </Link>
-              <Link
-                href="/blog/mejor-gps-para-auto-mexico"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[13px] font-medium text-zinc-700 bg-white border border-zinc-200 rounded-full hover:border-blue-300 hover:bg-blue-50/50 transition-colors"
-              >
-                Mi auto / moto
-              </Link>
-            </div>
           </div>
 
           {/* Hero visual — CSS art dashboard mockup */}
@@ -171,6 +149,35 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* ── Audience selector — routes each visitor to their message fast ── */}
+      <section className="px-6 -mt-10 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-[12px] font-semibold text-zinc-400 uppercase tracking-wider mb-4">¿Qué proteges?</p>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <Link href="/rastreo-satelital-camiones" className="flex flex-col gap-1 p-4 bg-white rounded-xl border border-zinc-200 hover:border-blue-400 hover:shadow-lg transition-all">
+              <span className="text-2xl mb-1">🚛</span>
+              <span className="text-[15px] font-bold text-zinc-900">Flotilla y carga</span>
+              <span className="text-[12px] text-zinc-400">Camiones, trailers y transporte</span>
+            </Link>
+            <Link href="#para-quien" className="flex flex-col gap-1 p-4 bg-white rounded-xl border border-zinc-200 hover:border-blue-400 hover:shadow-lg transition-all">
+              <span className="text-2xl mb-1">🚗</span>
+              <span className="text-[15px] font-bold text-zinc-900">Auto particular</span>
+              <span className="text-[12px] text-zinc-400">Tu auto, moto o el de tu familia</span>
+            </Link>
+            <Link href="#para-quien" className="flex flex-col gap-1 p-4 bg-white rounded-xl border border-zinc-200 hover:border-blue-400 hover:shadow-lg transition-all">
+              <span className="text-2xl mb-1">🚕</span>
+              <span className="text-[15px] font-bold text-zinc-900">Uber / Didi</span>
+              <span className="text-[12px] text-zinc-400">Botón de pánico discreto</span>
+            </Link>
+            <Link href="/sos" className="flex flex-col gap-1 p-4 bg-red-50 rounded-xl border border-red-200 hover:border-red-400 hover:shadow-lg transition-all">
+              <span className="text-2xl mb-1">🆘</span>
+              <span className="text-[15px] font-bold text-red-700">Botón SOS</span>
+              <span className="text-[12px] text-red-500">Gratis, sin GPS, sin app</span>
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ── Metrics strip ── */}
       <section className="border-y border-zinc-100 bg-zinc-50/50">
@@ -253,6 +260,39 @@ export default function Home() {
             <div>
               <p className="font-bold text-[15px] mb-1">{t.landing.howItWorks.noGpsTitle}</p>
               <p className="text-zinc-400 text-[14px] leading-relaxed">{t.landing.howItWorks.noGpsDesc}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Diferenciadores: inteligencia world-first para flotillas ── */}
+      <section className="px-6 py-24 md:py-32 bg-zinc-900 text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="max-w-2xl mb-14">
+            <p className="text-[13px] font-semibold text-blue-400 tracking-wide uppercase mb-4">Inteligencia exclusiva</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight mb-4">Lo que ningún otro GPS tiene</h2>
+            <p className="text-lg text-zinc-400">Para flotillas y transporte de carga, SilentEye cruza señales que nadie más combina — telemetría, satélite y patrones de robo — para adelantarse al delito.</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div className="p-5 bg-zinc-800/60 rounded-xl border border-zinc-700">
+              <div className="text-2xl mb-3">📡</div>
+              <h3 className="font-bold text-[16px] mb-1.5">Mapa de jammers</h3>
+              <p className="text-[13px] text-zinc-400 leading-relaxed">Detecta y mapea las zonas donde bloquean la señal GPS para robar — el paso previo típico del robo a carga.</p>
+            </div>
+            <div className="p-5 bg-zinc-800/60 rounded-xl border border-zinc-700">
+              <div className="text-2xl mb-3">🛰️</div>
+              <h3 className="font-bold text-[16px] mb-1.5">Detección satelital de bodegas</h3>
+              <p className="text-[13px] text-zinc-400 leading-relaxed">Cruza los jammers con imágenes satelitales (Sentinel + SAR) para ubicar posibles bodegas de descargo de carga robada.</p>
+            </div>
+            <div className="p-5 bg-zinc-800/60 rounded-xl border border-zinc-700">
+              <div className="text-2xl mb-3">🚚</div>
+              <h3 className="font-bold text-[16px] mb-1.5">Convoy virtual</h3>
+              <p className="text-[13px] text-zinc-400 leading-relaxed">Agrupa camiones que van por la misma ruta y hora, con relay de pánico entre ellos. Seguridad en número.</p>
+            </div>
+            <div className="p-5 bg-zinc-800/60 rounded-xl border border-zinc-700">
+              <div className="text-2xl mb-3">🔒</div>
+              <h3 className="font-bold text-[16px] mb-1.5">Cadena de custodia</h3>
+              <p className="text-[13px] text-zinc-400 leading-relaxed">Cada foto y evidencia queda sellada de forma inalterable — lista para presentar ante autoridades.</p>
             </div>
           </div>
         </div>
