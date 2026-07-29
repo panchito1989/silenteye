@@ -2294,12 +2294,17 @@ api.post('/jammers/hotspots/analyze', authMiddleware, writeRateLimit, requireRol
   }
   const radiusKm = Math.min(Math.max(Number(req.body?.radius_km) || 5, 1), 15);
   const jammerSeverity = Math.min(Math.max(Number(req.body?.jammer_severity) || 50, 0), 100);
-  // Default the jamming pivot to ~120 days ago if the caller doesn't pass one.
-  let eventDate: string = typeof req.body?.event_date === 'string' ? req.body.event_date : '';
-  const parsed = eventDate ? new Date(eventDate) : null;
-  if (!parsed || isNaN(parsed.getTime())) {
-    eventDate = new Date(Date.now() - 120 * 86_400_000).toISOString();
+  // Pick the satellite baseline pivot. The terrain engine needs enough imagery
+  // BEFORE and AFTER the pivot; a jamming event from the last few days has no
+  // usable "after" window yet (Sentinel revisits every ~5 days), which throws
+  // CURRENT_WINDOW_TOO_SHORT. So we clamp the pivot to be at least ~100 days
+  // old — recent hotspots still get analysed over the last few months of imagery.
+  const MIN_PIVOT_AGE_MS = 100 * 86_400_000;
+  let pivot = typeof req.body?.event_date === 'string' ? new Date(req.body.event_date) : null;
+  if (!pivot || isNaN(pivot.getTime()) || (Date.now() - pivot.getTime()) < MIN_PIVOT_AGE_MS) {
+    pivot = new Date(Date.now() - 120 * 86_400_000);
   }
+  const eventDate = pivot.toISOString();
   const { userId } = (req as any).user;
 
   let fusion;
