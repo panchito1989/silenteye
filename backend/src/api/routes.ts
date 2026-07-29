@@ -30,6 +30,15 @@ import { appendCustody, verifyChain, sha256Hex } from '../services/custody-servi
 import { findStagingCandidates } from '../services/fusion-service.js';
 import { isGeeReady, getGeeDiagnostics } from '../services/gee-service.js';
 import { uploadJpegBase64, getReadUrl } from '../services/storage-service.js';
+import { verifyTurnstile } from '../services/turnstile.js';
+
+/** Best-effort client IP for anti-bot / abuse checks (Cloudflare/Fly aware). */
+function clientIpFor(req: import('express').Request): string | undefined {
+  return (req.headers['cf-connecting-ip'] as string)
+    || (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim()
+    || req.ip
+    || undefined;
+}
 
 /**
  * Build the `token` field of an auth response. Returns the JWT string in
@@ -468,6 +477,11 @@ async function writeAuditLog(req: import('express').Request, entry: AuditEntry):
 // Login: conductor con IMEI, admin/helper con teléfono, ciudadano con email+mode
 api.post('/auth/otp/request', authRateLimit, asyncHandler(async (req, res) => {
   try {
+    // Anti-bot gate (no-op until TURNSTILE_SECRET_KEY is set).
+    if (!(await verifyTurnstile((req.body as { turnstileToken?: unknown })?.turnstileToken, clientIpFor(req)))) {
+      res.status(403).json({ error: 'Verificación de seguridad fallida. Recarga la página e intenta de nuevo.' });
+      return;
+    }
     const { imei, phone, email, mode } = req.body;
     // SECURITY: OTP codes are logged via Winston for debugging — never returned in responses
 
@@ -779,6 +793,11 @@ api.post('/auth/otp/verify', authRateLimit, asyncHandler(async (req, res) => {
 const DUMMY_BCRYPT_HASH = '$2a$12$CwTycUXWue0Thq9StjUM0uJ8oEXE4oY9J3aOcMpEjZpH9XqP4bZJ6'; // bcrypt hash of a random throwaway; never matches anything
 api.post('/auth/login', authRateLimit, asyncHandler(async (req, res) => {
   try {
+    // Anti-bot gate (no-op until TURNSTILE_SECRET_KEY is set).
+    if (!(await verifyTurnstile((req.body as { turnstileToken?: unknown })?.turnstileToken, clientIpFor(req)))) {
+      res.status(403).json({ error: 'Verificación de seguridad fallida. Recarga la página e intenta de nuevo.' });
+      return;
+    }
     const { email, password } = req.body;
     if (!email || typeof email !== 'string' || !password || typeof password !== 'string') {
       res.status(400).json({ error: t(req, 'emailPassRequired') });

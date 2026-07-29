@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { saveSession } from '@/lib/session';
 import { useLocale } from '@/hooks/useLocale';
+import TurnstileWidget from '@/components/TurnstileWidget';
 
 const API = '';
 
@@ -25,6 +26,7 @@ function LoginContent() {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,7 +49,7 @@ function LoginContent() {
       const res = await fetch(`${API}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: cleanEmail, password }),
+        body: JSON.stringify({ email: cleanEmail, password, turnstileToken }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al iniciar sesión');
@@ -90,7 +92,7 @@ function LoginContent() {
       const res = await fetch(`${API}/api/auth/otp/request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ ...body, turnstileToken }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al solicitar OTP');
@@ -196,6 +198,7 @@ function LoginContent() {
             placeholder="••••••••"
             className="w-full px-3.5 py-2.5 rounded-lg bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-300 text-[15px] focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all mb-4"
           />
+          <TurnstileWidget onToken={setTurnstileToken} />
           <button
             onClick={loginWithPassword}
             disabled={loading}
@@ -331,6 +334,7 @@ function LoginContent() {
                   placeholder={isEmailFlow ? 'tu@correo.com' : '+52 222 123 4567'}
                   className="w-full px-3.5 py-2.5 rounded-lg bg-white border border-zinc-200 text-zinc-900 placeholder-zinc-300 text-[15px] focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all mb-4"
                 />
+                <TurnstileWidget onToken={setTurnstileToken} />
                 <button
                   onClick={requestOtp}
                   disabled={loading}

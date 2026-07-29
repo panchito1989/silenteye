@@ -22,12 +22,13 @@ module.exports = {
             value: [
               "default-src 'self'",
               process.env.NODE_ENV === 'production'
-                ? "script-src 'self' 'unsafe-inline'"
-                : "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+                ? "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com"
+                : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://unpkg.com https://earthengine.googleapis.com https://*.earthengine.googleapis.com blob:",
               "font-src 'self'",
-              "connect-src 'self' https://api.silenteye.mx wss://api.silenteye.mx https://silenteye-3rrwnq.fly.dev wss://silenteye-3rrwnq.fly.dev https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://nominatim.openstreetmap.org https://earthengine.googleapis.com https://*.earthengine.googleapis.com",
+              "connect-src 'self' https://silenteye.fly.dev wss://silenteye.fly.dev https://api.silenteye.mx wss://api.silenteye.mx https://silenteye-3rrwnq.fly.dev wss://silenteye-3rrwnq.fly.dev https://challenges.cloudflare.com https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://nominatim.openstreetmap.org https://earthengine.googleapis.com https://*.earthengine.googleapis.com",
+              "frame-src 'self' https://challenges.cloudflare.com",
               "frame-ancestors 'none'",
             ].join('; '),
           },
