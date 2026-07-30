@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getSession } from '@/lib/session';
+import { getSession, saveSession } from '@/lib/session';
 
 const API = '';
 
@@ -53,6 +53,15 @@ export default function SetupPage() {
           throw new Error(data.error || 'Error al agregar vehículo');
         }
         return;
+      }
+      // Server promoted this citizen to 'driver'. Adopt the refreshed session
+      // so the new role/permissions take effect without a re-login.
+      if (data.refreshedAuth && session.user) {
+        saveSession(data.refreshedAuth.token || session.token, {
+          ...session.user,
+          role: data.refreshedAuth.role,
+          permissions: data.refreshedAuth.permissions,
+        });
       }
       setStep('configure');
     } catch (e: unknown) {

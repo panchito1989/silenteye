@@ -103,7 +103,7 @@ export async function processAlert(alert: NormalizedAlert): Promise<StoredAlert 
   }
 }
 
-export async function getAlerts(limit = 100, since?: Date, driverUserId?: string): Promise<StoredAlert[]> {
+export async function getAlerts(limit = 100, since?: Date, driverUserId?: string, fleetOwnerId?: string): Promise<StoredAlert[]> {
   const client = await pool.connect();
   try {
     let query = `
@@ -113,10 +113,11 @@ export async function getAlerts(limit = 100, since?: Date, driverUserId?: string
       LEFT JOIN vehicles v ON v.id = a.vehicle_id
     `;
     const params: unknown[] = [];
-    if (since) {
-      query += ' WHERE a.created_at >= $1';
-      params.push(since);
-    }
+    const conds: string[] = [];
+    if (since) { conds.push(`a.created_at >= $${params.length + 1}`); params.push(since); }
+    // fleet_owner: restrict to alerts for vehicles they own.
+    if (fleetOwnerId) { conds.push(`a.vehicle_id IN (SELECT id FROM vehicles WHERE owner_id = $${params.length + 1})`); params.push(fleetOwnerId); }
+    if (conds.length) query += ' WHERE ' + conds.join(' AND ');
     query += ' ORDER BY a.created_at DESC LIMIT $' + (params.length + 1);
     params.push(limit);
 

@@ -255,7 +255,7 @@ function getPermissions(role: string): Permissions {
     case 'admin':
       return {
         viewAdminPanel: true, manageUsers: true, manageAllVehicles: true,
-        viewOwnVehicles: true, manageGeofences: true, manageFleet: false,
+        viewOwnVehicles: true, manageGeofences: true, manageFleet: true,
         respondIncidents: true, viewGpsActivity: true, viewAlerts: true,
         triggerPanic: true,
         dashboardType: 'admin',
@@ -1223,6 +1223,7 @@ api.post('/vehicles', authMiddleware, writeRateLimit, requireRole('admin', 'driv
     // IMEI is the gating condition: anyone registering a GPS device owns
     // the panic-response flow for that vehicle. This is the only supported
     // path from citizen to driver — it cannot be done via the OTP body.
+    let refreshedAuth: { token: string | undefined; role: string; permissions: Permissions } | null = null;
     if (role === 'citizen') {
       await pool.query(
         `UPDATE users SET role = 'driver', updated_at = NOW() WHERE id = $1 AND role = 'citizen'`,
@@ -1235,6 +1236,11 @@ api.post('/vehicles', authMiddleware, writeRateLimit, requireRole('admin', 'driv
         targetId: userId,
         details: { from: 'citizen', to: 'driver', reason: 'vehicle_registration', vehicle_id: r.rows[0].id },
       });
+      // Refresh the session so the new 'driver' role takes effect without a
+      // re-login — the old JWT still says 'citizen' until we re-issue it.
+      const newToken = signToken({ userId, role: 'driver' });
+      setAuthCookie(res, newToken);
+      refreshedAuth = { token: tokenForBody(newToken), role: 'driver', permissions: getPermissions('driver') };
     }
 
     writeAuditLog(req, {
@@ -1243,7 +1249,7 @@ api.post('/vehicles', authMiddleware, writeRateLimit, requireRole('admin', 'driv
       targetId: r.rows[0].id,
       details: { plate, imei: imei ? `***${String(imei).slice(-4)}` : null },
     });
-    res.status(201).json(r.rows[0]);
+    res.status(201).json(refreshedAuth ? { ...r.rows[0], refreshedAuth } : r.rows[0]);
   } catch (err: unknown) {
     const e = err as { code?: string };
     if (e?.code === '23505') {
@@ -1335,20 +1341,23 @@ api.delete('/vehicles/:id', authMiddleware, requireRole('admin', 'fleet_owner'),
 // ── Fleet owner: manage sub-drivers ─────────────────────────────────────────
 
 // List drivers assigned to fleet_owner's vehicles
-api.get('/fleet/drivers', authMiddleware, requireRole('fleet_owner'), asyncHandler(async (req, res) => {
-  const { userId } = (req as any).user;
-  const r = await pool.query(
-    `SELECT DISTINCT u.id, u.phone, u.name, u.role, u.email
-     FROM users u
-     JOIN vehicles v ON v.driver_id = u.id AND v.owner_id = $1
-     ORDER BY u.name`,
-    [userId]
-  );
+api.get('/fleet/drivers', authMiddleware, requireRole('admin', 'fleet_owner'), asyncHandler(async (req, res) => {
+  const { userId, role } = (req as any).user;
+  // admin sees every driver; fleet_owner sees only drivers of their own fleet.
+  const r = role === 'admin'
+    ? await pool.query(`SELECT id, phone, name, role, email FROM users WHERE role = 'driver' ORDER BY name`)
+    : await pool.query(
+        `SELECT DISTINCT u.id, u.phone, u.name, u.role, u.email
+         FROM users u
+         JOIN vehicles v ON v.driver_id = u.id AND v.owner_id = $1
+         ORDER BY u.name`,
+        [userId]
+      );
   res.json(r.rows);
 }));
 
-// Create a sub-driver (fleet_owner only)
-api.post('/fleet/drivers', authMiddleware, requireRole('fleet_owner'), asyncHandler(async (req, res) => {
+// Create a sub-driver (admin or fleet_owner)
+api.post('/fleet/drivers', authMiddleware, requireRole('admin', 'fleet_owner'), asyncHandler(async (req, res) => {
   const { phone, name, email } = req.body;
   if (!phone || typeof phone !== 'string' || !name || typeof name !== 'string') {
     res.status(400).json({ error: t(req, 'phoneAndNameReq') });
@@ -1374,14 +1383,18 @@ api.post('/fleet/drivers', authMiddleware, requireRole('fleet_owner'), asyncHand
 }));
 
 // Assign or unassign a driver to a fleet_owner's vehicle
-api.put('/fleet/vehicles/:id/driver', authMiddleware, requireRole('fleet_owner'), asyncHandler(async (req, res) => {
+api.put('/fleet/vehicles/:id/driver', authMiddleware, requireRole('admin', 'fleet_owner'), asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { userId } = (req as any).user;
+  const { userId, role } = (req as any).user;
   const { driver_id } = req.body;
 
-  // Verify vehicle ownership
+  // Verify vehicle ownership — admin can manage any vehicle, fleet_owner only theirs.
   const check = await pool.query('SELECT id, owner_id FROM vehicles WHERE id = $1', [id]);
-  if (!check.rows[0] || check.rows[0].owner_id !== userId) {
+  if (!check.rows[0]) {
+    res.status(404).json({ error: 'Vehículo no encontrado' });
+    return;
+  }
+  if (role !== 'admin' && check.rows[0].owner_id !== userId) {
     res.status(403).json({ error: t(req, 'onlyOwnVehiclesMgr') });
     return;
   }
@@ -2214,12 +2227,14 @@ api.get('/incidents/:id/witness-response', asyncHandler(async (req, res) => {
   `);
 }));
 
-api.get('/alerts', authMiddleware, requireRole('admin', 'helper', 'driver'), asyncHandler(async (req, res) => {
+api.get('/alerts', authMiddleware, requireRole('admin', 'helper', 'driver', 'fleet_owner'), asyncHandler(async (req, res) => {
   const limit = Math.min(parseInt(String(req.query.limit || 100), 10) || 100, 500);
   const since = req.query.since ? new Date(String(req.query.since)) : undefined;
   const { userId, role } = (req as any).user;
+  // driver/helper see nearby alerts; fleet_owner sees their own fleet's alerts; admin sees all.
   const driverUserId = role === 'driver' || role === 'helper' ? userId : undefined;
-  const alerts = await getAlerts(limit, since, driverUserId);
+  const fleetOwnerId = role === 'fleet_owner' ? userId : undefined;
+  const alerts = await getAlerts(limit, since, driverUserId, fleetOwnerId);
   res.json(alerts);
 }));
 
