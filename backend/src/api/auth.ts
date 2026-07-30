@@ -11,6 +11,49 @@ import type { Request, Response } from 'express';
 import { pool } from '../db/pool.js';
 import { logger } from '../utils/logger.js';
 import { t as _t } from '../i18n.js';
+import { sendEmail, isEmailEnabled, escapeHtml } from '../services/email-service.js';
+
+const ROLE_LABELS_ES: Record<string, string> = {
+  admin: 'Administrador', helper: 'Voluntario', driver: 'Conductor',
+  citizen: 'Ciudadano', fleet_owner: 'Dueño de flota',
+};
+
+/**
+ * Email every admin when a new user registers. The admin address is looked up
+ * live from the DB (role='admin'), so changing the admin email automatically
+ * redirects these alerts. Best-effort: never throws, fired async.
+ */
+async function notifyAdminNewUser(user: { id: string; name: string; phone: string; role: string; email: string | null }): Promise<void> {
+  try {
+    if (!isEmailEnabled()) return;
+    const admins = await pool.query("SELECT email FROM users WHERE role = 'admin' AND email IS NOT NULL");
+    if (admins.rows.length === 0) return;
+    const when = new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' });
+    const roleLabel = ROLE_LABELS_ES[user.role] || user.role;
+    const subject = `👤 Nuevo registro en SilentEye — ${user.name}`;
+    const html = `
+      <div style="font-family:system-ui,Arial,sans-serif;max-width:520px;margin:0 auto;color:#18181b">
+        <div style="background:#18181b;color:#fff;padding:18px;border-radius:12px 12px 0 0">
+          <h1 style="margin:0;font-size:18px">👤 Nuevo registro</h1>
+        </div>
+        <div style="border:1px solid #e4e4e7;border-top:none;padding:20px;border-radius:0 0 12px 12px">
+          <table style="width:100%;font-size:14px;border-collapse:collapse">
+            <tr><td style="padding:6px 0;color:#71717a">Nombre</td><td style="padding:6px 0;font-weight:600">${escapeHtml(user.name)}</td></tr>
+            <tr><td style="padding:6px 0;color:#71717a">Rol</td><td style="padding:6px 0;font-weight:600">${escapeHtml(roleLabel)}</td></tr>
+            <tr><td style="padding:6px 0;color:#71717a">Teléfono</td><td style="padding:6px 0">${escapeHtml(user.phone || '—')}</td></tr>
+            <tr><td style="padding:6px 0;color:#71717a">Correo</td><td style="padding:6px 0">${escapeHtml(user.email || '—')}</td></tr>
+            <tr><td style="padding:6px 0;color:#71717a">Fecha</td><td style="padding:6px 0">${when}</td></tr>
+          </table>
+        </div>
+      </div>`;
+    for (const a of admins.rows) {
+      sendEmail(a.email, subject, html).catch((e) => logger.warn('[NEW-USER] admin email failed:', e));
+    }
+    logger.info(`[NEW-USER] notified ${admins.rows.length} admin(s) of registration ${user.id} (${user.role})`);
+  } catch (err) {
+    logger.warn('[NEW-USER] notifyAdminNewUser failed:', err);
+  }
+}
 
 // Seguridad: JWT_SECRET obligatorio. Sin valor por defecto.
 const _rawSecret = process.env.JWT_SECRET;
@@ -152,6 +195,8 @@ export async function findOrCreateUser(phone: string, name?: string, role?: stri
      RETURNING id, phone, name, role, email, COALESCE(plan, 'free') as plan`,
     [phone, name || phone, finalRole, email || null]
   );
+  // A new user just registered — alert every admin (address resolved live). Async.
+  void notifyAdminNewUser(insert.rows[0]);
   return insert.rows[0];
 }
 
