@@ -12,6 +12,7 @@
 import { pool } from '../db/pool.js';
 import { logger } from '../utils/logger.js';
 import { sendEmail, isEmailEnabled, escapeHtml } from './email-service.js';
+import { isSmsEnabled, isWhatsAppEnabled, sendSms, sendWhatsApp } from './sms-service.js';
 
 export type EmergencyPhase = 'triggered' | 'resolved';
 
@@ -66,9 +67,17 @@ function buildEmail(phase: EmergencyPhase, personName: string, contactName: stri
   };
 }
 
+/** Short plain-text message for SMS / WhatsApp. */
+function buildText(phase: EmergencyPhase, personName: string, mapUrl: string | null, time: string): string {
+  if (phase === 'triggered') {
+    return `🚨 SilentEye: ${personName} activó una alerta de emergencia.${mapUrl ? ` Ubicación: ${mapUrl}` : ''} Hora: ${time}. Si crees que corre peligro, contáctalo o llama al 911.`;
+  }
+  return `✅ SilentEye: ${personName} está a salvo, la emergencia fue resuelta. Hora: ${time}.`;
+}
+
 /**
  * Notify a user's emergency contacts. Best-effort: never throws, never blocks
- * the caller (emails are fired async).
+ * the caller (messages are fired async).
  */
 export async function notifyEmergencyContacts(p: EmergencyNotifyParams): Promise<void> {
   try {
@@ -97,8 +106,12 @@ export async function notifyEmergencyContacts(p: EmergencyNotifyParams): Promise
         sendEmail(c.email, subject, html).catch((e) => logger.warn('[EMERGENCY] email failed:', e));
         sent++;
       }
-      // ── SMS / WhatsApp channel (plug in here) ──
-      // if (c.notify_sms && c.phone && isSmsEnabled()) { sendSms(c.phone, ...); sent++; }
+      // ── SMS / WhatsApp channel ──
+      if (c.notify_sms && c.phone && (isWhatsAppEnabled() || isSmsEnabled())) {
+        const text = buildText(p.phase, personName, mapUrl, time);
+        if (isWhatsAppEnabled()) { sendWhatsApp(c.phone, text).catch((e) => logger.warn('[EMERGENCY] whatsapp failed:', e)); sent++; }
+        if (isSmsEnabled()) { sendSms(c.phone, text).catch((e) => logger.warn('[EMERGENCY] sms failed:', e)); sent++; }
+      }
     }
     logger.info(`[EMERGENCY] ${p.phase}: notified ${sent} contact(s) for user ${p.driverUserId}`);
   } catch (err) {
