@@ -419,9 +419,12 @@ export default function SOSPage() {
           <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
           <span className="text-xs font-bold tracking-tight text-zinc-700">SilentEye SOS</span>
         </a>
-        <button onClick={handleLogout} className="text-zinc-400 hover:text-zinc-600 text-xs font-medium transition-colors">
-          {t.common.logout}
-        </button>
+        <div className="flex items-center gap-3">
+          <Link href="/perfil" className="text-zinc-400 hover:text-zinc-600 text-xs font-medium transition-colors">Mi perfil</Link>
+          <button onClick={handleLogout} className="text-zinc-400 hover:text-zinc-600 text-xs font-medium transition-colors">
+            {t.common.logout}
+          </button>
+        </div>
       </header>
 
       {/* GPS status bar */}

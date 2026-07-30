@@ -306,6 +306,7 @@ export default function FleetDashboard() {
           <span className="ml-2 px-2 py-0.5 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full">{t.fleet.badge}</span>
         </a>
         <div className="flex items-center gap-4">
+          <a href="/perfil" className="text-zinc-400 hover:text-zinc-600 text-[13px] font-medium transition-colors">Mi perfil</a>
           <button
             onClick={handleLogout}
             className="text-zinc-400 hover:text-zinc-600 text-[13px] font-medium transition-colors"

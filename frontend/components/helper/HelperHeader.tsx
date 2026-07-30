@@ -49,13 +49,16 @@ export default function HelperHeader({ status, onLogout, userName }: HelperHeade
           {STATUS_LABELS[status]}
         </span>
       </div>
-      <button
-        onClick={onLogout}
-        className="text-zinc-400 hover:text-zinc-600 text-xs font-medium transition-colors"
-        aria-label={t.helper.closeSession}
-      >
-        {t.common.logout}
-      </button>
+      <div className="flex items-center gap-3">
+        <a href="/perfil" className="text-zinc-400 hover:text-zinc-600 text-xs font-medium transition-colors">Mi perfil</a>
+        <button
+          onClick={onLogout}
+          className="text-zinc-400 hover:text-zinc-600 text-xs font-medium transition-colors"
+          aria-label={t.helper.closeSession}
+        >
+          {t.common.logout}
+        </button>
+      </div>
     </header>
   );
 }
