@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useSession } from '@/hooks/useSession';
 import { useLocale } from '@/hooks/useLocale';
 import { saveSession, getSession } from '@/lib/session';
+import EmergencyContacts from '@/components/EmergencyContacts';
 
 const API = '';
 
@@ -127,6 +128,9 @@ export default function PerfilPage() {
       </header>
 
       <div className="max-w-lg mx-auto p-6 space-y-8">
+        {/* Emergency contacts — family notified when this user is in danger */}
+        <EmergencyContacts />
+
         {/* Profile info */}
         <section className="bg-zinc-50 border border-zinc-200 rounded-xl p-6">
           <h2 className="text-lg font-bold mb-1">{t.profile.changeName}</h2>

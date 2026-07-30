@@ -31,6 +31,7 @@ import { findStagingCandidates } from '../services/fusion-service.js';
 import { isGeeReady, getGeeDiagnostics } from '../services/gee-service.js';
 import { uploadJpegBase64, getReadUrl } from '../services/storage-service.js';
 import { verifyTurnstile } from '../services/turnstile.js';
+import { notifyEmergencyContacts } from '../services/emergency-service.js';
 
 /** Best-effort client IP for anti-bot / abuse checks (Cloudflare/Fly aware). */
 function clientIpFor(req: import('express').Request): string | undefined {
@@ -1016,6 +1017,60 @@ api.put('/me/password', authMiddleware, asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Contraseña actualizada' });
 }));
 
+// ── Emergency contacts: the people notified when THIS user is in danger ──
+const MAX_EMERGENCY_CONTACTS = 5;
+
+api.get('/me/emergency-contacts', authMiddleware, asyncHandler(async (req, res) => {
+  const { userId } = (req as any).user;
+  const { rows } = await pool.query(
+    `SELECT id, name, phone, email, relationship, notify_email, notify_sms, created_at
+     FROM emergency_contacts WHERE user_id = $1 ORDER BY created_at ASC`,
+    [userId],
+  );
+  res.json(rows);
+}));
+
+api.post('/me/emergency-contacts', authMiddleware, writeRateLimit, asyncHandler(async (req, res) => {
+  const { userId } = (req as any).user;
+  const { name, phone, email, relationship } = req.body ?? {};
+  if (!name || typeof name !== 'string' || name.trim().length < 2 || name.trim().length > 100) {
+    res.status(400).json({ error: 'Nombre requerido (2-100 caracteres)' });
+    return;
+  }
+  const cleanEmail = email && typeof email === 'string' ? email.trim().toLowerCase() : null;
+  const cleanPhone = phone && typeof phone === 'string' ? phone.trim().slice(0, 20) : null;
+  if (!cleanEmail && !cleanPhone) {
+    res.status(400).json({ error: 'Agrega al menos un correo o un teléfono' });
+    return;
+  }
+  if (cleanEmail && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail)) {
+    res.status(400).json({ error: 'Correo inválido' });
+    return;
+  }
+  const countRes = await pool.query('SELECT COUNT(*) FROM emergency_contacts WHERE user_id = $1', [userId]);
+  if (parseInt(countRes.rows[0].count, 10) >= MAX_EMERGENCY_CONTACTS) {
+    res.status(403).json({ error: `Máximo ${MAX_EMERGENCY_CONTACTS} contactos de emergencia` });
+    return;
+  }
+  const rel = relationship && typeof relationship === 'string' ? relationship.trim().slice(0, 40) : null;
+  const { rows } = await pool.query(
+    `INSERT INTO emergency_contacts (user_id, name, phone, email, relationship)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, name, phone, email, relationship, notify_email, notify_sms, created_at`,
+    [userId, name.trim(), cleanPhone, cleanEmail, rel],
+  );
+  res.status(201).json(rows[0]);
+}));
+
+api.delete('/me/emergency-contacts/:id', authMiddleware, writeRateLimit, asyncHandler(async (req, res) => {
+  const { userId } = (req as any).user;
+  const { id } = req.params;
+  if (!isValidUuid(id)) { res.status(400).json({ error: 'ID inválido' }); return; }
+  const r = await pool.query('DELETE FROM emergency_contacts WHERE id = $1 AND user_id = $2 RETURNING id', [id, userId]);
+  if (!r.rows[0]) { res.status(404).json({ error: 'Contacto no encontrado' }); return; }
+  res.json({ success: true });
+}));
+
 api.put('/me/location', authMiddleware, asyncHandler(async (req, res) => {
   const { userId } = (req as any).user;
   const { latitude, longitude } = req.body;
@@ -1818,6 +1873,17 @@ api.put('/incidents/:id/status', authMiddleware, requireRole('admin', 'helper', 
     incidentId: id,
     details: { from: priorStatus, to: status },
   });
+
+  // Tell the user's emergency contacts (family) they're safe when the incident
+  // reaches a resolved/found state — best-effort, async.
+  if (['resolved', 'recuperado', 'localizado'].includes(status) && incident.driver_id) {
+    void notifyEmergencyContacts({
+      driverUserId: incident.driver_id,
+      latitude: incident.latitude,
+      longitude: incident.longitude,
+      phase: 'resolved',
+    });
+  }
 
   // Get all incident followers to broadcast + notify
   const followersResult = await pool.query(
@@ -2864,6 +2930,9 @@ api.post('/panic', authMiddleware, panicRateLimit, asyncHandler(async (req, res)
       );
     }
     const incident = incidentResult.rows[0];
+
+    // Notify the user's own emergency contacts (family) — best-effort, async.
+    void notifyEmergencyContacts({ driverUserId: userId, latitude, longitude, phase: 'triggered' });
 
     // Update user location
     if (pg) {

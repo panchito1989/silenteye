@@ -12,6 +12,7 @@ import { logger } from '../utils/logger.js';
 import { broadcastLocation, broadcastPanic, sendCameraActivation } from './websocket.js';
 import { sendPushToUsers } from './push-service.js';
 import { evaluateTrailerRules } from './trailer-service.js';
+import { notifyEmergencyContacts } from './emergency-service.js';
 
 const PANIC_TRACKING_INTERVAL_SEC = 4;
 const NEARBY_DRIVERS_RADIUS_M = parseInt(process.env.PANIC_ALERT_RADIUS_M || '2000', 10) || 2000; // 1–3 km
@@ -307,6 +308,8 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
         [vehicle?.id ?? null, vehicle?.driver_id ?? null, imei, latitude, longitude]
       );
       const incident = incidentResult.rows[0];
+      // Notify the driver's emergency contacts (family) — best-effort, async.
+      void notifyEmergencyContacts({ driverUserId: vehicle?.driver_id, latitude, longitude, phase: 'triggered' });
       const nearbyResult = await client.query(
         `SELECT DISTINCT u.id, u.phone, u.name
          FROM users u
@@ -399,6 +402,8 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
         [vehicle?.id ?? null, vehicle?.driver_id ?? null, imei, latitude, longitude]
       );
       const incident = incidentResult.rows[0];
+      // Notify the driver's emergency contacts (family) — best-effort, async.
+      void notifyEmergencyContacts({ driverUserId: vehicle?.driver_id, latitude, longitude, phase: 'triggered' });
       const nearbyResult = await client.query(
         `SELECT DISTINCT u.id, u.phone, u.name
          FROM users u
@@ -516,6 +521,8 @@ async function handleTheftDetection(
     }
     const incident = incidentResult.rows[0];
     if (!incident) return;
+    // Notify the driver's emergency contacts (family) — best-effort, async.
+    void notifyEmergencyContacts({ driverUserId: vehicle?.driver_id, latitude, longitude, phase: 'triggered' });
 
     // Find nearby helpers/drivers to assist
     let nearbyUserIds: string[] = [];
