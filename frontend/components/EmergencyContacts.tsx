@@ -99,18 +99,18 @@ export default function EmergencyContacts() {
       </div>
 
       {contacts.length < 5 && (
-        <div className="space-y-3 border-t border-zinc-200 pt-5">
-          <div className="grid grid-cols-2 gap-3">
+        <div className="border-t border-zinc-200 pt-5">
+          <div className="grid sm:grid-cols-2 gap-3 mb-3">
             <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nombre" className={INPUT} />
             <input value={relationship} onChange={(e) => setRelationship(e.target.value)} placeholder="Parentesco (ej. esposa)" className={INPUT} />
+            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Correo (para el aviso)" type="email" className={INPUT} />
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Teléfono (para WhatsApp/SMS)" type="tel" className={INPUT} />
           </div>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Correo (para el aviso)" type="email" className={INPUT} />
-          <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="Teléfono (opcional, para SMS a futuro)" type="tel" className={INPUT} />
-          {error && <p className="text-red-600 text-[13px]">{error}</p>}
+          {error && <p className="text-red-600 text-[13px] mb-3">{error}</p>}
           <button
             onClick={add}
             disabled={saving}
-            className="w-full py-2.5 rounded-lg text-white text-sm font-semibold disabled:opacity-40 transition-colors bg-zinc-900 hover:bg-zinc-800"
+            className="w-full sm:w-auto sm:px-8 py-2.5 rounded-lg text-white text-sm font-semibold disabled:opacity-40 transition-colors bg-zinc-900 hover:bg-zinc-800"
           >
             {saving ? 'Agregando…' : '+ Agregar contacto'}
           </button>
