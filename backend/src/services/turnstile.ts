@@ -26,7 +26,10 @@ export async function verifyTurnstile(token: unknown, ip?: string): Promise<bool
     form.append('response', token);
     if (ip) form.append('remoteip', ip);
     const r = await fetch(VERIFY_URL, { method: 'POST', body: form });
-    const data = (await r.json()) as { success?: boolean };
+    const data = (await r.json()) as { success?: boolean; 'error-codes'?: string[] };
+    if (data.success !== true) {
+      logger.warn(`[turnstile] rechazado, error-codes=${JSON.stringify(data['error-codes'] || [])}`);
+    }
     return data.success === true;
   } catch (err) {
     logger.warn('turnstile verify failed:', err);
