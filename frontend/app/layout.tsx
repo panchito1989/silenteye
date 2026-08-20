@@ -8,7 +8,7 @@ import MetadataUpdater from '@/components/MetadataUpdater';
 
 const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-jakarta' });
 
-const SITE_URL = 'https://silenteye.mx';
+const SITE_URL = 'https://silenteye.com.mx';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

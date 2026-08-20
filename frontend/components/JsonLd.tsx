@@ -34,10 +34,10 @@ export const organizationJsonLd = {
   legalName: 'SilentEye (Christian Fiesco)',
   alternateName: 'SilentEye GPS',
   slogan: 'Alerta de robo vehicular en 3 segundos',
-  url: 'https://silenteye.mx',
+  url: 'https://silenteye.com.mx',
   logo: {
     '@type': 'ImageObject',
-    url: 'https://silenteye.mx/icon-512.png',
+    url: 'https://silenteye.com.mx/icon-512.png',
     width: 512,
     height: 512,
     caption: 'SilentEye logo',
@@ -90,7 +90,7 @@ export const organizationJsonLd = {
     '@type': 'ContactPoint',
     contactType: 'customer service',
     email: 'contacto@silenteye.mx',
-    url: 'https://silenteye.mx',
+    url: 'https://silenteye.com.mx',
     availableLanguage: ['Spanish'],
   },
   areaServed: {
@@ -104,16 +104,16 @@ export const softwareJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'SilentEye — Plataforma GPS de Seguridad Vehicular',
-  url: 'https://silenteye.mx',
+  url: 'https://silenteye.com.mx',
   applicationCategory: 'SecurityApplication',
   operatingSystem: 'All',
-  image: 'https://silenteye.mx/opengraph-image',
+  image: 'https://silenteye.com.mx/opengraph-image',
   offers: {
     '@type': 'Offer',
     price: '0',
     priceCurrency: 'MXN',
     availability: 'https://schema.org/InStock',
-    url: 'https://silenteye.mx/precios',
+    url: 'https://silenteye.com.mx/precios',
     description: 'Botón de emergencia SOS gratuito. Plataforma GPS con planes accesibles.',
   },
   description:
@@ -132,7 +132,7 @@ export const softwareJsonLd = {
     'Notificaciones push',
     'Sin app — funciona desde el navegador',
   ],
-  screenshot: 'https://silenteye.mx/opengraph-image',
+  screenshot: 'https://silenteye.com.mx/opengraph-image',
   author: {
     '@type': 'Organization',
     name: 'SilentEye',
@@ -299,7 +299,7 @@ export const serviceJsonLd = {
   provider: {
     '@type': 'Organization',
     name: 'SilentEye',
-    url: 'https://silenteye.mx',
+    url: 'https://silenteye.com.mx',
   },
   serviceType: 'Rastreo satelital y GPS vehicular',
   keywords: [
@@ -319,7 +319,7 @@ export const serviceJsonLd = {
   },
   availableChannel: {
     '@type': 'ServiceChannel',
-    serviceUrl: 'https://silenteye.mx',
+    serviceUrl: 'https://silenteye.com.mx',
     servicePlatform: 'Web',
   },
   offers: {
@@ -387,19 +387,19 @@ export const webSiteJsonLd = {
   '@type': 'WebSite',
   name: 'SilentEye',
   alternateName: 'SilentEye GPS',
-  url: 'https://silenteye.mx',
+  url: 'https://silenteye.com.mx',
   description: 'Alerta de robo vehicular en 3 segundos. Plataforma GPS con recuperación vehicular automática para autos, motos, camiones y flotillas en México.',
   inLanguage: 'es-MX',
   publisher: {
     '@type': 'Organization',
     name: 'SilentEye',
-    url: 'https://silenteye.mx',
+    url: 'https://silenteye.com.mx',
   },
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://silenteye.mx/blog?q={search_term_string}',
+      urlTemplate: 'https://silenteye.com.mx/blog?q={search_term_string}',
     },
     'query-input': 'required name=search_term_string',
   },
@@ -425,19 +425,19 @@ export function getArticleJsonLd(opts: {
     url: opts.url,
     datePublished: opts.datePublished,
     dateModified: opts.dateModified || opts.datePublished,
-    image: opts.image || 'https://silenteye.mx/opengraph-image',
+    image: opts.image || 'https://silenteye.com.mx/opengraph-image',
     author: {
       '@type': 'Organization',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
+      url: 'https://silenteye.com.mx',
     },
     publisher: {
       '@type': 'Organization',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
+      url: 'https://silenteye.com.mx',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://silenteye.mx/icon-512.png',
+        url: 'https://silenteye.com.mx/icon-512.png',
       },
     },
     mainEntityOfPage: {
@@ -485,12 +485,12 @@ export function getWebPageJsonLd(opts: {
     isPartOf: {
       '@type': 'WebSite',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
+      url: 'https://silenteye.com.mx',
     },
     publisher: {
       '@type': 'Organization',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
+      url: 'https://silenteye.com.mx',
     },
   };
 }
@@ -516,15 +516,15 @@ export function getLegalPageJsonLd(opts: {
     isPartOf: {
       '@type': 'WebSite',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
+      url: 'https://silenteye.com.mx',
     },
     publisher: {
       '@type': 'Organization',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
+      url: 'https://silenteye.com.mx',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://silenteye.mx/icon-512.png',
+        url: 'https://silenteye.com.mx/icon-512.png',
       },
     },
     ...(opts.dateModified && { dateModified: opts.dateModified }),
@@ -556,13 +556,13 @@ export function getBlogIndexJsonLd(posts: Array<{
     itemListElement: posts.map((post, i) => ({
       '@type': 'ListItem',
       position: i + 1,
-      url: `https://silenteye.mx/blog/${post.slug}`,
+      url: `https://silenteye.com.mx/blog/${post.slug}`,
       name: post.title,
       item: {
         '@type': 'BlogPosting',
         headline: post.title,
         description: post.description,
-        url: `https://silenteye.mx/blog/${post.slug}`,
+        url: `https://silenteye.com.mx/blog/${post.slug}`,
         datePublished: post.date,
         ...(post.category && { articleSection: post.category }),
       },

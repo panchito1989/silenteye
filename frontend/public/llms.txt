@@ -6,38 +6,38 @@ SilentEye es una plataforma web mexicana de seguridad vehicular que transforma c
 
 ## Links
 
-- [Inicio](https://silenteye.mx): Landing page con informacion del producto, comparativa, casos de uso y FAQ.
-- [Login](https://silenteye.mx/login): Acceso para administradores, ciudadanos, GPS y operadores.
-- [SOS](https://silenteye.mx/sos): Boton de emergencia ciudadano accesible sin registro previo. Gratuito.
-- [Precios](https://silenteye.mx/precios): Planes y precios de rastreo GPS. Boton SOS gratuito. Desde $99 MXN/mes.
-- [Blog](https://silenteye.mx/blog): Guias y articulos sobre GPS y seguridad vehicular.
-- [Privacidad](https://silenteye.mx/privacidad): Politica de privacidad. Cumplimiento LFPDPPP.
-- [Cookies](https://silenteye.mx/cookies): Politica de cookies. Solo cookies esenciales.
-- [Terminos](https://silenteye.mx/terminos): Condiciones de uso.
+- [Inicio](https://silenteye.com.mx): Landing page con informacion del producto, comparativa, casos de uso y FAQ.
+- [Login](https://silenteye.com.mx/login): Acceso para administradores, ciudadanos, GPS y operadores.
+- [SOS](https://silenteye.com.mx/sos): Boton de emergencia ciudadano accesible sin registro previo. Gratuito.
+- [Precios](https://silenteye.com.mx/precios): Planes y precios de rastreo GPS. Boton SOS gratuito. Desde $99 MXN/mes.
+- [Blog](https://silenteye.com.mx/blog): Guias y articulos sobre GPS y seguridad vehicular.
+- [Privacidad](https://silenteye.com.mx/privacidad): Politica de privacidad. Cumplimiento LFPDPPP.
+- [Cookies](https://silenteye.com.mx/cookies): Politica de cookies. Solo cookies esenciales.
+- [Terminos](https://silenteye.com.mx/terminos): Condiciones de uso.
 
 ## Blog
 
-- [Mejor GPS para auto en Mexico 2026](https://silenteye.mx/blog/mejor-gps-para-auto-mexico): Comparativa de Coban TK103, Sinotrack ST-901 y Teltonika FMB920. Precios, instalacion y funciones.
-- [GPS para trailers y camiones de carga](https://silenteye.mx/blog/gps-para-trailers-camiones-carga): Teltonika FMC130, Queclink GV500, monitoreo en carretera 24/7 y boton de panico.
-- [GPS para motos: Como evitar el robo](https://silenteye.mx/blog/gps-para-motos-antirrobo): Sinotrack ST-901, Concox WeTrack2. Instalacion discreta y alertas automaticas.
-- [Que es una plataforma GPS?](https://silenteye.mx/blog/plataforma-gps-que-es-como-funciona): Explicacion de como funciona el rastreo vehicular en tiempo real.
-- [Como instalar un GPS en tu auto](https://silenteye.mx/blog/como-instalar-gps-en-auto): Guia paso a paso de instalacion de rastreador GPS.
-- [Coban TK103 vs Sinotrack ST-901](https://silenteye.mx/blog/gps-coban-tk103-vs-sinotrack-st901): Comparativa de los dos GPS mas populares en Mexico.
-- [GPS para flotillas](https://silenteye.mx/blog/gps-para-flotillas-gestion-vehiculos): Gestion de multiples vehiculos desde un solo panel.
-- [GPS para conductores de Uber y Didi](https://silenteye.mx/blog/gps-uber-didi-conductor-seguridad): Boton de panico para conductores de plataformas.
-- [Como funciona el rastreo GPS en tiempo real](https://silenteye.mx/blog/como-funciona-rastreo-gps-tiempo-real): Satelites, dispositivos, red celular y plataformas.
-- [Geocercas GPS: Que son y como configurarlas](https://silenteye.mx/blog/geocercas-gps-que-son-como-configurar): Zonas virtuales para proteger tu vehiculo.
-- [Teltonika FMB920: Configuracion con SilentEye](https://silenteye.mx/blog/teltonika-fmb920-configuracion-silenteye): Tutorial paso a paso para GPS Teltonika.
-- [Recuperacion vehicular con GPS](https://silenteye.mx/blog/recuperacion-vehicular-gps-como-funciona): Por que los primeros minutos importan.
-- [GPS para camionetas pickup y SUV](https://silenteye.mx/blog/gps-para-camioneta-pickup-suv): Proteccion para los vehiculos mas robados en Mexico.
-- [Localizador GPS vehicular: Guia completa](https://silenteye.mx/blog/localizador-gps-vehicular-guia-completa): Todo sobre localizadores GPS. Mejores marcas, precios y como elegir.
-- [Rastreo satelital vehicular en Mexico](https://silenteye.mx/blog/rastreo-satelital-vehicular-mexico): Como funciona el rastreo satelital y cual plataforma elegir.
-- [GPS para empresas de transporte](https://silenteye.mx/blog/gps-para-empresas-transporte-logistica): Solucion GPS completa para transporte y logistica.
-- [Robo de autos en Mexico 2026](https://silenteye.mx/blog/robo-de-autos-mexico-estadisticas-prevencion): Estadisticas, estados mas peligrosos y como prevenirlo con GPS.
-- [GPS tracker sin renta mensual](https://silenteye.mx/blog/gps-tracker-sin-renta-mensual-mexico): La verdad sobre los costos de rastreo GPS en Mexico.
-- [Chip GPS para auto: que es y como funciona](https://silenteye.mx/blog/chip-gps-para-auto-como-funciona): Que es un chip GPS, cuanto cuesta, donde comprarlo y como instalarlo en Mexico.
-- [Como rastrear un auto robado con GPS](https://silenteye.mx/blog/como-rastrear-auto-robado-gps): Guia paso a paso para rastrear y recuperar un auto robado con GPS.
-- [APN para GPS tracker: Telcel, AT&T, Movistar](https://silenteye.mx/blog/apn-gps-tracker-telcel-att-movistar): Comandos SMS para configurar el APN en Coban, Sinotrack, Concox y Teltonika.
+- [Mejor GPS para auto en Mexico 2026](https://silenteye.com.mx/blog/mejor-gps-para-auto-mexico): Comparativa de Coban TK103, Sinotrack ST-901 y Teltonika FMB920. Precios, instalacion y funciones.
+- [GPS para trailers y camiones de carga](https://silenteye.com.mx/blog/gps-para-trailers-camiones-carga): Teltonika FMC130, Queclink GV500, monitoreo en carretera 24/7 y boton de panico.
+- [GPS para motos: Como evitar el robo](https://silenteye.com.mx/blog/gps-para-motos-antirrobo): Sinotrack ST-901, Concox WeTrack2. Instalacion discreta y alertas automaticas.
+- [Que es una plataforma GPS?](https://silenteye.com.mx/blog/plataforma-gps-que-es-como-funciona): Explicacion de como funciona el rastreo vehicular en tiempo real.
+- [Como instalar un GPS en tu auto](https://silenteye.com.mx/blog/como-instalar-gps-en-auto): Guia paso a paso de instalacion de rastreador GPS.
+- [Coban TK103 vs Sinotrack ST-901](https://silenteye.com.mx/blog/gps-coban-tk103-vs-sinotrack-st901): Comparativa de los dos GPS mas populares en Mexico.
+- [GPS para flotillas](https://silenteye.com.mx/blog/gps-para-flotillas-gestion-vehiculos): Gestion de multiples vehiculos desde un solo panel.
+- [GPS para conductores de Uber y Didi](https://silenteye.com.mx/blog/gps-uber-didi-conductor-seguridad): Boton de panico para conductores de plataformas.
+- [Como funciona el rastreo GPS en tiempo real](https://silenteye.com.mx/blog/como-funciona-rastreo-gps-tiempo-real): Satelites, dispositivos, red celular y plataformas.
+- [Geocercas GPS: Que son y como configurarlas](https://silenteye.com.mx/blog/geocercas-gps-que-son-como-configurar): Zonas virtuales para proteger tu vehiculo.
+- [Teltonika FMB920: Configuracion con SilentEye](https://silenteye.com.mx/blog/teltonika-fmb920-configuracion-silenteye): Tutorial paso a paso para GPS Teltonika.
+- [Recuperacion vehicular con GPS](https://silenteye.com.mx/blog/recuperacion-vehicular-gps-como-funciona): Por que los primeros minutos importan.
+- [GPS para camionetas pickup y SUV](https://silenteye.com.mx/blog/gps-para-camioneta-pickup-suv): Proteccion para los vehiculos mas robados en Mexico.
+- [Localizador GPS vehicular: Guia completa](https://silenteye.com.mx/blog/localizador-gps-vehicular-guia-completa): Todo sobre localizadores GPS. Mejores marcas, precios y como elegir.
+- [Rastreo satelital vehicular en Mexico](https://silenteye.com.mx/blog/rastreo-satelital-vehicular-mexico): Como funciona el rastreo satelital y cual plataforma elegir.
+- [GPS para empresas de transporte](https://silenteye.com.mx/blog/gps-para-empresas-transporte-logistica): Solucion GPS completa para transporte y logistica.
+- [Robo de autos en Mexico 2026](https://silenteye.com.mx/blog/robo-de-autos-mexico-estadisticas-prevencion): Estadisticas, estados mas peligrosos y como prevenirlo con GPS.
+- [GPS tracker sin renta mensual](https://silenteye.com.mx/blog/gps-tracker-sin-renta-mensual-mexico): La verdad sobre los costos de rastreo GPS en Mexico.
+- [Chip GPS para auto: que es y como funciona](https://silenteye.com.mx/blog/chip-gps-para-auto-como-funciona): Que es un chip GPS, cuanto cuesta, donde comprarlo y como instalarlo en Mexico.
+- [Como rastrear un auto robado con GPS](https://silenteye.com.mx/blog/como-rastrear-auto-robado-gps): Guia paso a paso para rastrear y recuperar un auto robado con GPS.
+- [APN para GPS tracker: Telcel, AT&T, Movistar](https://silenteye.com.mx/blog/apn-gps-tracker-telcel-att-movistar): Comandos SMS para configurar el APN en Coban, Sinotrack, Concox y Teltonika.
 
 ## Producto
 
@@ -84,5 +84,5 @@ SilentEye es compatible con 5 marcas de dispositivos GPS:
 
 ## Contacto
 
-- Sitio web: https://silenteye.mx
+- Sitio web: https://silenteye.com.mx
 - Pais: Mexico

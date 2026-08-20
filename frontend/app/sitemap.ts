@@ -4,7 +4,7 @@ import { competitors } from '@/lib/competitors';
 import { stateRisk } from '@/lib/risk-zones';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://silenteye.mx';
+  const baseUrl = 'https://silenteye.com.mx';
 
   // Use the most recent blog post date as the "last updated" for dynamic pages
   const latestBlogDate = blogPosts.reduce((latest, p) => p.date > latest ? p.date : latest, '2026-01-01');
