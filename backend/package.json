@@ -9,6 +9,7 @@
     "migrate": "node ../node_modules/tsx/dist/cli.mjs src/db/migrate.ts",
     "seed": "node ../node_modules/tsx/dist/cli.mjs src/db/seed.ts",
     "seed:risk-zones": "node ../node_modules/tsx/dist/cli.mjs src/scripts/seed-risk-zones.ts",
+    "onboard:fleet": "node ../node_modules/tsx/dist/cli.mjs src/scripts/onboard-fleet.ts",
     "reset:keep-admin": "node ../node_modules/tsx/dist/cli.mjs src/db/reset-keep-admin.ts"
   },
   "dependencies": {

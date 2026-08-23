@@ -1,0 +1,10 @@
+# Flota de Pacma — pega aquí la lista que mande Lenny.
+# Una fila por unidad. Columnas: plate (placa, única), imei (15 dígitos), name (opcional).
+# Las líneas que empiezan con # se ignoran.
+#
+# Las 2 filas de ejemplo están comentadas (con #) a propósito: así una
+# corrida accidental no registra nada. Quita el # y reemplaza con los
+# datos reales de Lenny, o pega las filas nuevas debajo del encabezado.
+plate,imei,name
+# PAC-001,860000000000001,Torton Mérida 1
+# PAC-002,860000000000002,Torton Cancún 2
