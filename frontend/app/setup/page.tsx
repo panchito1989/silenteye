@@ -187,7 +187,7 @@ export default function SetupPage() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-[13px] text-zinc-400">IP / Host</span>
-                  <code className="text-[15px] font-mono text-emerald-400 font-bold select-all">gps.silenteye.mx</code>
+                  <code className="text-[15px] font-mono text-emerald-400 font-bold select-all">gps.silenteye.com.mx</code>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-[13px] text-zinc-400">Puerto</span>
@@ -200,10 +200,10 @@ export default function SetupPage() {
             <div className="space-y-3 mb-8">
               <p className="text-[13px] font-semibold text-zinc-700">Cómo configurar según tu marca de GPS:</p>
               {[
-                { brand: 'Cobán / Sinotrack', cmd: 'Envía por SMS al chip del GPS:', sms: 'APN,tu-apn#\nSERVER,1,gps.silenteye.mx,5000,0#', note: 'Reemplaza "tu-apn" con el APN de tu operador (ej: internet.itelcel.com para Telcel)' },
-                { brand: 'Concox (GT06N, WeTrack2)', cmd: 'Envía por SMS al chip del GPS:', sms: 'SERVER,1,gps.silenteye.mx,5000,0#', note: 'Algunos modelos usan la app o plataforma web del fabricante para cambiar el servidor' },
-                { brand: 'Teltonika (FMB920, FMC130)', cmd: 'Desde Teltonika Configurator:', sms: 'GPRS → Server Settings:\nDomain: gps.silenteye.mx\nPort: 5000\nProtocol: TCP', note: 'Necesitas cable USB y el software Teltonika Configurator' },
-                { brand: 'Queclink (GL300, GV300)', cmd: 'Envía por SMS al chip del GPS:', sms: 'AT+GTSVR=gl300,1,gps.silenteye.mx,5000,,,,,FFFF$', note: 'El password por defecto es "gl300" o "gv300" según el modelo' },
+                { brand: 'Cobán / Sinotrack', cmd: 'Envía por SMS al chip del GPS:', sms: 'APN,tu-apn#\nSERVER,1,gps.silenteye.com.mx,5000,0#', note: 'Reemplaza "tu-apn" con el APN de tu operador (ej: internet.itelcel.com para Telcel)' },
+                { brand: 'Concox (GT06N, WeTrack2)', cmd: 'Envía por SMS al chip del GPS:', sms: 'SERVER,1,gps.silenteye.com.mx,5000,0#', note: 'Algunos modelos usan la app o plataforma web del fabricante para cambiar el servidor' },
+                { brand: 'Teltonika (FMB920, FMC130)', cmd: 'Desde Teltonika Configurator:', sms: 'GPRS → Server Settings:\nDomain: gps.silenteye.com.mx\nPort: 5000\nProtocol: TCP', note: 'Necesitas cable USB y el software Teltonika Configurator' },
+                { brand: 'Queclink (GL300, GV300)', cmd: 'Envía por SMS al chip del GPS:', sms: 'AT+GTSVR=gl300,1,gps.silenteye.com.mx,5000,,,,,FFFF$', note: 'El password por defecto es "gl300" o "gv300" según el modelo' },
               ].map((brand, i) => (
                 <details key={i} className="group border border-zinc-200 rounded-lg overflow-hidden">
                   <summary className="flex items-center justify-between px-4 py-3 cursor-pointer text-[14px] font-semibold text-zinc-900 hover:bg-zinc-50 transition-colors">
@@ -261,7 +261,7 @@ export default function SetupPage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-zinc-400 mt-0.5">2.</span>
-                  Confirma que el servidor apunte a <code className="font-mono text-blue-600">gps.silenteye.mx:5000</code>
+                  Confirma que el servidor apunte a <code className="font-mono text-blue-600">gps.silenteye.com.mx:5000</code>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-zinc-400 mt-0.5">3.</span>
