@@ -3,6 +3,7 @@ node_modules
 .github
 .vscode
 .vercel
+.claude
 .next
 .env
 .env.*
