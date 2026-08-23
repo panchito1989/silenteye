@@ -21,10 +21,12 @@ const DB_WRITE_THROTTLE_MS = 10_000; // save to DB every 10s max per user
 const lastWsMsg = new Map<string, number>();
 const WS_MSG_THROTTLE_MS = 2_000; // min 2s between location_update messages per user
 
-async function resolveUserMeta(userId: string): Promise<{ role: string; vehicleId?: string } | null> {
+async function resolveUserMeta(userId: string): Promise<{ role: string; vehicleId?: string; vehicleIds: string[] } | null> {
   const r = await pool.query(
-    `SELECT u.role, v.id as vehicle_id FROM users u
-     LEFT JOIN vehicles v ON v.driver_id = u.id
+    `SELECT u.role,
+            (SELECT v.id FROM vehicles v WHERE v.driver_id = u.id LIMIT 1) AS vehicle_id,
+            ARRAY(SELECT v2.id FROM vehicles v2 WHERE v2.driver_id = u.id OR v2.owner_id = u.id) AS vehicle_ids
+     FROM users u
      WHERE u.id = $1 LIMIT 1`,
     [userId]
   );
@@ -33,6 +35,10 @@ async function resolveUserMeta(userId: string): Promise<{ role: string; vehicleI
   return {
     role: row.role,
     vehicleId: row.vehicle_id ?? undefined,
+    // Snapshot at connect time: a vehicle added while the socket is open
+    // only appears after the client reconnects. Dashboards reconnect on
+    // visibilitychange, so the gap is minutes, not whole sessions.
+    vehicleIds: (row.vehicle_ids as string[] | null) ?? [],
   };
 }
 
@@ -82,7 +88,7 @@ interface WSMessage {
   payload: LocationUpdate | PanicEvent | AlertEvent | unknown;
 }
 
-const clients = new Map<WsSocket, { userId?: string; role?: string; vehicleId?: string; ip?: string }>();
+const clients = new Map<WsSocket, { userId?: string; role?: string; vehicleId?: string; vehicleIds?: string[]; ip?: string }>();
 
 // ── WebSocket upgrade rate limiter ───────────────────────────────────
 // The existing MAX_WS_PER_IP check only covers ALREADY-ESTABLISHED
@@ -118,7 +124,7 @@ setInterval(() => {
   }
 }, 60_000).unref();
 
-const VALID_ROLES = ['admin', 'helper', 'driver', 'citizen'];
+const VALID_ROLES = ['admin', 'helper', 'driver', 'citizen', 'fleet_owner'];
 const MAX_WS_PER_IP = 10;
 const MAX_WS_PER_USER = 5;
 
@@ -212,6 +218,7 @@ export function createWebSocketServer(portOrServer: number | HttpServer): WebSoc
         userId: ticketAuth.userId,
         role: meta.role,
         vehicleId: meta.vehicleId,
+        vehicleIds: meta.vehicleIds,
         ip: clientIp,
       });
       ws.send(JSON.stringify({ type: 'auth_ok' }));
@@ -280,6 +287,7 @@ export function createWebSocketServer(portOrServer: number | HttpServer): WebSoc
         userId: payload.userId,
         role: meta.role,
         vehicleId: meta.vehicleId,
+        vehicleIds: meta.vehicleIds,
         ip: clientIp,
       });
 
@@ -311,7 +319,7 @@ export function createWebSocketServer(portOrServer: number | HttpServer): WebSoc
   return wss;
 }
 
-function broadcast(msg: WSMessage, filter?: (meta: { userId?: string; role?: string; vehicleId?: string }) => boolean) {
+function broadcast(msg: WSMessage, filter?: (meta: { userId?: string; role?: string; vehicleId?: string; vehicleIds?: string[] }) => boolean) {
   const payload = JSON.stringify(msg);
   for (const [ws, meta] of clients) {
     if (ws.readyState === 1) {
@@ -328,6 +336,7 @@ export function broadcastLocation(update: LocationUpdate, incidentFollowerIds?: 
     (meta) =>
       meta.role === 'admin' ||
       (update.vehicleId != null && meta.vehicleId === update.vehicleId) ||
+      (update.vehicleId != null && (meta.vehicleIds?.includes(update.vehicleId) ?? false)) ||
       (incidentFollowerIds != null && incidentFollowerIds.length > 0 && incidentFollowerIds.includes(meta.userId ?? ''))
   );
 }
