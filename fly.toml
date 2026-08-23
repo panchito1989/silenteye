@@ -45,10 +45,13 @@ primary_region = 'dfw'
   [[services.ports]]
     port = 5000
 
+  # Flotas: cada GPS mantiene una conexión TCP persistente. Con 50+ unidades
+  # por cliente, 20 conexiones por puerto se satura — 150 da margen para
+  # ~2-3 flotas medianas por puerto sin abrir la puerta a un DoS ilimitado.
   [services.concurrency]
     type = 'connections'
-    hard_limit = 20
-    soft_limit = 10
+    hard_limit = 150
+    soft_limit = 100
 
 # Puerto alternativo 8443: muchas redes móviles bloquean 5000 pero permiten 8443
 [[services]]
@@ -60,8 +63,8 @@ primary_region = 'dfw'
 
   [services.concurrency]
     type = 'connections'
-    hard_limit = 20
-    soft_limit = 10
+    hard_limit = 150
+    soft_limit = 100
 
 # Puerto 15140: igual que ngrok/Railway, puertos altos suelen no estar bloqueados por operadores móviles
 [[services]]
@@ -73,5 +76,5 @@ primary_region = 'dfw'
 
   [services.concurrency]
     type = 'connections'
-    hard_limit = 20
-    soft_limit = 10
+    hard_limit = 150
+    soft_limit = 100
