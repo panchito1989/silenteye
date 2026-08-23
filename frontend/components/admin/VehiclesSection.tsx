@@ -55,11 +55,17 @@ export default function VehiclesSection() {
         return;
       }
 
-      if (vRes.ok) setVehicles(await vRes.json());
-      if (uRes.ok) setUsers(await uRes.json());
+      if (vRes.ok) {
+        const v = await vRes.json();
+        setVehicles(Array.isArray(v) ? v : []);
+      }
+      if (uRes.ok) {
+        const u = await uRes.json();
+        setUsers(Array.isArray(u) ? u : []);
+      }
       if (incRes.ok) {
         const incidents = await incRes.json();
-        const ids = incidents
+        const ids = (Array.isArray(incidents) ? incidents : [])
           .filter((i: { status: string }) => ['active', 'attending', 'localizado'].includes(i.status))
           .map((i: { vehicle_id?: string }) => i.vehicle_id)
           .filter(Boolean) as string[];

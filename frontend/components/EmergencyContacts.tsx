@@ -32,7 +32,10 @@ export default function EmergencyContacts() {
   const load = useCallback(async () => {
     try {
       const res = await fetch('/api/me/emergency-contacts', { headers: authHeaders() });
-      if (res.ok) setContacts(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        setContacts(Array.isArray(data) ? data : []);
+      }
     } catch { /* non-fatal */ }
   }, []);
   useEffect(() => { load(); }, [load]);

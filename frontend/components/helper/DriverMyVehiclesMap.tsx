@@ -55,7 +55,8 @@ export default function DriverMyVehiclesMap() {
       });
       if (res.status === 401) { router.replace('/login'); return; }
       if (res.ok) {
-        setVehicles(await res.json());
+        const data = await res.json();
+        setVehicles(Array.isArray(data) ? data : []);
       }
     } catch { /* silent */ }
   }, [router]);
@@ -68,7 +69,8 @@ export default function DriverMyVehiclesMap() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        setPositions(await res.json());
+        const data = await res.json();
+        setPositions(Array.isArray(data) ? data : []);
         setError(null);
       }
     } catch {

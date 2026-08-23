@@ -51,7 +51,7 @@ export default function IncidentesSection() {
       }
       if (res.ok) {
         const data = await res.json();
-        setIncidents(data);
+        setIncidents(Array.isArray(data) ? data : []);
       } else {
         setError('Error al cargar incidentes');
       }

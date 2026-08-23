@@ -22,8 +22,9 @@ export default function SetupPage() {
     if (!session) { router.replace('/login'); return; }
     // Check plan info
     fetch(`${API}/api/me/plan`, { headers: { Authorization: `Bearer ${session.token}` } })
-      .then(r => r.json())
+      .then(r => (r.ok ? r.json() : null))
       .then(data => {
+        if (!data) return;
         setPlanInfo(data);
         // If user already has a vehicle, skip to dashboard
         if (data.current > 0) router.replace('/dashboard');

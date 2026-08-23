@@ -126,7 +126,8 @@ export default function TrailersSection() {
     try {
       const res = await fetch('/api/trailers');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setTrailers(await res.json());
+      const data = await res.json();
+      setTrailers(Array.isArray(data) ? data : []);
       setError(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error');

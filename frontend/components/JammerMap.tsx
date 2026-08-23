@@ -88,7 +88,8 @@ export default function JammerMap() {
       const res = await fetch(`/api/jammers/hotspots?days=${days}`, { headers: authHeaders() });
       if (res.status === 401 || res.status === 403) { router.replace('/login'); return; }
       if (!res.ok) { setError('No se pudieron cargar los hotspots.'); return; }
-      setHotspots(await res.json());
+      const data = await res.json();
+      setHotspots(Array.isArray(data) ? data : []);
     } catch {
       setError('Error de conexión.');
     } finally {

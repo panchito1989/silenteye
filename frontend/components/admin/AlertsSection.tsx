@@ -46,7 +46,7 @@ export default function AlertsSection() {
       }
       if (res.ok) {
         const data = await res.json();
-        setAlerts(data);
+        setAlerts(Array.isArray(data) ? data : []);
       } else {
         setError('Error al cargar alertas');
       }

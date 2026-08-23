@@ -83,7 +83,8 @@ export default function FleetDashboard() {
         return;
       }
       if (res.ok) {
-        setVehicles(await res.json());
+        const data = await res.json();
+        setVehicles(Array.isArray(data) ? data : []);
       }
     } catch {
       setError(t.fleet.errorLoadVehicles);
@@ -97,7 +98,8 @@ export default function FleetDashboard() {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
-        setPositions(await res.json());
+        const data = await res.json();
+        setPositions(Array.isArray(data) ? data : []);
         setError(null);
       }
     } catch {
@@ -111,7 +113,10 @@ export default function FleetDashboard() {
     if (!token) return;
     try {
       const res = await fetch(`${API}/api/geofences`, { headers: { Authorization: `Bearer ${token}` } });
-      if (res.ok) setGeofences(await res.json());
+      if (res.ok) {
+        const data = await res.json();
+        setGeofences(Array.isArray(data) ? data : []);
+      }
     } catch { /* silent */ }
   }, [token]);
 

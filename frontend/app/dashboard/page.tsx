@@ -70,11 +70,11 @@ export default function DashboardPage() {
         ]);
         if (incRes.ok) {
           const inc = await incRes.json();
-          setIncidents(inc);
+          setIncidents(Array.isArray(inc) ? inc : []);
         }
         if (vehiclesRes.ok && (vehiclesRes as Response).json) {
           const v = await (vehiclesRes as Response).json();
-          setVehicles(v);
+          setVehicles(Array.isArray(v) ? v : []);
         }
       } catch (e) {
         console.error(e);

@@ -53,6 +53,7 @@ function LoginContent() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Error al iniciar sesión');
+      if (!data?.token || !data?.user) throw new Error(data?.error || 'Error al iniciar sesión');
       saveSession(data.token, data.user);
       const dashType = data.user?.permissions?.dashboardType;
       router.replace(dashType === 'admin' ? '/admin' : dashType === 'sos' ? '/sos' : '/dashboard');
@@ -140,6 +141,7 @@ function LoginContent() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Código inválido');
+      if (!data?.token || !data?.user) throw new Error(data?.error || 'Código inválido');
       saveSession(data.token, data.user);
 
       // GPS self-service: redirect to onboarding setup

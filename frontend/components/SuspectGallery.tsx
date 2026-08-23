@@ -105,7 +105,7 @@ export default function SuspectGallery({ token, onClose, embedded = false, role 
       });
       if (res.ok) {
         const data = await res.json();
-        setSuspects(data);
+        setSuspects(Array.isArray(data) ? data : []);
       }
     } catch {}
     setLoading(false);
@@ -120,7 +120,7 @@ export default function SuspectGallery({ token, onClose, embedded = false, role 
       });
       if (res.ok) {
         const data = await res.json();
-        setFaces(data);
+        setFaces(Array.isArray(data) ? data : []);
       }
     } catch {}
     setLoadingFaces(false);

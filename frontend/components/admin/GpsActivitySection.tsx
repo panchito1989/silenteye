@@ -45,7 +45,7 @@ export default function GpsActivitySection() {
       }
       if (res.ok) {
         const data = await res.json();
-        setRecords(data);
+        setRecords(Array.isArray(data) ? data : []);
       } else {
         setError('Error al cargar actividad GPS');
       }

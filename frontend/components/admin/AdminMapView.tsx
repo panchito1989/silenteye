@@ -66,7 +66,7 @@ export default function AdminMapView() {
     if (posRes.ok) {
       const positions = await posRes.json();
       const initial: Record<string, VehicleLocation> = {};
-      for (const p of positions) {
+      for (const p of Array.isArray(positions) ? positions : []) {
         const key = p.imei || p.vehicleId || 'unk';
         initial[key] = {
           vehicleId: p.vehicleId,
@@ -107,14 +107,14 @@ export default function AdminMapView() {
 
         if (incRes.ok) {
           const incidents = await incRes.json();
-          const active = incidents.filter(
+          const active = (Array.isArray(incidents) ? incidents : []).filter(
             (i: Incident) => ['active', 'attending', 'localizado'].includes(i.status)
           );
           setActiveIncidents(active);
         }
         if (vRes.ok) {
           const v = await vRes.json();
-          setVehicles(v);
+          setVehicles(Array.isArray(v) ? v : []);
         }
         await loadPositions(token);
       } catch {
