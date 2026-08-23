@@ -205,11 +205,25 @@ export default function Home() {
             <p className="text-zinc-500 leading-relaxed">{t.landing.howItWorks.subtitle}</p>
           </div>
 
+          {/* Escena 1 — El problema */}
+          <div className="mb-12 rounded-2xl bg-zinc-900 text-white px-7 py-8 md:px-10 md:py-10 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-1.5 h-full bg-red-600" />
+            <div className="max-w-3xl">
+              <p className="text-[12px] font-semibold text-red-400 tracking-[0.14em] uppercase mb-3">{t.landing.howItWorks.problemTag}</p>
+              <h3 className="text-2xl md:text-[28px] font-extrabold tracking-tight leading-tight mb-4" style={{ textWrap: 'balance' }}>{t.landing.howItWorks.problemTitle}</h3>
+              <p className="text-zinc-400 text-[15px] leading-relaxed mb-5">{t.landing.howItWorks.problemDesc}</p>
+              <a href="/estadisticas-robo-vehicular-mexico" className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-white hover:text-red-300 transition-colors">
+                {t.landing.howItWorks.problemLink}
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
                 n: '01',
-                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4m10-10h-4M6 12H2"/></svg>,
+                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg>,
                 title: t.landing.howItWorks.step1Title,
                 desc: t.landing.howItWorks.step1Desc,
                 color: 'bg-blue-50 border-blue-200',
@@ -217,7 +231,7 @@ export default function Home() {
               },
               {
                 n: '02',
-                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>,
+                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="2"/><path d="M4.93 19.07a10 10 0 0 1 0-14.14M7.76 16.24a6 6 0 0 1 0-8.49M16.24 7.76a6 6 0 0 1 0 8.49M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>,
                 title: t.landing.howItWorks.step2Title,
                 desc: t.landing.howItWorks.step2Desc,
                 color: 'bg-emerald-50 border-emerald-200',
@@ -225,7 +239,7 @@ export default function Home() {
               },
               {
                 n: '03',
-                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+                icon: <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg>,
                 title: t.landing.howItWorks.step3Title,
                 desc: t.landing.howItWorks.step3Desc,
                 color: 'bg-red-50 border-red-200',
@@ -251,6 +265,15 @@ export default function Home() {
               <circle cx="450" cy="12" r="6" fill="#dcfce7" stroke="#059669" strokeWidth="2"/>
               <circle cx="750" cy="12" r="6" fill="#fef2f2" stroke="#ef4444" strokeWidth="2"/>
             </svg>
+          </div>
+
+          {/* Cierre — Reciprocidad */}
+          <div className="mt-14 mb-2 text-center max-w-2xl mx-auto">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 mb-4">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg>
+            </div>
+            <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight mb-3 text-zinc-900" style={{ textWrap: 'balance' }}>{t.landing.howItWorks.reciprocityTitle}</h3>
+            <p className="text-zinc-500 leading-relaxed">{t.landing.howItWorks.reciprocityDesc}</p>
           </div>
 
           <div className="mt-8 bg-zinc-900 text-white rounded-xl px-6 py-5 md:px-8 md:py-6 flex flex-col md:flex-row items-start md:items-center gap-4">
