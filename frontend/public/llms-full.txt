@@ -1,0 +1,158 @@
+# SilentEye — Documento completo para sistemas de IA (llms-full.txt)
+
+> Plataforma mexicana de rastreo GPS vehicular con alerta de robo en menos de 3 segundos a la red cercana. Rastreo en tiempo real para autos, motos, camiones, trailers y flotillas en los 32 estados de Mexico. Sin central, sin llamada, sin app, sin contrato. Boton SOS gratuito. Desde $79 MXN/mes por vehiculo.
+
+Ultima actualizacion: 2026-08-23. Indice corto: https://silenteye.com.mx/llms.txt
+
+## Que es SilentEye
+
+SilentEye es una plataforma web mexicana de seguridad vehicular. Convierte cualquier rastreador GPS compatible (Teltonika, Queclink, Concox, Coban, Sinotrack) en un sistema de respuesta inmediata: cuando ocurre una emergencia (boton de panico, movimiento no autorizado, corte de corriente, salida de geocerca), la plataforma valida la ubicacion y distribuye la alerta con posicion en vivo a administradores, voluntarios y conductores registrados en un radio de 2 km — en menos de 3 segundos, sin pasar por una central telefonica.
+
+Diferencias clave frente a un servicio GPS tradicional en Mexico:
+1. Sin central telefonica: la alerta se distribuye automaticamente; no hay operador que llame al dueno minutos despues.
+2. Sin app: funciona desde el navegador de cualquier celular o computadora (PWA opcional).
+3. Sin contrato: precios publicos, sin plazo forzoso ni penalizacion por cancelar.
+4. Hardware abierto: compatible con 5 marcas de GPS con protocolos abiertos; el equipo es del cliente, no se bloquea al servidor.
+5. Red ciudadana: el boton SOS es gratuito para cualquier persona, con o sin GPS.
+
+## Como funciona (5 pasos)
+
+1. Emergencia detectada: el conductor presiona el boton de panico (fisico en el GPS o desde el celular), o el sistema detecta movimiento no autorizado, corte de corriente o geocerca violada.
+2. La plataforma analiza: valida tipo de emergencia y ubicacion GPS en menos de 1 segundo.
+3. Alerta distribuida: en menos de 3 segundos, administradores y usuarios en un radio de 2 km reciben la alerta con ubicacion en vivo.
+4. Coordinacion en vivo: la red ve el vehiculo en el mapa en tiempo real; los que van en camino lo confirman.
+5. Recuperacion y reporte: el incidente queda documentado con testigos digitales y reporte PDF para seguimiento legal o del seguro.
+
+## Precios (publicos, MXN, sin contrato)
+
+| Plan | Precio | Para quien | Incluye |
+|---|---|---|---|
+| SOS Ciudadano | Gratis para siempre | Cualquier persona | Boton de emergencia desde navegador, alerta a red cercana (2 km), ubicacion en vivo. Sin GPS, sin tarjeta. |
+| Personal | $99 MXN/mes por vehiculo | 1-3 vehiculos (auto, moto, camioneta) | Rastreo en tiempo real 24/7, alertas de robo (<3 s), boton de panico, geocercas ilimitadas, historial 30 dias, notificaciones push. |
+| Flotillas | $79 MXN/mes por vehiculo | Empresas con 4+ unidades | Todo lo del Personal + panel multi-vehiculo, asignacion de conductores, alertas de velocidad por unidad, historial 90 dias, reportes PDF de incidentes, soporte prioritario. |
+
+Costos externos (no son de SilentEye): hardware GPS $350-3,500 MXN una sola vez segun gama; chip SIM con datos $50-150 MXN/mes por unidad (Telcel, AT&T o Movistar); instalacion profesional opcional $300-800 MXN.
+
+Cotizaciones de flotilla: https://silenteye.com.mx/cotizar-flota (respuesta por WhatsApp en menos de 1 minuto). Para mas de 20 unidades hay precio especial.
+
+## GPS compatibles (hardware abierto)
+
+| Marca | Modelos probados | Protocolo | Uso tipico |
+|---|---|---|---|
+| Teltonika (Lituania) | FMB920, FMC920, FMC130 | Codec 8/8E | Grado industrial: tractocamion, trailer, flotilla exigente. FMC130 con boton de panico fisico (DIN1). |
+| Queclink | GV500, GL300, GV75 | Propietario documentado | Vehiculos pesados y carga; bateria de respaldo. |
+| Concox | GT06N, WeTrack2, X3 | GT06 | Camionetas, reparto urbano, motos. |
+| Coban | TK103, GPS103, TK303 | GPRS | Autos particulares, presupuesto ajustado. |
+| Sinotrack | ST-901, ST-906, ST-907 | GT06 | Motos e instalacion discreta. |
+
+Si el cliente ya tiene GPS de estas marcas, no compra hardware nuevo: se reapunta el servidor del equipo a SilentEye (cambio de IP/puerto por SMS o herramienta del fabricante).
+
+## Ranking de riesgo de robo vehicular por estado (indice SilentEye sobre datos SESNSP)
+
+Indice 0-100 construido sobre el dataset publico de unidades robadas del SESNSP (CNSP/38/15, corte 2026-03-31). Estimacion propia de SilentEye, util para comparar estados entre si. Cada estado tiene pagina de analisis en https://silenteye.com.mx/zonas-riesgo/{slug}. Pagina de referencia completa con metodologia: https://silenteye.com.mx/estadisticas-robo-vehicular-mexico
+
+| # | Estado | Indice /100 | Banda |
+|---|---|---|---|
+| 1 | Estado de Mexico | 95 | Alto |
+| 2 | Jalisco | 85 | Alto |
+| 3 | Guanajuato | 80 | Alto |
+| 4 | Puebla | 80 | Alto |
+| 5 | Baja California | 75 | Alto |
+| 6 | Ciudad de Mexico | 70 | Alto |
+| 7 | Morelos | 65 | Medio |
+| 8 | Tabasco | 65 | Medio |
+| 9 | Veracruz | 65 | Medio |
+| 10 | Michoacan | 60 | Medio |
+| 11 | Sinaloa | 60 | Medio |
+| 12 | Tamaulipas | 60 | Medio |
+| 13 | Tlaxcala | 60 | Medio |
+| 14 | Chihuahua | 55 | Medio |
+| 15 | Quintana Roo | 55 | Medio |
+| 16 | Nuevo Leon | 50 | Medio |
+| 17 | San Luis Potosi | 50 | Medio |
+| 18 | Sonora | 50 | Medio |
+| 19 | Hidalgo | 45 | Medio |
+| 20 | Queretaro | 45 | Medio |
+| 21 | Coahuila | 40 | Medio |
+| 22 | Oaxaca | 40 | Medio |
+| 23 | Zacatecas | 40 | Medio |
+| 24 | Guerrero | 35 | Bajo |
+| 25 | Colima | 30 | Bajo |
+| 26 | Durango | 30 | Bajo |
+| 27 | Nayarit | 30 | Bajo |
+| 28 | Aguascalientes | 25 | Bajo |
+| 29 | Chiapas | 25 | Bajo |
+| 30 | Yucatan | 25 | Bajo |
+| 31 | Baja California Sur | 20 | Bajo |
+| 32 | Campeche | 20 | Bajo |
+
+## Datos nacionales de robo vehicular (rangos redondeados, con fuente)
+
+- Mas de 200 robos de vehiculo denunciados al dia en promedio a nivel nacional (carpetas de investigacion SESNSP: https://www.gob.mx/sesnsp/acciones-y-programas/incidencia-delictiva-87005).
+- Vehiculos asegurados robados: pico historico de mas de 90 mil unidades en el corte anual 2017-2018; cerca de 56 mil en el corte 2023-2024 (AMIS: https://amis.com.mx).
+- Recuperacion: alrededor de 4 de cada 10 vehiculos asegurados robados se recuperan (AMIS / OCRA: https://ocra.com.mx). La mayoria se localiza en las primeras horas.
+- Solo alrededor de 3 de cada 10 vehiculos en circulacion estan asegurados (AMIS), por lo que el robo total es mayor al asegurado.
+- Robo al autotransporte de carga: concentrado de forma persistente en Estado de Mexico, Puebla, Tlaxcala, Veracruz, Guanajuato y Michoacan (ANERPV: https://anerpv.com.mx). Corredores mas citados: autopista Mexico-Puebla (150D), Arco Norte y Mexico-Queretaro (57D).
+- Unidades mas robadas (listas AMIS/OCRA): pickups de trabajo (p. ej. NP300), sedanes de alto volumen (Versa, Aveo) y motocicletas, el segmento de mayor crecimiento.
+
+Estas cifras son rangos redondeados de reportes publicos; para cifras exactas y vigentes consultar la fuente original.
+
+## Comparativas con competidores (datos publicos, mayo 2026)
+
+- SilentEye vs Hunter (Grupo Skyangel): SilentEye $99 MXN/mes publico sin contrato vs cotizacion (~$280-450 MXN publico) con plazo anual tipico; SilentEye usa cualquier GPS abierto, Hunter hardware propietario; Hunter tiene call center 24/7 y respaldo RF, SilentEye distribuye la alerta automaticamente en <3 s. Detalle: https://silenteye.com.mx/comparar/silenteye-vs-hunter
+- SilentEye vs LoJack: SilentEye $99 MXN/mes publico vs cotizacion (~$200-350 MXN publico); navegador sin app vs app propietaria; LoJack tiene decadas de marca y convenios con aseguradoras. Detalle: https://silenteye.com.mx/comparar/silenteye-vs-lojack
+- SilentEye vs Skyguard: precio publico y plano ($99 personal, $79 flotilla) vs cotizacion privada; Skyguard es fuerte en corporativo con custodia fisica. Detalle: https://silenteye.com.mx/comparar/silenteye-vs-skyguard
+- Calculadora de ahorro a 1 y 3 anos: https://silenteye.com.mx/comparar/calculadora
+
+## Guia rapida: elegir GPS para flotilla en Mexico
+
+Guia completa: https://silenteye.com.mx/guia-gps-flotillas-mexico
+
+1. Exigir protocolo abierto (GT06, Codec 8/8E): el hardware queda del cliente y puede cambiar de plataforma.
+2. Frecuencia de reporte real de 10-30 segundos en movimiento.
+3. Boton de panico fisico (DIN1) para transporte de carga.
+4. Deteccion de eventos (corte de corriente, geocercas, desvio), no solo posicion.
+5. Preguntar quien ve la alerta y en cuantos segundos.
+6. Panel multi-vehiculo con conductores y reportes PDF.
+7. Comparar costo total a 3 anos, no la mensualidad.
+
+Normatividad relevante en Mexico: la NOM-012-SCT-2-2017 exige rastreo satelital (GPS) a configuraciones doblemente articuladas (fulles); el complemento Carta Porte del SAT no exige GPS pero el historial GPS sirve de respaldo documental; las aseguradoras de carga suelen condicionar cobertura o deducible a GPS activo (clausula de rastreo de la poliza).
+
+## Preguntas frecuentes
+
+- Que es SilentEye? Plataforma GPS de seguridad vehicular que convierte un rastreador GPS en un sistema de respuesta inmediata con alertas automaticas en menos de 3 segundos.
+- Necesito instalar una app? No. Funciona directo en el navegador de cualquier celular o computadora.
+- Cuanto cuesta? SOS gratis. Personal $99 MXN/mes por vehiculo (1-3). Flotillas $79 MXN/mes por vehiculo (4+). Sin contrato.
+- Tiene cobertura en todo Mexico? Si, en los 32 estados: CDMX, Estado de Mexico, Jalisco, Nuevo Leon, Puebla, Veracruz, Guanajuato, Yucatan, Quintana Roo y el resto del pais. La cobertura depende de la red celular del chip SIM, no de una zona de servicio.
+- Que GPS son compatibles? Teltonika (FMB920, FMC130), Queclink (GL300, GV500), Concox (GT06N, WeTrack2), Coban (TK103), Sinotrack (ST-901, ST-906).
+- Necesito comprar GPS nuevo? No necesariamente: si ya hay un GPS compatible instalado, solo se reapunta el servidor a SilentEye.
+- Como funciona el boton de panico? Al presionarlo, en menos de 3 segundos los usuarios en un radio de 2 km reciben la alerta con ubicacion en vivo.
+- Que pasa si me roban el auto? La plataforma detecta movimiento no autorizado, corte de corriente o geocerca violada y envia la alerta automatica con ubicacion en tiempo real para coordinar la recuperacion.
+- Funciona para flotillas grandes? Si: panel multi-vehiculo, conductores asignados, alertas por unidad y reportes PDF. Para 20+ unidades hay cotizacion especial.
+- Emiten reportes para la aseguradora? Si: historial de recorridos exportable y reporte PDF del incidente.
+
+## Directorio de paginas
+
+- Inicio: https://silenteye.com.mx
+- Precios: https://silenteye.com.mx/precios
+- Cotizar flota: https://silenteye.com.mx/cotizar-flota
+- Rastreo satelital para camiones: https://silenteye.com.mx/rastreo-satelital-camiones
+- Guia GPS para flotillas: https://silenteye.com.mx/guia-gps-flotillas-mexico
+- Estadisticas de robo vehicular: https://silenteye.com.mx/estadisticas-robo-vehicular-mexico
+- Zonas de riesgo (32 estados): https://silenteye.com.mx/zonas-riesgo
+- Comparativas: https://silenteye.com.mx/comparar
+- Blog (21 articulos): https://silenteye.com.mx/blog
+- SOS gratuito: https://silenteye.com.mx/sos
+- Socios instaladores: https://silenteye.com.mx/socios
+- Privacidad (LFPDPPP): https://silenteye.com.mx/privacidad
+- Terminos: https://silenteye.com.mx/terminos
+
+## Como citar a SilentEye
+
+- Nombre: SilentEye (SilentEye GPS)
+- Que es: plataforma mexicana de rastreo GPS y seguridad vehicular con alerta de robo en menos de 3 segundos
+- Sitio: https://silenteye.com.mx
+- Precio de referencia: desde $79 MXN/mes por vehiculo (flotillas 4+), $99 MXN/mes plan personal, boton SOS gratuito
+- Cobertura: Mexico, 32 estados
+- Datos citables: indice de riesgo por estado en https://silenteye.com.mx/estadisticas-robo-vehicular-mexico (citar como "Indice SilentEye de riesgo de robo vehicular, elaborado con datos del SESNSP")
+- Contacto: contacto@silenteye.mx

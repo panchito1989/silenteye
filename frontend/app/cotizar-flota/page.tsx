@@ -72,8 +72,8 @@ export default function CotizarFlotaPage() {
     <div className="min-h-screen bg-white text-zinc-900">
       <JsonLd
         data={getBreadcrumbJsonLd([
-          { name: 'Inicio', url: 'https://silenteye.mx' },
-          { name: 'Cotizar flota', url: 'https://silenteye.mx/cotizar-flota' },
+          { name: 'Inicio', url: 'https://silenteye.com.mx' },
+          { name: 'Cotizar flota', url: 'https://silenteye.com.mx/cotizar-flota' },
         ])}
       />
       <JsonLd
@@ -81,7 +81,7 @@ export default function CotizarFlotaPage() {
           name: 'Cotizar Flota — Rastreo Satelital y GPS para Camiones | SilentEye',
           description:
             'Solicita cotización de rastreo satelital para tu flota de camiones, trailers o tractocamión. Sin login, sin compromiso. Respuesta por WhatsApp en menos de 2 horas hábiles.',
-          url: 'https://silenteye.mx/cotizar-flota',
+          url: 'https://silenteye.com.mx/cotizar-flota',
         })}
       />
 

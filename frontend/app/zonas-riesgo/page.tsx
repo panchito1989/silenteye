@@ -8,12 +8,12 @@ export const metadata: Metadata = {
   title: 'Zonas de riesgo de robo vehicular en México por estado | SilentEye',
   description:
     'Mapa de riesgo de robo de auto, trailer y carga por estado en México. Ranking nacional con datos SESNSP, ciudades principales, carreteras críticas y plataforma GPS de rastreo en tiempo real.',
-  alternates: { canonical: 'https://silenteye.mx/zonas-riesgo' },
+  alternates: { canonical: 'https://silenteye.com.mx/zonas-riesgo' },
   openGraph: {
     type: 'website',
     title: 'Zonas de riesgo vehicular por estado en México',
     description: 'Ranking de riesgo de robo vehicular por estado, basado en datos SESNSP. Cobertura GPS de SilentEye con red de respuesta ciudadana.',
-    url: 'https://silenteye.mx/zonas-riesgo',
+    url: 'https://silenteye.com.mx/zonas-riesgo',
   },
 };
 
@@ -24,13 +24,13 @@ export default function ZonasRiesgoIndexPage() {
   return (
     <div className="min-h-screen bg-white">
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Zonas de riesgo', url: 'https://silenteye.mx/zonas-riesgo' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Zonas de riesgo', url: 'https://silenteye.com.mx/zonas-riesgo' },
       ])} />
       <JsonLd data={getWebPageJsonLd({
         name: 'Zonas de riesgo de robo vehicular en México',
         description: 'Ranking nacional de riesgo de robo de vehículos por estado.',
-        url: 'https://silenteye.mx/zonas-riesgo',
+        url: 'https://silenteye.com.mx/zonas-riesgo',
       })} />
 
       {/* Nav */}
@@ -59,6 +59,12 @@ export default function ZonasRiesgoIndexPage() {
           </h1>
           <p className="text-zinc-500 text-lg max-w-2xl leading-relaxed">
             Riesgo de robo de auto, trailer y carga por estado, basado en datos del Secretariado Ejecutivo del Sistema Nacional de Seguridad Pública. Si tu vehículo opera en alguno de estos estados, SilentEye te avisa en menos de 3 segundos en cuanto algo se sale de lo normal.
+          </p>
+          <p className="text-[14px] text-zinc-500 mt-4">
+            ¿Buscas las cifras nacionales completas con fuentes y metodología? Ve al informe{' '}
+            <Link href="/estadisticas-robo-vehicular-mexico" className="text-blue-600 font-semibold hover:underline">
+              Estadísticas de robo de vehículos en México
+            </Link>.
           </p>
         </div>
       </header>

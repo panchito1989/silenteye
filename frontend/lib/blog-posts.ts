@@ -1524,7 +1524,7 @@ Los modelos más recomendados son el **Sinotrack ST-901** (económico) y el **Te
 
 Sí. Con SilentEye no necesitas instalar ninguna app:
 
-1. Abre **silenteye.mx** desde cualquier navegador
+1. Abre **silenteye.com.mx** desde cualquier navegador
 2. Inicia sesión con tu cuenta
 3. Ve la ubicación de tu auto en tiempo real en el mapa
 4. Recibe alertas por WhatsApp o notificación web
@@ -1682,7 +1682,7 @@ Después de configurar el APN, verifica que tu GPS está transmitiendo:
 
 Una vez que el APN está configurado y tu GPS está transmitiendo datos:
 
-1. **Regístrate en silenteye.mx**
+1. **Regístrate en silenteye.com.mx**
 2. **Agrega tu dispositivo** con el número IMEI (está impreso en el GPS)
 3. **Selecciona la marca y modelo** de tu rastreador
 4. **Configura el servidor**: Te daremos la IP y puerto para tu modelo

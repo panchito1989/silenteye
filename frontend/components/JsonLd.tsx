@@ -92,11 +92,28 @@ export const organizationJsonLd = {
     email: 'contacto@silenteye.mx',
     url: 'https://silenteye.com.mx',
     availableLanguage: ['Spanish'],
+    areaServed: 'MX',
   },
-  areaServed: {
-    '@type': 'Country',
-    name: 'México',
-  },
+  // Cobertura nacional explícita: país + las 32 entidades federativas.
+  // Listar los estados (no solo "México") ayuda a los motores de IA a
+  // responder consultas locales tipo "GPS para flotilla en Jalisco" con
+  // SilentEye como opción de cobertura confirmada.
+  areaServed: [
+    { '@type': 'Country', name: 'México' },
+    ...[
+      'Aguascalientes', 'Baja California', 'Baja California Sur', 'Campeche',
+      'Coahuila', 'Colima', 'Chiapas', 'Chihuahua', 'Ciudad de México',
+      'Durango', 'Guanajuato', 'Guerrero', 'Hidalgo', 'Jalisco',
+      'Estado de México', 'Michoacán', 'Morelos', 'Nayarit', 'Nuevo León',
+      'Oaxaca', 'Puebla', 'Querétaro', 'Quintana Roo', 'San Luis Potosí',
+      'Sinaloa', 'Sonora', 'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz',
+      'Yucatán', 'Zacatecas',
+    ].map((name) => ({
+      '@type': 'State',
+      name,
+      containedInPlace: { '@type': 'Country', name: 'México' },
+    })),
+  ],
 };
 
 // ── SoftwareApplication ──
@@ -108,13 +125,54 @@ export const softwareJsonLd = {
   applicationCategory: 'SecurityApplication',
   operatingSystem: 'All',
   image: 'https://silenteye.com.mx/opengraph-image',
+  // Precios reales publicados en /precios: SOS gratis, Personal $99
+  // MXN/mes/vehículo (1-3), Flotillas $79 MXN/mes/vehículo (4+).
   offers: {
-    '@type': 'Offer',
-    price: '0',
+    '@type': 'AggregateOffer',
     priceCurrency: 'MXN',
+    lowPrice: '0',
+    highPrice: '99',
+    offerCount: 3,
     availability: 'https://schema.org/InStock',
     url: 'https://silenteye.com.mx/precios',
-    description: 'Botón de emergencia SOS gratuito. Plataforma GPS con planes accesibles.',
+    offers: [
+      {
+        '@type': 'Offer',
+        name: 'SOS Ciudadano',
+        price: '0',
+        priceCurrency: 'MXN',
+        description: 'Botón de emergencia gratuito para siempre. Sin GPS, sin app, sin tarjeta.',
+        url: 'https://silenteye.com.mx/precios',
+      },
+      {
+        '@type': 'Offer',
+        name: 'Plan Personal',
+        price: '99',
+        priceCurrency: 'MXN',
+        description: 'Rastreo GPS en tiempo real para 1-3 vehículos: $99 MXN/mes por vehículo. Sin contrato ni permanencia.',
+        url: 'https://silenteye.com.mx/precios',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '99',
+          priceCurrency: 'MXN',
+          unitText: 'vehículo/mes',
+        },
+      },
+      {
+        '@type': 'Offer',
+        name: 'Plan Flotillas',
+        price: '79',
+        priceCurrency: 'MXN',
+        description: 'Rastreo GPS para flotillas de 4+ vehículos: $79 MXN/mes por vehículo. Panel multi-vehículo, conductores y reportes.',
+        url: 'https://silenteye.com.mx/precios',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '79',
+          priceCurrency: 'MXN',
+          unitText: 'vehículo/mes',
+        },
+      },
+    ],
   },
   description:
     'Software de rastreo GPS vehicular en tiempo real con detección automática de robo, botón de pánico, alertas instantáneas y coordinación de respuesta. Compatible con GPS Teltonika FMB920, Queclink GL300, Concox GT06N, Cobán TK103 y Sinotrack ST-901.',
@@ -322,13 +380,35 @@ export const serviceJsonLd = {
     serviceUrl: 'https://silenteye.com.mx',
     servicePlatform: 'Web',
   },
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'MXN',
-    description: 'Botón de emergencia SOS gratuito. Planes accesibles de rastreo GPS según cantidad de vehículos.',
-    availability: 'https://schema.org/InStock',
-  },
+  offers: [
+    {
+      '@type': 'Offer',
+      name: 'SOS Ciudadano',
+      price: '0',
+      priceCurrency: 'MXN',
+      description: 'Botón de emergencia SOS gratuito para siempre. Sin GPS, sin app.',
+      availability: 'https://schema.org/InStock',
+      url: 'https://silenteye.com.mx/precios',
+    },
+    {
+      '@type': 'Offer',
+      name: 'Plan Personal — $99 MXN/mes por vehículo',
+      price: '99',
+      priceCurrency: 'MXN',
+      description: 'Rastreo GPS en tiempo real, alertas de robo, geocercas e historial para 1-3 vehículos.',
+      availability: 'https://schema.org/InStock',
+      url: 'https://silenteye.com.mx/precios',
+    },
+    {
+      '@type': 'Offer',
+      name: 'Plan Flotillas — $79 MXN/mes por vehículo (4+)',
+      price: '79',
+      priceCurrency: 'MXN',
+      description: 'Panel multi-vehículo, asignación de conductores, alertas de velocidad y reportes PDF para flotillas de 4 o más unidades.',
+      availability: 'https://schema.org/InStock',
+      url: 'https://silenteye.com.mx/cotizar-flota',
+    },
+  ],
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Servicios GPS SilentEye',
@@ -452,6 +532,23 @@ export function getArticleJsonLd(opts: {
       '@type': 'SpeakableSpecification',
       cssSelector: ['article h1', 'article > div > p:first-of-type'],
     },
+  };
+}
+
+// ── FAQPage (reutilizable) ──
+// Genera un FAQPage a partir de pares pregunta/respuesta ya visibles en
+// la página. Aunque Google restringió los rich results de FAQ desde
+// agosto 2023, los motores de IA (ChatGPT, Perplexity, Gemini, AI
+// Overviews) siguen consumiendo FAQPage para extraer respuestas citables.
+export function getFaqPageJsonLd(items: { q: string; a: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
   };
 }
 

@@ -26,14 +26,14 @@ export const metadata: Metadata = {
     'cotizar gps para flotilla',
   ],
   alternates: {
-    canonical: 'https://silenteye.mx/rastreo-satelital-camiones',
+    canonical: 'https://silenteye.com.mx/rastreo-satelital-camiones',
   },
   openGraph: {
     type: 'website',
     title: 'Rastreo Satelital para Camiones, Trailers y Flotas | SilentEye',
     description:
       'Rastreo satelital y GPS para camiones de carga: alerta en 3 segundos, sin central. Desde $79 MXN/mes por unidad. Cotiza tu flota en menos de 1 minuto.',
-    url: 'https://silenteye.mx/rastreo-satelital-camiones',
+    url: 'https://silenteye.com.mx/rastreo-satelital-camiones',
     locale: 'es_MX',
   },
 };
@@ -118,10 +118,10 @@ export default function RastreoSatelitalCamionesPage() {
     <div className="min-h-screen bg-white text-zinc-900">
       <JsonLd
         data={getBreadcrumbJsonLd([
-          { name: 'Inicio', url: 'https://silenteye.mx' },
+          { name: 'Inicio', url: 'https://silenteye.com.mx' },
           {
             name: 'Rastreo satelital para camiones',
-            url: 'https://silenteye.mx/rastreo-satelital-camiones',
+            url: 'https://silenteye.com.mx/rastreo-satelital-camiones',
           },
         ])}
       />
@@ -130,7 +130,7 @@ export default function RastreoSatelitalCamionesPage() {
           name: 'Rastreo Satelital para Camiones, Trailers y Flotas | SilentEye',
           description:
             'Rastreo satelital y GPS para camiones de carga, trailers y flotas en México. Alerta en 3 segundos, sin central. Desde $79 MXN/mes por unidad.',
-          url: 'https://silenteye.mx/rastreo-satelital-camiones',
+          url: 'https://silenteye.com.mx/rastreo-satelital-camiones',
         })}
       />
       <JsonLd
@@ -144,7 +144,7 @@ export default function RastreoSatelitalCamionesPage() {
           provider: {
             '@type': 'Organization',
             name: 'SilentEye',
-            url: 'https://silenteye.mx',
+            url: 'https://silenteye.com.mx',
           },
           areaServed: { '@type': 'Country', name: 'México' },
           audience: {
@@ -520,6 +520,8 @@ export default function RastreoSatelitalCamionesPage() {
           </Link>
           <div className="flex items-center gap-4 text-[12px] text-zinc-400">
             <Link href="/precios" className="hover:text-zinc-600">Precios</Link>
+            <Link href="/guia-gps-flotillas-mexico" className="hover:text-zinc-600">Guía flotillas</Link>
+            <Link href="/estadisticas-robo-vehicular-mexico" className="hover:text-zinc-600">Estadísticas de robo</Link>
             <Link href="/blog/gps-para-trailers-camiones-carga" className="hover:text-zinc-600">Guía camiones</Link>
             <Link href="/comparar" className="hover:text-zinc-600">Comparar</Link>
             <Link href="/privacidad" className="hover:text-zinc-600">Privacidad</Link>

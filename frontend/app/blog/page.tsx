@@ -4,10 +4,17 @@ import { blogPosts } from '@/lib/blog-posts';
 import JsonLd, { getBlogIndexJsonLd, getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Blog — GPS, Rastreo Vehicular y Seguridad | SilentEye',
+  title: 'Blog — GPS, Rastreo Vehicular y Seguridad en México | SilentEye',
   description:
-    'Guías, tutoriales y comparativas sobre GPS para autos, motos, camiones, trailers y flotillas. Aprende sobre rastreo GPS en tiempo real, geocercas, recuperación vehicular y seguridad.',
-  alternates: { canonical: 'https://silenteye.mx/blog' },
+    'Guías, tutoriales y comparativas sobre GPS para autos, motos, camiones, trailers y flotillas en México. Aprende sobre rastreo GPS en tiempo real, geocercas, recuperación vehicular y prevención de robo.',
+  alternates: { canonical: 'https://silenteye.com.mx/blog' },
+  openGraph: {
+    type: 'website',
+    title: 'Blog de SilentEye — GPS y seguridad vehicular en México',
+    description:
+      'Guías y comparativas de GPS para autos, motos, camiones y flotillas en México: instalación, geocercas, recuperación vehicular y prevención de robo.',
+    url: 'https://silenteye.com.mx/blog',
+  },
 };
 
 const categoryColors: Record<string, string> = {
@@ -27,7 +34,7 @@ export default function BlogPage() {
       <JsonLd data={getWebPageJsonLd({
         name: 'Blog de SilentEye — GPS, rastreo vehicular y seguridad',
         description: 'Guías, tutoriales y comparativas sobre GPS para autos, motos, camiones, trailers y flotillas en México.',
-        url: 'https://silenteye.mx/blog',
+        url: 'https://silenteye.com.mx/blog',
       })} />
       <JsonLd data={getBlogIndexJsonLd(blogPosts.map((p) => ({
         slug: p.slug,
@@ -37,8 +44,8 @@ export default function BlogPage() {
         category: p.category,
       })))} />
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Blog', url: 'https://silenteye.mx/blog' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Blog', url: 'https://silenteye.com.mx/blog' },
       ])} />
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100 px-6 py-3">
@@ -123,6 +130,31 @@ export default function BlogPage() {
                 </article>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Recursos de referencia */}
+      <section className="px-6 pb-16">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-xl font-extrabold tracking-tight mb-2">Recursos de referencia</h2>
+          <p className="text-[14px] text-zinc-500 mb-6">Datos y guías de fondo que actualizamos continuamente — citables con fuente.</p>
+          <div className="grid md:grid-cols-3 gap-4">
+            <Link href="/estadisticas-robo-vehicular-mexico" className="group border border-zinc-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-sm transition-all">
+              <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider block mb-2">Datos</span>
+              <h3 className="font-bold text-zinc-900 text-[15px] leading-snug mb-1.5 group-hover:text-blue-600 transition-colors">Estadísticas de robo de vehículos en México</h3>
+              <p className="text-[12px] text-zinc-500 leading-relaxed">Ranking de riesgo de los 32 estados, cifras nacionales con fuentes (SESNSP, AMIS, ANERPV) y corredores críticos de robo de carga.</p>
+            </Link>
+            <Link href="/guia-gps-flotillas-mexico" className="group border border-zinc-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-sm transition-all">
+              <span className="text-[11px] font-bold text-emerald-600 uppercase tracking-wider block mb-2">Guía B2B</span>
+              <h3 className="font-bold text-zinc-900 text-[15px] leading-snug mb-1.5 group-hover:text-blue-600 transition-colors">Cómo elegir GPS para tu flotilla</h3>
+              <p className="text-[12px] text-zinc-500 leading-relaxed">7 criterios técnicos, hardware por tipo de unidad, costo real por vehículo, NOM-012, Carta Porte y requisitos de aseguradoras.</p>
+            </Link>
+            <Link href="/zonas-riesgo" className="group border border-zinc-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-sm transition-all">
+              <span className="text-[11px] font-bold text-amber-600 uppercase tracking-wider block mb-2">Mapa</span>
+              <h3 className="font-bold text-zinc-900 text-[15px] leading-snug mb-1.5 group-hover:text-blue-600 transition-colors">Zonas de riesgo por estado</h3>
+              <p className="text-[12px] text-zinc-500 leading-relaxed">Mapa interactivo y análisis de robo vehicular de cada uno de los 32 estados, con carreteras críticas y GPS recomendado.</p>
+            </Link>
           </div>
         </div>
       </section>

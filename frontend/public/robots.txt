@@ -25,6 +25,18 @@ Allow: /
 User-agent: Claude-Web
 Allow: /
 
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
 User-agent: PerplexityBot
 Allow: /
 
@@ -61,3 +73,4 @@ Allow: /
 # Sitemap & LLMs
 Sitemap: https://silenteye.com.mx/sitemap.xml
 LLMsTxt: https://silenteye.com.mx/llms.txt
+# Full version for AI systems: https://silenteye.com.mx/llms-full.txt

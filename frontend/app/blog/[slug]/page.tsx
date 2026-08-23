@@ -18,23 +18,23 @@ export function generateMetadata({ params }: Props): Metadata {
   return {
     title: post.title,
     description: post.description,
-    alternates: { canonical: `https://silenteye.mx/blog/${post.slug}` },
+    alternates: { canonical: `https://silenteye.com.mx/blog/${post.slug}` },
     openGraph: {
       type: 'article',
       title: post.title,
       description: post.description,
-      url: `https://silenteye.mx/blog/${post.slug}`,
+      url: `https://silenteye.com.mx/blog/${post.slug}`,
       publishedTime: post.date,
       modifiedTime: post.date,
       authors: ['SilentEye'],
       tags: [post.keyword, 'GPS', 'rastreo vehicular', 'seguridad'],
-      images: [{ url: 'https://silenteye.mx/opengraph-image', width: 1200, height: 630, alt: post.title }],
+      images: [{ url: 'https://silenteye.com.mx/opengraph-image', width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: 'summary_large_image',
       title: post.title,
       description: post.description,
-      images: ['https://silenteye.mx/opengraph-image'],
+      images: ['https://silenteye.com.mx/opengraph-image'],
     },
   };
 }
@@ -203,7 +203,7 @@ export default function BlogPostPage({ params }: Props) {
   const articleJsonLd = getArticleJsonLd({
     title: post.title,
     description: post.description,
-    url: `https://silenteye.mx/blog/${post.slug}`,
+    url: `https://silenteye.com.mx/blog/${post.slug}`,
     datePublished: post.date,
     dateModified: post.date,
     category: post.category,
@@ -215,9 +215,9 @@ export default function BlogPostPage({ params }: Props) {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://silenteye.mx' },
-      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://silenteye.mx/blog' },
-      { '@type': 'ListItem', position: 3, name: post.title, item: `https://silenteye.mx/blog/${post.slug}` },
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://silenteye.com.mx' },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://silenteye.com.mx/blog' },
+      { '@type': 'ListItem', position: 3, name: post.title, item: `https://silenteye.com.mx/blog/${post.slug}` },
     ],
   };
 

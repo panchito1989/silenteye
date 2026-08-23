@@ -1,79 +1,87 @@
 # SilentEye
 
-> Plataforma GPS de seguridad vehicular con rastreo en tiempo real, alertas automaticas y boton de panico. Respuesta en menos de 3 segundos. Mexico.
+> Plataforma mexicana de rastreo GPS vehicular con alerta de robo en menos de 3 segundos a la red cercana: sin central, sin llamada, sin espera. Rastreo en tiempo real para autos, motos, camiones, trailers y flotillas en los 32 estados de Mexico. Boton SOS gratuito. Desde $79 MXN/mes por vehiculo.
 
-SilentEye es una plataforma web mexicana de seguridad vehicular que transforma cualquier rastreador GPS en un sistema de respuesta inmediata ante emergencias. A diferencia de los sistemas GPS tradicionales que solo rastrean, SilentEye detecta, alerta y coordina la respuesta de forma automatica.
+SilentEye es una plataforma web mexicana de seguridad vehicular que transforma cualquier rastreador GPS compatible (Teltonika, Queclink, Concox, Coban, Sinotrack) en un sistema de respuesta inmediata. A diferencia de los sistemas GPS tradicionales que solo rastrean o dependen de una central telefonica, SilentEye detecta la emergencia, alerta y coordina la respuesta de forma automatica: la alerta llega con ubicacion en vivo a administradores y voluntarios en un radio de 2 km en menos de 3 segundos. Funciona desde el navegador, sin app. Cobertura nacional: la cobertura depende de la red celular del chip SIM (Telcel, AT&T, Movistar), no de una zona de servicio.
 
-## Links
+Version completa de este archivo para sistemas de IA: https://silenteye.com.mx/llms-full.txt
 
-- [Inicio](https://silenteye.com.mx): Landing page con informacion del producto, comparativa, casos de uso y FAQ.
+## Paginas principales
+
+- [Inicio](https://silenteye.com.mx): Landing con propuesta de valor, como funciona, GPS compatibles y FAQ.
+- [Precios](https://silenteye.com.mx/precios): SOS gratis. Personal $99 MXN/mes por vehiculo (1-3). Flotillas $79 MXN/mes por vehiculo (4+). Sin contrato ni permanencia.
+- [Cotizar flota](https://silenteye.com.mx/cotizar-flota): Cotizacion B2B para flotillas con respuesta por WhatsApp en menos de 1 minuto.
+- [Rastreo satelital para camiones](https://silenteye.com.mx/rastreo-satelital-camiones): Landing B2B para transporte de carga: trailers, tractocamion y flotas.
+- [SOS](https://silenteye.com.mx/sos): Boton de emergencia ciudadano gratuito, sin GPS y sin registro previo.
 - [Login](https://silenteye.com.mx/login): Acceso para administradores, ciudadanos, GPS y operadores.
-- [SOS](https://silenteye.com.mx/sos): Boton de emergencia ciudadano accesible sin registro previo. Gratuito.
-- [Precios](https://silenteye.com.mx/precios): Planes y precios de rastreo GPS. Boton SOS gratuito. Desde $99 MXN/mes.
-- [Blog](https://silenteye.com.mx/blog): Guias y articulos sobre GPS y seguridad vehicular.
-- [Privacidad](https://silenteye.com.mx/privacidad): Politica de privacidad. Cumplimiento LFPDPPP.
-- [Cookies](https://silenteye.com.mx/cookies): Politica de cookies. Solo cookies esenciales.
-- [Terminos](https://silenteye.com.mx/terminos): Condiciones de uso.
+- [Socios](https://silenteye.com.mx/socios): Programa de socios instaladores y revendedores.
+
+## Datos y guias de referencia
+
+- [Estadisticas de robo de vehiculos en Mexico](https://silenteye.com.mx/estadisticas-robo-vehicular-mexico): Ranking de riesgo de los 32 estados (indice sobre datos SESNSP), cifras nacionales con fuentes (AMIS, OCRA, ANERPV), corredores criticos de robo de carga y metodologia citable.
+- [Como elegir GPS para tu flotilla en Mexico](https://silenteye.com.mx/guia-gps-flotillas-mexico): Guia B2B: 7 criterios tecnicos, hardware por tipo de unidad, costo total por vehiculo, NOM-012, Carta Porte, requisitos de aseguradoras y 10 preguntas para el proveedor.
+- [Zonas de riesgo por estado](https://silenteye.com.mx/zonas-riesgo): Mapa y ranking de riesgo de robo vehicular de los 32 estados de Mexico, con pagina de analisis por estado (ciudades, carreteras criticas y GPS recomendado). Ejemplos: [Estado de Mexico](https://silenteye.com.mx/zonas-riesgo/estado-de-mexico), [Jalisco](https://silenteye.com.mx/zonas-riesgo/jalisco), [Guanajuato](https://silenteye.com.mx/zonas-riesgo/guanajuato), [Puebla](https://silenteye.com.mx/zonas-riesgo/puebla), [CDMX](https://silenteye.com.mx/zonas-riesgo/ciudad-de-mexico), [Nuevo Leon](https://silenteye.com.mx/zonas-riesgo/nuevo-leon), [Veracruz](https://silenteye.com.mx/zonas-riesgo/veracruz), [Yucatan](https://silenteye.com.mx/zonas-riesgo/yucatan), [Quintana Roo](https://silenteye.com.mx/zonas-riesgo/quintana-roo).
+
+## Comparativas
+
+- [SilentEye vs Hunter](https://silenteye.com.mx/comparar/silenteye-vs-hunter): $99 MXN/mes publico vs cotizacion (~$280-450 MXN); sin contrato vs plazo anual; cualquier GPS abierto vs hardware propietario.
+- [SilentEye vs LoJack](https://silenteye.com.mx/comparar/silenteye-vs-lojack): $99 MXN/mes publico vs cotizacion (~$200-350 MXN); navegador sin app vs app propietaria.
+- [SilentEye vs Skyguard](https://silenteye.com.mx/comparar/silenteye-vs-skyguard): Precio publico y plano vs cotizacion privada; flotillas $79 MXN/vehiculo.
+- [Calculadora de ahorro](https://silenteye.com.mx/comparar/calculadora): Compara el costo a 1 y 3 anos contra lo que pagas hoy.
+- [Indice de comparativas](https://silenteye.com.mx/comparar)
 
 ## Blog
 
-- [Mejor GPS para auto en Mexico 2026](https://silenteye.com.mx/blog/mejor-gps-para-auto-mexico): Comparativa de Coban TK103, Sinotrack ST-901 y Teltonika FMB920. Precios, instalacion y funciones.
-- [GPS para trailers y camiones de carga](https://silenteye.com.mx/blog/gps-para-trailers-camiones-carga): Teltonika FMC130, Queclink GV500, monitoreo en carretera 24/7 y boton de panico.
-- [GPS para motos: Como evitar el robo](https://silenteye.com.mx/blog/gps-para-motos-antirrobo): Sinotrack ST-901, Concox WeTrack2. Instalacion discreta y alertas automaticas.
-- [Que es una plataforma GPS?](https://silenteye.com.mx/blog/plataforma-gps-que-es-como-funciona): Explicacion de como funciona el rastreo vehicular en tiempo real.
-- [Como instalar un GPS en tu auto](https://silenteye.com.mx/blog/como-instalar-gps-en-auto): Guia paso a paso de instalacion de rastreador GPS.
-- [Coban TK103 vs Sinotrack ST-901](https://silenteye.com.mx/blog/gps-coban-tk103-vs-sinotrack-st901): Comparativa de los dos GPS mas populares en Mexico.
+- [Indice del blog](https://silenteye.com.mx/blog): 21 guias y comparativas sobre GPS y seguridad vehicular en Mexico.
+- [Mejor GPS para auto en Mexico](https://silenteye.com.mx/blog/mejor-gps-para-auto-mexico): Comparativa de Coban TK103, Sinotrack ST-901 y Teltonika FMB920.
+- [GPS para trailers y camiones de carga](https://silenteye.com.mx/blog/gps-para-trailers-camiones-carga): Teltonika FMC130, Queclink GV500, monitoreo en carretera y boton de panico.
 - [GPS para flotillas](https://silenteye.com.mx/blog/gps-para-flotillas-gestion-vehiculos): Gestion de multiples vehiculos desde un solo panel.
-- [GPS para conductores de Uber y Didi](https://silenteye.com.mx/blog/gps-uber-didi-conductor-seguridad): Boton de panico para conductores de plataformas.
-- [Como funciona el rastreo GPS en tiempo real](https://silenteye.com.mx/blog/como-funciona-rastreo-gps-tiempo-real): Satelites, dispositivos, red celular y plataformas.
-- [Geocercas GPS: Que son y como configurarlas](https://silenteye.com.mx/blog/geocercas-gps-que-son-como-configurar): Zonas virtuales para proteger tu vehiculo.
-- [Teltonika FMB920: Configuracion con SilentEye](https://silenteye.com.mx/blog/teltonika-fmb920-configuracion-silenteye): Tutorial paso a paso para GPS Teltonika.
-- [Recuperacion vehicular con GPS](https://silenteye.com.mx/blog/recuperacion-vehicular-gps-como-funciona): Por que los primeros minutos importan.
-- [GPS para camionetas pickup y SUV](https://silenteye.com.mx/blog/gps-para-camioneta-pickup-suv): Proteccion para los vehiculos mas robados en Mexico.
-- [Localizador GPS vehicular: Guia completa](https://silenteye.com.mx/blog/localizador-gps-vehicular-guia-completa): Todo sobre localizadores GPS. Mejores marcas, precios y como elegir.
-- [Rastreo satelital vehicular en Mexico](https://silenteye.com.mx/blog/rastreo-satelital-vehicular-mexico): Como funciona el rastreo satelital y cual plataforma elegir.
-- [GPS para empresas de transporte](https://silenteye.com.mx/blog/gps-para-empresas-transporte-logistica): Solucion GPS completa para transporte y logistica.
-- [Robo de autos en Mexico 2026](https://silenteye.com.mx/blog/robo-de-autos-mexico-estadisticas-prevencion): Estadisticas, estados mas peligrosos y como prevenirlo con GPS.
-- [GPS tracker sin renta mensual](https://silenteye.com.mx/blog/gps-tracker-sin-renta-mensual-mexico): La verdad sobre los costos de rastreo GPS en Mexico.
-- [Chip GPS para auto: que es y como funciona](https://silenteye.com.mx/blog/chip-gps-para-auto-como-funciona): Que es un chip GPS, cuanto cuesta, donde comprarlo y como instalarlo en Mexico.
-- [Como rastrear un auto robado con GPS](https://silenteye.com.mx/blog/como-rastrear-auto-robado-gps): Guia paso a paso para rastrear y recuperar un auto robado con GPS.
-- [APN para GPS tracker: Telcel, AT&T, Movistar](https://silenteye.com.mx/blog/apn-gps-tracker-telcel-att-movistar): Comandos SMS para configurar el APN en Coban, Sinotrack, Concox y Teltonika.
+- [GPS para empresas de transporte](https://silenteye.com.mx/blog/gps-para-empresas-transporte-logistica): Solucion GPS para transporte y logistica.
+- [Robo de autos en Mexico: estadisticas y prevencion](https://silenteye.com.mx/blog/robo-de-autos-mexico-estadisticas-prevencion): Estados mas peligrosos y como prevenir con GPS.
+- [Como rastrear un auto robado con GPS](https://silenteye.com.mx/blog/como-rastrear-auto-robado-gps): Guia paso a paso de recuperacion.
+- [Como instalar un GPS en tu auto](https://silenteye.com.mx/blog/como-instalar-gps-en-auto): Instalacion paso a paso.
+- [APN para GPS tracker: Telcel, AT&T, Movistar](https://silenteye.com.mx/blog/apn-gps-tracker-telcel-att-movistar): Comandos SMS de configuracion.
+- [GPS para motos](https://silenteye.com.mx/blog/gps-para-motos-antirrobo): Instalacion discreta y alertas automaticas.
+- [GPS tracker sin renta mensual](https://silenteye.com.mx/blog/gps-tracker-sin-renta-mensual-mexico): La verdad sobre los costos de rastreo GPS.
 
 ## Producto
 
 SilentEye ofrece:
-- Rastreo GPS en tiempo real con monitoreo 24/7
+- Rastreo GPS en tiempo real con monitoreo 24/7 desde el navegador (sin app)
 - Alertas automaticas de robo, movimiento no autorizado, corte de corriente, exceso de velocidad y geocercas
-- Boton de panico con distribucion automatica de alertas en menos de 3 segundos
+- Boton de panico (GPS fisico o navegador) con distribucion automatica de alertas en menos de 3 segundos a la red en 2 km
 - Boton de emergencia ciudadano SOS gratuito (sin GPS, sin app)
-- Gestion de flotillas GPS con panel multi-vehiculo
+- Gestion de flotillas: panel multi-vehiculo, asignacion de conductores, alertas de velocidad, reportes PDF de incidentes
 - Coordinacion de recuperacion vehicular con testigos digitales
 
 ## GPS compatibles
 
-SilentEye es compatible con 5 marcas de dispositivos GPS:
+SilentEye es compatible con 5 marcas de dispositivos GPS (protocolos abiertos, sin cambiar hardware):
 - Teltonika (Lituania): FMB920, FMC920, FMC130 - Protocolo Codec 8/8E
-- Queclink (China): GV500, GL300, GV75 - Protocolo propietario
-- Concox (China): GT06N, WeTrack2, X3 - Protocolo GT06
-- Coban (China): TK103, GPS103, TK303 - Protocolo GPRS
-- Sinotrack (China): ST-901, ST-906, ST-907 - Protocolo GT06
+- Queclink: GV500, GL300, GV75 - Protocolo propietario documentado
+- Concox: GT06N, WeTrack2, X3 - Protocolo GT06
+- Coban: TK103, GPS103, TK303 - Protocolo GPRS
+- Sinotrack: ST-901, ST-906, ST-907 - Protocolo GT06
 
 ## Precios
 
-- SOS Ciudadano: Gratis para siempre. Boton de emergencia sin GPS, sin app, sin registro.
-- Personal: $99 MXN/mes por vehiculo. Rastreo GPS en tiempo real, alertas, geocercas, historial.
-- Flotillas: $79 MXN/mes por vehiculo (minimo 5). Panel multi-vehiculo, asignacion de conductores.
+- SOS Ciudadano: Gratis para siempre. Boton de emergencia sin GPS, sin app, sin tarjeta.
+- Personal: $99 MXN/mes por vehiculo (1-3 vehiculos). Rastreo en tiempo real, alertas, geocercas, historial 30 dias.
+- Flotillas: $79 MXN/mes por vehiculo (minimo 4). Panel multi-vehiculo, conductores, alertas de velocidad, historial 90 dias, reportes PDF.
+- Sin contrato, sin permanencia, sin penalizacion por cancelar.
+- Costos externos a considerar: hardware GPS ($350-3,500 MXN una vez) y chip SIM con datos ($50-150 MXN/mes).
 
 ## Preguntas frecuentes
 
 - Que es SilentEye? Plataforma GPS de seguridad vehicular que convierte tu rastreador GPS en un sistema de respuesta inmediata con alertas automaticas en menos de 3 segundos.
 - Necesito instalar una app? No. SilentEye funciona directo en el navegador de cualquier celular o computadora.
 - Que GPS son compatibles? Teltonika (FMB920, FMC130), Queclink (GL300, GV500), Concox (GT06N, WeTrack2), Coban (TK103), Sinotrack (ST-901, ST-906).
-- Cuanto cuesta? El boton SOS es gratis. El rastreo GPS cuesta desde $99 MXN/mes por vehiculo. Flotillas desde $79 MXN/mes.
-- Como funciona el boton de panico? El conductor presiona el boton y en menos de 3 segundos todos los helpers y conductores en un radio de 2 km reciben la alerta con ubicacion en vivo.
+- Cuanto cuesta? El boton SOS es gratis. Personal $99 MXN/mes por vehiculo. Flotillas $79 MXN/mes por vehiculo (4+).
+- Tiene cobertura en todo Mexico? Si, en los 32 estados. La cobertura depende de la red celular del chip SIM, no de una zona de servicio.
+- Como funciona el boton de panico? El conductor lo presiona y en menos de 3 segundos los helpers y conductores en un radio de 2 km reciben la alerta con ubicacion en vivo.
 - Funciona para flotillas? Si. Panel multi-vehiculo con gestion de conductores, geocercas por vehiculo y alertas independientes.
 - Que pasa si me roban el auto? SilentEye detecta movimiento no autorizado, corte de corriente o geocerca violada y envia alerta automatica con ubicacion en tiempo real.
-- Necesito comprar GPS nuevo? No necesariamente. Si ya tienes un GPS Teltonika, Queclink, Concox, Coban o Sinotrack, solo apuntas el servidor a SilentEye.
+- Necesito comprar GPS nuevo? No necesariamente. Si ya tienes un GPS de las marcas compatibles, solo apuntas el servidor a SilentEye.
 
 ## Metricas
 
@@ -81,8 +89,10 @@ SilentEye es compatible con 5 marcas de dispositivos GPS:
 - Tiempo de alerta: < 3 segundos
 - Radio de respuesta: 2 km
 - Apps que instalar: 0 (funciona desde el navegador)
+- Cobertura: 32 estados de Mexico
 
 ## Contacto
 
 - Sitio web: https://silenteye.com.mx
-- Pais: Mexico
+- Email: contacto@silenteye.mx
+- Pais: Mexico (cobertura nacional)
