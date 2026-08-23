@@ -1736,6 +1736,14 @@ api.get('/incidents', authMiddleware, asyncHandler(async (req, res) => {
   } else if (role === 'citizen') {
     query += ` WHERE i.driver_id = $1 OR EXISTS (SELECT 1 FROM incident_followers f WHERE f.incident_id = i.id AND f.user_id = $1)`;
     params.push(userId);
+  } else if (role === 'fleet_owner') {
+    // Cliente comercial: ve los incidentes activos de la red (igual que
+    // driver) + los suyos + los de SUS vehículos. Antes no había filtro y
+    // un fleet_owner veía el histórico completo de todos los usuarios.
+    query += ` WHERE i.status IN ('active', 'attending', 'localizado') OR i.driver_id = $1
+               OR EXISTS (SELECT 1 FROM vehicles vo WHERE vo.id = i.vehicle_id AND vo.owner_id = $1)
+               OR EXISTS (SELECT 1 FROM incident_followers f WHERE f.incident_id = i.id AND f.user_id = $1)`;
+    params.push(userId);
   }
   query += ` ORDER BY i.started_at DESC LIMIT 50`;
   const r = await pool.query(query, params);
