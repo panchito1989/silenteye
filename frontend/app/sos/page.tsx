@@ -144,6 +144,9 @@ export default function SOSPage() {
   // it is legally hazardous (LFPDPPP: sensitive biometric data, no obtainable
   // consent from the person photographed). The backend also enforces this.
   const isInternal = ['admin', 'helper', 'fleet_owner'].includes(sessionUser?.role || '');
+  // El backend solo permite crear/listar sospechosos a admin y helper —
+  // un fleet_owner con estos botones recibiría 403 silenciosos.
+  const canManageSuspects = ['admin', 'helper'].includes(sessionUser?.role || '');
 
   // Continuous geolocation — try high accuracy first, fallback to low
   useEffect(() => {
@@ -330,9 +333,13 @@ export default function SOSPage() {
       setStatus('sent');
       setResult({ incidentId: data.incidentId, nearbyCount: data.nearbyCount });
 
-      // Auto-activate camera for evidence capture
-      setCameraActive(true);
-      setDetectedFaces(0);
+      // Auto-activate camera for evidence capture (solo roles internos:
+      // para un ciudadano la cámara no se monta y el estado mentiría
+      // "Cámara activa" sin cámara alguna)
+      if (isInternal) {
+        setCameraActive(true);
+        setDetectedFaces(0);
+      }
 
       // Vibrate on success
       if (navigator.vibrate) {
@@ -524,8 +531,8 @@ export default function SOSPage() {
               {countdown > 0 && (
                 <p className="text-zinc-400 text-[11px]">{t.sos.cooldown(countdown)}</p>
               )}
-              {/* Camera button */}
-              {!cameraActive && (
+              {/* Camera button (interno — la cámara no existe para ciudadanos) */}
+              {isInternal && !cameraActive && (
                 <button
                   onClick={() => { setCameraActive(true); setDetectedFaces(0); }}
                   className="mt-2 flex items-center gap-1.5 mx-auto px-4 py-2 bg-zinc-800 text-white rounded-lg text-xs font-medium hover:bg-zinc-700 transition-colors"
@@ -534,7 +541,7 @@ export default function SOSPage() {
                   Reabrir cámara {detectedFaces > 0 ? `(${detectedFaces} rostros)` : ''}
                 </button>
               )}
-              {cameraActive && (
+              {isInternal && cameraActive && (
                 <p className="mt-1 text-red-500 text-[10px] font-medium animate-pulse flex items-center justify-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
                   Cámara activa — capturando evidencia
@@ -571,7 +578,7 @@ export default function SOSPage() {
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg>
             911
           </a>
-          {isInternal && (
+          {canManageSuspects && (
             <button
               onClick={() => setShowSuspects(true)}
               className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
@@ -731,8 +738,8 @@ export default function SOSPage() {
         </div>
       )}
 
-      {/* Suspect Gallery overlay (internal-only) */}
-      {isInternal && showSuspects && token && (
+      {/* Suspect Gallery overlay (solo admin/helper — coincide con el backend) */}
+      {canManageSuspects && showSuspects && token && (
         <SuspectGallery token={token} onClose={() => setShowSuspects(false)} role={sessionUser?.role} />
       )}
 
@@ -743,6 +750,7 @@ export default function SOSPage() {
           incidentId={result.incidentId}
           coords={coords}
           active={cameraActive}
+          canMarkSuspect={canManageSuspects}
           onFaceDetected={() => setDetectedFaces(p => p + 1)}
           onClose={() => setCameraActive(false)}
         />

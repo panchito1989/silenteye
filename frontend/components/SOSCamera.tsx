@@ -21,6 +21,9 @@ interface SOSCameraProps {
   incidentId: string;
   coords: { lat: number; lng: number } | null;
   active: boolean;
+  /** El backend restringe POST /api/suspects a admin/helper; ocultar
+   *  "Marcar" para los demás roles (p.ej. fleet_owner) evita 403 mudos. */
+  canMarkSuspect?: boolean;
   onFaceDetected?: (face: DetectedFace) => void;
   onClose: () => void;
 }
@@ -47,7 +50,7 @@ function storeConsent(granted: boolean) {
   }
 }
 
-export default function SOSCamera({ token, incidentId, coords, active, onFaceDetected, onClose }: SOSCameraProps) {
+export default function SOSCamera({ token, incidentId, coords, active, canMarkSuspect = true, onFaceDetected, onClose }: SOSCameraProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -478,7 +481,7 @@ export default function SOSCamera({ token, incidentId, coords, active, onFaceDet
                       <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>
                     </div>
                   )}
-                  {!face.suspectMatch && (
+                  {canMarkSuspect && !face.suspectMatch && (
                     <button
                       onClick={() => markSuspect(face)}
                       className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap"
