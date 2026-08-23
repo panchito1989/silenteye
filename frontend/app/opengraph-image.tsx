@@ -120,7 +120,7 @@ export default async function Image() {
             color: '#52525b',
           }}
         >
-          silenteye.mx
+          silenteye.com.mx
         </div>
       </div>
     ),

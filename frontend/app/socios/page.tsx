@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   title: 'Programa para cámaras y asociaciones de transporte | SilentEye',
   description:
     'SilentEye se asocia con CANACAR, AMOTAC, ANTP y cámaras estatales para llevar rastreo GPS con red de respuesta ciudadana a sus socios. Tarifa preferente, pilot gratuito 30 días con 5 unidades, reportes agregados.',
-  alternates: { canonical: 'https://silenteye.mx/socios' },
+  alternates: { canonical: 'https://silenteye.com.mx/socios' },
   openGraph: {
     type: 'website',
     title: 'Programa de socios SilentEye — Cámaras de transporte',
     description:
       'Pilot gratuito 30 días + tarifa preferente para socios de cámaras y asociaciones de transporte en México.',
-    url: 'https://silenteye.mx/socios',
+    url: 'https://silenteye.com.mx/socios',
   },
 };
 
@@ -54,13 +54,13 @@ const partnerJsonLd = {
   name: 'Programa de socios SilentEye para cámaras de transporte',
   description:
     'Programa de partnership con cámaras de transporte y asociaciones empresariales en México. Tarifa preferente, pilot gratuito de 30 días, reportes agregados y capacitación a socios.',
-  provider: { '@type': 'Organization', name: 'SilentEye', url: 'https://silenteye.mx' },
+  provider: { '@type': 'Organization', name: 'SilentEye', url: 'https://silenteye.com.mx' },
   areaServed: { '@type': 'Country', name: 'México' },
   audience: {
     '@type': 'Audience',
     audienceType: 'Cámaras de transporte y asociaciones empresariales',
   },
-  url: 'https://silenteye.mx/socios',
+  url: 'https://silenteye.com.mx/socios',
 };
 
 const faqJsonLd = {
@@ -79,13 +79,13 @@ export default function SociosPage() {
       <JsonLd data={partnerJsonLd} />
       <JsonLd data={faqJsonLd} />
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Socios', url: 'https://silenteye.mx/socios' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Socios', url: 'https://silenteye.com.mx/socios' },
       ])} />
       <JsonLd data={getWebPageJsonLd({
         name: 'Programa de socios SilentEye',
         description: 'Programa para cámaras y asociaciones de transporte.',
-        url: 'https://silenteye.mx/socios',
+        url: 'https://silenteye.com.mx/socios',
       })} />
 
       {/* Nav */}

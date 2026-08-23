@@ -30,12 +30,12 @@ export function generateMetadata({ params }: Props): Metadata {
   return {
     title,
     description,
-    alternates: { canonical: `https://silenteye.mx/zonas-riesgo/${s.slug}` },
+    alternates: { canonical: `https://silenteye.com.mx/zonas-riesgo/${s.slug}` },
     openGraph: {
       type: 'article',
       title,
       description,
-      url: `https://silenteye.mx/zonas-riesgo/${s.slug}`,
+      url: `https://silenteye.com.mx/zonas-riesgo/${s.slug}`,
     },
   };
 }
@@ -83,14 +83,14 @@ export default function EstadoPage({ params }: Props) {
     headline: `GPS y rastreo vehicular en ${s.name}`,
     description: `Riesgo de robo vehicular y rastreo GPS en ${s.name}, México.`,
     inLanguage: 'es-MX',
-    author: { '@type': 'Organization', name: 'SilentEye', url: 'https://silenteye.mx' },
+    author: { '@type': 'Organization', name: 'SilentEye', url: 'https://silenteye.com.mx' },
     publisher: {
       '@type': 'Organization',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
-      logo: { '@type': 'ImageObject', url: 'https://silenteye.mx/icon-512.png' },
+      url: 'https://silenteye.com.mx',
+      logo: { '@type': 'ImageObject', url: 'https://silenteye.com.mx/icon-512.png' },
     },
-    mainEntityOfPage: `https://silenteye.mx/zonas-riesgo/${s.slug}`,
+    mainEntityOfPage: `https://silenteye.com.mx/zonas-riesgo/${s.slug}`,
     spatialCoverage: {
       '@type': 'AdministrativeArea',
       name: s.name,
@@ -102,14 +102,14 @@ export default function EstadoPage({ params }: Props) {
     <div className="min-h-screen bg-white">
       <JsonLd data={articleJsonLd} />
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Zonas de riesgo', url: 'https://silenteye.mx/zonas-riesgo' },
-        { name: s.name, url: `https://silenteye.mx/zonas-riesgo/${s.slug}` },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Zonas de riesgo', url: 'https://silenteye.com.mx/zonas-riesgo' },
+        { name: s.name, url: `https://silenteye.com.mx/zonas-riesgo/${s.slug}` },
       ])} />
       <JsonLd data={getWebPageJsonLd({
         name: `GPS y rastreo vehicular en ${s.name}`,
         description: `Riesgo SESNSP ${s.risk_score}/100 — ${s.name}`,
-        url: `https://silenteye.mx/zonas-riesgo/${s.slug}`,
+        url: `https://silenteye.com.mx/zonas-riesgo/${s.slug}`,
       })} />
 
       {/* Nav */}

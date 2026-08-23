@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Política de Privacidad — Plataforma GPS de Seguridad Vehicular',
   description:
     'Política de privacidad de SilentEye. Cómo protegemos tus datos de ubicación GPS, información vehicular y datos personales en nuestra plataforma de rastreo GPS y seguridad vehicular.',
-  alternates: { canonical: 'https://silenteye.mx/privacidad' },
+  alternates: { canonical: 'https://silenteye.com.mx/privacidad' },
 };
 
 export default function PrivacidadPage() {
@@ -16,12 +16,12 @@ export default function PrivacidadPage() {
         type: 'PrivacyPolicy',
         name: 'Política de Privacidad — SilentEye',
         description: 'Cómo SilentEye protege tus datos GPS, información vehicular y datos personales conforme a la LFPDPPP mexicana.',
-        url: 'https://silenteye.mx/privacidad',
+        url: 'https://silenteye.com.mx/privacidad',
         dateModified: '2026-03-05',
       })} />
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Privacidad', url: 'https://silenteye.mx/privacidad' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Privacidad', url: 'https://silenteye.com.mx/privacidad' },
       ])} />
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-zinc-100">
         <div className="max-w-4xl mx-auto flex items-center justify-between px-6 h-14">

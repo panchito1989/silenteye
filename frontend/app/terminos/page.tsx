@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Términos de Servicio — Plataforma GPS de Seguridad Vehicular',
   description:
     'Términos y condiciones de uso de SilentEye. Reglas de uso de la plataforma GPS de rastreo vehicular, monitoreo de flotillas GPS y botón de pánico.',
-  alternates: { canonical: 'https://silenteye.mx/terminos' },
+  alternates: { canonical: 'https://silenteye.com.mx/terminos' },
 };
 
 export default function TerminosPage() {
@@ -16,12 +16,12 @@ export default function TerminosPage() {
         type: 'TermsOfService',
         name: 'Términos de Servicio — SilentEye',
         description: 'Reglas de uso de la plataforma GPS SilentEye, condiciones de la plataforma de rastreo vehicular, alertas y botón de pánico.',
-        url: 'https://silenteye.mx/terminos',
+        url: 'https://silenteye.com.mx/terminos',
         dateModified: '2026-03-05',
       })} />
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Términos', url: 'https://silenteye.mx/terminos' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Términos', url: 'https://silenteye.com.mx/terminos' },
       ])} />
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-zinc-100">
         <div className="max-w-4xl mx-auto flex items-center justify-between px-6 h-14">

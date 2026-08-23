@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Blog — GPS, Rastreo Vehicular y Seguridad | SilentEye',
   description:
     'Guías, tutoriales y comparativas sobre GPS para autos, motos, camiones, trailers y flotillas. Aprende sobre rastreo GPS en tiempo real, geocercas, recuperación vehicular y seguridad.',
-  alternates: { canonical: 'https://silenteye.mx/blog' },
+  alternates: { canonical: 'https://silenteye.com.mx/blog' },
 };
 
 const categoryColors: Record<string, string> = {
@@ -27,7 +27,7 @@ export default function BlogPage() {
       <JsonLd data={getWebPageJsonLd({
         name: 'Blog de SilentEye — GPS, rastreo vehicular y seguridad',
         description: 'Guías, tutoriales y comparativas sobre GPS para autos, motos, camiones, trailers y flotillas en México.',
-        url: 'https://silenteye.mx/blog',
+        url: 'https://silenteye.com.mx/blog',
       })} />
       <JsonLd data={getBlogIndexJsonLd(blogPosts.map((p) => ({
         slug: p.slug,
@@ -37,8 +37,8 @@ export default function BlogPage() {
         category: p.category,
       })))} />
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Blog', url: 'https://silenteye.mx/blog' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Blog', url: 'https://silenteye.com.mx/blog' },
       ])} />
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100 px-6 py-3">

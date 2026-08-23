@@ -26,7 +26,7 @@ export default function Home() {
       <JsonLd data={serviceJsonLd} />
       <JsonLd data={webSiteJsonLd} />
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
       ])} />
 
       {/* ── Nav ── */}

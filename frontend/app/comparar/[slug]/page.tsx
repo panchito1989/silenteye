@@ -18,12 +18,12 @@ export function generateMetadata({ params }: Props): Metadata {
   return {
     title: cmp.title,
     description: cmp.description,
-    alternates: { canonical: `https://silenteye.mx/comparar/${cmp.slug}` },
+    alternates: { canonical: `https://silenteye.com.mx/comparar/${cmp.slug}` },
     openGraph: {
       type: 'article',
       title: cmp.title,
       description: cmp.description,
-      url: `https://silenteye.mx/comparar/${cmp.slug}`,
+      url: `https://silenteye.com.mx/comparar/${cmp.slug}`,
     },
   };
 }
@@ -64,15 +64,15 @@ function getComparisonJsonLd(cmp: ReturnType<typeof getCompetitorBySlug>) {
     author: {
       '@type': 'Organization',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
+      url: 'https://silenteye.com.mx',
     },
     publisher: {
       '@type': 'Organization',
       name: 'SilentEye',
-      url: 'https://silenteye.mx',
-      logo: { '@type': 'ImageObject', url: 'https://silenteye.mx/icon-512.png' },
+      url: 'https://silenteye.com.mx',
+      logo: { '@type': 'ImageObject', url: 'https://silenteye.com.mx/icon-512.png' },
     },
-    mainEntityOfPage: `https://silenteye.mx/comparar/${cmp.slug}`,
+    mainEntityOfPage: `https://silenteye.com.mx/comparar/${cmp.slug}`,
     about: [
       { '@type': 'SoftwareApplication', name: 'SilentEye' },
       { '@type': 'Organization', name: cmp.competitorBrand },
@@ -92,14 +92,14 @@ export default function CompararSlugPage({ params }: Props) {
       {articleJsonLd && <JsonLd data={articleJsonLd} />}
       {faqJsonLd && <JsonLd data={faqJsonLd} />}
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Comparar', url: 'https://silenteye.mx/comparar' },
-        { name: `vs ${cmp.competitor}`, url: `https://silenteye.mx/comparar/${cmp.slug}` },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Comparar', url: 'https://silenteye.com.mx/comparar' },
+        { name: `vs ${cmp.competitor}`, url: `https://silenteye.com.mx/comparar/${cmp.slug}` },
       ])} />
       <JsonLd data={getWebPageJsonLd({
         name: cmp.title,
         description: cmp.description,
-        url: `https://silenteye.mx/comparar/${cmp.slug}`,
+        url: `https://silenteye.com.mx/comparar/${cmp.slug}`,
       })} />
 
       {/* Nav */}

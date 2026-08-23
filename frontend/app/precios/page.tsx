@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Precios — Plataforma de Rastreo GPS | SilentEye',
   description:
     'Conoce los precios de SilentEye. Botón de emergencia SOS gratuito. Planes de rastreo GPS desde $99 MXN/mes por vehículo. Sin contratos, sin permanencia. GPS para autos, motos, camiones, trailers y flotillas.',
-  alternates: { canonical: 'https://silenteye.mx/precios' },
+  alternates: { canonical: 'https://silenteye.com.mx/precios' },
   openGraph: {
     type: 'website',
     title: 'Precios de Rastreo GPS — SilentEye',
     description: 'Planes de rastreo GPS vehicular desde $99 MXN/mes. Botón SOS gratuito. Sin contratos.',
-    url: 'https://silenteye.mx/precios',
+    url: 'https://silenteye.com.mx/precios',
   },
 };
 
@@ -19,13 +19,13 @@ export default function PreciosPage() {
   return (
     <div className="min-h-screen bg-white">
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Precios', url: 'https://silenteye.mx/precios' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Precios', url: 'https://silenteye.com.mx/precios' },
       ])} />
       <JsonLd data={getWebPageJsonLd({
         name: 'Precios — Plataforma GPS SilentEye',
         description: 'Planes y precios de rastreo GPS vehicular. Botón de emergencia SOS gratuito.',
-        url: 'https://silenteye.mx/precios',
+        url: 'https://silenteye.com.mx/precios',
       })} />
 
       {/* Nav */}

@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: 'Política de Cookies — Plataforma GPS de Rastreo Vehicular',
   description:
     'Política de cookies de SilentEye. Cookies esenciales utilizadas en nuestra plataforma GPS de rastreo vehicular y monitoreo en tiempo real.',
-  alternates: { canonical: 'https://silenteye.mx/cookies' },
+  alternates: { canonical: 'https://silenteye.com.mx/cookies' },
 };
 
 export default function CookiesPage() {
@@ -16,12 +16,12 @@ export default function CookiesPage() {
         type: 'WebPage',
         name: 'Política de Cookies — SilentEye',
         description: 'Detalle de las cookies esenciales utilizadas por la plataforma GPS de SilentEye y cómo gestionarlas.',
-        url: 'https://silenteye.mx/cookies',
+        url: 'https://silenteye.com.mx/cookies',
         dateModified: '2026-03-05',
       })} />
       <JsonLd data={getBreadcrumbJsonLd([
-        { name: 'Inicio', url: 'https://silenteye.mx' },
-        { name: 'Cookies', url: 'https://silenteye.mx/cookies' },
+        { name: 'Inicio', url: 'https://silenteye.com.mx' },
+        { name: 'Cookies', url: 'https://silenteye.com.mx/cookies' },
       ])} />
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-zinc-100">
         <div className="max-w-4xl mx-auto flex items-center justify-between px-6 h-14">
