@@ -59,6 +59,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
+      url: `${baseUrl}/estadisticas-robo-vehicular-mexico`,
+      lastModified: '2026-08-23',
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/guia-gps-flotillas-mexico`,
+      lastModified: '2026-08-23',
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/cotizar-flota`,
       lastModified: '2026-05-09',
       changeFrequency: 'monthly',

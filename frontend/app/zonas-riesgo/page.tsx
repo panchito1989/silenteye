@@ -60,6 +60,12 @@ export default function ZonasRiesgoIndexPage() {
           <p className="text-zinc-500 text-lg max-w-2xl leading-relaxed">
             Riesgo de robo de auto, trailer y carga por estado, basado en datos del Secretariado Ejecutivo del Sistema Nacional de Seguridad Pública. Si tu vehículo opera en alguno de estos estados, SilentEye te avisa en menos de 3 segundos en cuanto algo se sale de lo normal.
           </p>
+          <p className="text-[14px] text-zinc-500 mt-4">
+            ¿Buscas las cifras nacionales completas con fuentes y metodología? Ve al informe{' '}
+            <Link href="/estadisticas-robo-vehicular-mexico" className="text-blue-600 font-semibold hover:underline">
+              Estadísticas de robo de vehículos en México
+            </Link>.
+          </p>
         </div>
       </header>
 

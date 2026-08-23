@@ -615,6 +615,8 @@ export default function Home() {
                 <a href="#dispositivos" className="block hover:text-zinc-900 transition-colors">{t.nav.compatibleGps}</a>
                 <Link href="/rastreo-satelital-camiones" className="block hover:text-zinc-900 transition-colors">Rastreo satelital camiones</Link>
                 <Link href="/cotizar-flota" className="block hover:text-zinc-900 transition-colors">Cotizar flota</Link>
+                <Link href="/guia-gps-flotillas-mexico" className="block hover:text-zinc-900 transition-colors">Guía GPS para flotillas</Link>
+                <Link href="/estadisticas-robo-vehicular-mexico" className="block hover:text-zinc-900 transition-colors">Estadísticas de robo vehicular</Link>
                 <Link href="/comparar" className="block hover:text-zinc-900 transition-colors">{t.landing.footer.compareCompetitors}</Link>
                 <Link href="/zonas-riesgo" className="block hover:text-zinc-900 transition-colors">{t.landing.footer.riskZones}</Link>
                 <Link href="/socios" className="block hover:text-zinc-900 transition-colors">{t.landing.footer.partners}</Link>

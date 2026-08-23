@@ -520,6 +520,8 @@ export default function RastreoSatelitalCamionesPage() {
           </Link>
           <div className="flex items-center gap-4 text-[12px] text-zinc-400">
             <Link href="/precios" className="hover:text-zinc-600">Precios</Link>
+            <Link href="/guia-gps-flotillas-mexico" className="hover:text-zinc-600">Guía flotillas</Link>
+            <Link href="/estadisticas-robo-vehicular-mexico" className="hover:text-zinc-600">Estadísticas de robo</Link>
             <Link href="/blog/gps-para-trailers-camiones-carga" className="hover:text-zinc-600">Guía camiones</Link>
             <Link href="/comparar" className="hover:text-zinc-600">Comparar</Link>
             <Link href="/privacidad" className="hover:text-zinc-600">Privacidad</Link>
