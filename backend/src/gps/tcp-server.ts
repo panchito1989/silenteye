@@ -57,6 +57,27 @@ interface TeltonikaConnection {
   textBuffer: string;
   lastActivityAt: number;
   imeiReceivedAt: number | null;
+  /**
+   * Whitelist gate for Concox/Queclink (Teltonika valida inline en su
+   * handshake). Se resuelve una vez por conexión al conocer el IMEI; el
+   * pipeline espera este resultado antes de procesar registros para que
+   * un IMEI no registrado no pueda inyectar posiciones ni pánico.
+   */
+  whitelisted?: Promise<boolean>;
+}
+
+/** Arranca la verificación de whitelist para protocolos sin fase de login
+ *  bloqueante (Concox/Queclink). Si el IMEI no está registrado, cierra el
+ *  socket; los registros ya encolados se descartan en el gate del pipeline. */
+function startWhitelistGate(conn: TeltonikaConnection, socket: net.Socket, proto: string): void {
+  const imei = conn.imei!;
+  conn.whitelisted = isImeiWhitelisted(imei).then((ok) => {
+    if (!ok) {
+      logger.warn(`[${proto}] IMEI ${imei} no registrado en whitelist — conexión rechazada`);
+      try { socket.destroy(); } catch { /* ya cerrado */ }
+    }
+    return ok;
+  });
 }
 
 function isValidImei(imei: string): boolean {
@@ -171,6 +192,7 @@ function handleQueclinkData(
       conn.state = 'avl';
       conn.imeiReceivedAt = Date.now();
       logger.info(`[Queclink][${addr}] IMEI=${msg.imei} | tipo=${msg.messageType} | protocolo=${msg.protocolVersion}`);
+      startWhitelistGate(conn, socket, 'Queclink');
     }
 
     // Send heartbeat ACK
@@ -195,6 +217,7 @@ function handleQueclinkData(
     // Process through same pipeline as Teltonika
     (async () => {
       try {
+        if (conn.whitelisted && !(await conn.whitelisted)) return;
         for (let i = 0; i < msg.records.length; i++) {
           const record = msg.records[i];
           const ts = new Date(record.timestamp).toISOString();
@@ -244,6 +267,7 @@ function handleConcoxData(
       conn.state = 'avl';
       conn.imeiReceivedAt = Date.now();
       logger.info(`[GT06][${addr}] Login IMEI=${pkt.imei} | proto=0x${pkt.protocolNumber.toString(16)}`);
+      startWhitelistGate(conn, socket, 'GT06');
     }
 
     // Send ACK when required (login, heartbeat, alarm)
@@ -266,6 +290,7 @@ function handleConcoxData(
     const imei = conn.imei;
     (async () => {
       try {
+        if (conn.whitelisted && !(await conn.whitelisted)) return;
         for (let i = 0; i < pkt.records.length; i++) {
           const record = pkt.records[i];
           const ts = new Date(record.timestamp).toISOString();
