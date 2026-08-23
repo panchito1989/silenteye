@@ -7,10 +7,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Iniciar Sesión — SilentEye Plataforma GPS',
     description: 'Accede a tu panel GPS de rastreo vehicular en tiempo real. Monitoreo GPS 24/7 para flotillas y vehículos particulares.',
-    url: 'https://silenteye.mx/login',
+    url: 'https://silenteye.com.mx/login',
   },
   alternates: {
-    canonical: 'https://silenteye.mx/login',
+    canonical: 'https://silenteye.com.mx/login',
   },
 };
 

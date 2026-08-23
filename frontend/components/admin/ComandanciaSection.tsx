@@ -85,7 +85,7 @@ export default function ComandanciaSection() {
       });
       if (r.ok) {
         const data = await r.json();
-        setProspects(data);
+        setProspects(Array.isArray(data) ? data : []);
       }
     } catch { /* ignore */ }
     setLoading(false);
@@ -475,7 +475,7 @@ export default function ComandanciaSection() {
             <div className="space-y-3">
               {filtered.map(p => {
                 const st = STATUS_LABELS[p.status_seguridad] || STATUS_LABELS.detectado;
-                const demoUrl = `https://silenteye.mx/monitoreo-demo/${p.slug}`;
+                const demoUrl = `https://silenteye.com.mx/monitoreo-demo/${p.slug}`;
                 const whatsappMsg = `🚨 *ALERTA DE SEGURIDAD PATRIMONIAL - SILENT EYE*\n\nHemos detectado actividad logística de la empresa *${p.razon_social}* en la zona de *${p.ubicacion_patio || 'su zona'}*. Según nuestros registros de zona, sus unidades podrían estar operando sin Blindaje Digital Activo.\n\nHemos generado un Protocolo de Monitoreo Virtual para su flota aquí:\n🔗 ${demoUrl}\n\n*Acciones disponibles en el panel:*\n• Simulación de Paro de Motor Remoto\n• Reporte de Extracción de Combustible (Huachicoleo)\n• Geocerca de Seguridad Activa\n\nEvite pérdidas hoy mismo. Un asesor de seguridad está pendiente de su conexión.\n\n📋 Folio: ${p.folio}`;
                 const whatsappUrl = p.telefono_whatsapp
                   ? `https://wa.me/${p.telefono_whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(whatsappMsg)}`

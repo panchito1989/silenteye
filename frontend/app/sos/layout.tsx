@@ -16,10 +16,10 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Botón de Pánico SOS — SilentEye',
     description: 'Envía tu ubicación GPS como alerta de emergencia a personas cercanas en menos de 3 segundos. Gratis y sin app.',
-    url: 'https://silenteye.mx/sos',
+    url: 'https://silenteye.com.mx/sos',
   },
   alternates: {
-    canonical: 'https://silenteye.mx/sos',
+    canonical: 'https://silenteye.com.mx/sos',
   },
 };
 
