@@ -4,9 +4,9 @@ import { competitors } from '@/lib/competitors';
 import JsonLd, { getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'SilentEye vs competidores: Comparativas de rastreo GPS | SilentEye',
+  title: 'SilentEye vs Hunter, LoJack y Skyguard: Comparativas de rastreo GPS en México',
   description:
-    'Compara SilentEye con Hunter, LoJack, Skyguard y otras plataformas de rastreo GPS en México. Precios, features, contratos y red de respuesta — comparativa honesta lado a lado.',
+    'Compara SilentEye con Hunter, LoJack, Skyguard y otras plataformas de rastreo GPS en México. Precios en MXN, contratos, hardware y red de respuesta — comparativa honesta lado a lado para autos y flotillas.',
   alternates: { canonical: 'https://silenteye.com.mx/comparar' },
   openGraph: {
     type: 'website',

@@ -4,10 +4,17 @@ import { blogPosts } from '@/lib/blog-posts';
 import JsonLd, { getBlogIndexJsonLd, getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Blog — GPS, Rastreo Vehicular y Seguridad | SilentEye',
+  title: 'Blog — GPS, Rastreo Vehicular y Seguridad en México | SilentEye',
   description:
-    'Guías, tutoriales y comparativas sobre GPS para autos, motos, camiones, trailers y flotillas. Aprende sobre rastreo GPS en tiempo real, geocercas, recuperación vehicular y seguridad.',
+    'Guías, tutoriales y comparativas sobre GPS para autos, motos, camiones, trailers y flotillas en México. Aprende sobre rastreo GPS en tiempo real, geocercas, recuperación vehicular y prevención de robo.',
   alternates: { canonical: 'https://silenteye.com.mx/blog' },
+  openGraph: {
+    type: 'website',
+    title: 'Blog de SilentEye — GPS y seguridad vehicular en México',
+    description:
+      'Guías y comparativas de GPS para autos, motos, camiones y flotillas en México: instalación, geocercas, recuperación vehicular y prevención de robo.',
+    url: 'https://silenteye.com.mx/blog',
+  },
 };
 
 const categoryColors: Record<string, string> = {

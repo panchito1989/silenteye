@@ -1,19 +1,29 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import JsonLd, { getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
+import JsonLd, { getBreadcrumbJsonLd, getFaqPageJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Precios — Plataforma de Rastreo GPS | SilentEye',
+  title: 'Precios de Rastreo GPS en México — Desde $79 MXN/mes | SilentEye',
   description:
-    'Conoce los precios de SilentEye. Botón de emergencia SOS gratuito. Planes de rastreo GPS desde $99 MXN/mes por vehículo. Sin contratos, sin permanencia. GPS para autos, motos, camiones, trailers y flotillas.',
+    'Precios de rastreo GPS vehicular en México: botón SOS gratuito, plan Personal $99 MXN/mes por vehículo y plan Flotillas $79 MXN/mes por vehículo (4+). Sin contratos ni permanencia. Cobertura nacional: CDMX, Edomex, Jalisco, Nuevo León y los 32 estados.',
   alternates: { canonical: 'https://silenteye.com.mx/precios' },
   openGraph: {
     type: 'website',
-    title: 'Precios de Rastreo GPS — SilentEye',
-    description: 'Planes de rastreo GPS vehicular desde $99 MXN/mes. Botón SOS gratuito. Sin contratos.',
+    title: 'Precios de Rastreo GPS en México — SilentEye',
+    description: 'SOS gratis. Personal $99 MXN/mes. Flotillas $79 MXN/mes por vehículo (4+). Sin contratos. Cobertura en todo México.',
     url: 'https://silenteye.com.mx/precios',
   },
 };
+
+const preciosFaq = [
+  { q: '¿Necesito comprar un GPS aparte?', a: 'Sí, el GPS es un dispositivo físico que se instala en tu vehículo. Puedes comprar un GPS Cobán TK103 desde $400 MXN o un Sinotrack ST-901 desde $350 MXN. Si ya tienes un GPS compatible, solo lo apuntas a SilentEye.' },
+  { q: '¿Hay costo de instalación?', a: 'SilentEye es solo la plataforma de software. La instalación del GPS depende de tu instalador local. Muchos GPS como el Sinotrack ST-901 son tan sencillos que puedes instalarlos tú mismo.' },
+  { q: '¿Qué incluye el chip SIM?', a: 'Tu GPS necesita un chip SIM con datos móviles (cualquier operador). El costo es de $50-150 MXN/mes dependiendo del operador. Este costo es adicional al plan de SilentEye.' },
+  { q: '¿Hay contrato o permanencia?', a: 'No. Puedes cancelar en cualquier momento. Sin penalizaciones, sin letras chicas.' },
+  { q: '¿Ofrecen descuento por volumen?', a: 'Sí. El plan Flotillas ya tiene precio reducido ($79 vs $99/vehículo). Para más de 20 vehículos, contáctanos para una cotización especial.' },
+  { q: '¿El botón SOS siempre será gratis?', a: 'Sí. El botón de emergencia ciudadano SOS es y será gratuito para siempre. No necesitas GPS ni plan de pago para usarlo.' },
+  { q: '¿SilentEye tiene cobertura en todo México?', a: 'Sí. SilentEye opera a nivel nacional en los 32 estados: CDMX, Estado de México, Jalisco, Nuevo León, Puebla, Veracruz, Guanajuato, Yucatán, Quintana Roo y el resto del país. La cobertura depende de la red celular de tu chip SIM (Telcel, AT&T o Movistar), no de una zona de servicio.' },
+];
 
 export default function PreciosPage() {
   return (
@@ -23,10 +33,11 @@ export default function PreciosPage() {
         { name: 'Precios', url: 'https://silenteye.com.mx/precios' },
       ])} />
       <JsonLd data={getWebPageJsonLd({
-        name: 'Precios — Plataforma GPS SilentEye',
-        description: 'Planes y precios de rastreo GPS vehicular. Botón de emergencia SOS gratuito.',
+        name: 'Precios de rastreo GPS en México — SilentEye',
+        description: 'Planes y precios de rastreo GPS vehicular en México. Botón de emergencia SOS gratuito, Personal $99 MXN/mes y Flotillas $79 MXN/mes por vehículo.',
         url: 'https://silenteye.com.mx/precios',
       })} />
+      <JsonLd data={getFaqPageJsonLd(preciosFaq)} />
 
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100 px-6 py-3">
@@ -202,14 +213,7 @@ export default function PreciosPage() {
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl font-extrabold text-zinc-900 mb-8">Preguntas sobre precios</h2>
           <div className="divide-y divide-zinc-200">
-            {[
-              { q: '¿Necesito comprar un GPS aparte?', a: 'Sí, el GPS es un dispositivo físico que se instala en tu vehículo. Puedes comprar un GPS Cobán TK103 desde $400 MXN o un Sinotrack ST-901 desde $350 MXN. Si ya tienes un GPS compatible, solo lo apuntas a SilentEye.' },
-              { q: '¿Hay costo de instalación?', a: 'SilentEye es solo la plataforma de software. La instalación del GPS depende de tu instalador local. Muchos GPS como el Sinotrack ST-901 son tan sencillos que puedes instalarlos tú mismo.' },
-              { q: '¿Qué incluye el chip SIM?', a: 'Tu GPS necesita un chip SIM con datos móviles (cualquier operador). El costo es de $50-150 MXN/mes dependiendo del operador. Este costo es adicional al plan de SilentEye.' },
-              { q: '¿Hay contrato o permanencia?', a: 'No. Puedes cancelar en cualquier momento. Sin penalizaciones, sin letras chicas.' },
-              { q: '¿Ofrecen descuento por volumen?', a: 'Sí. El plan Flotillas ya tiene precio reducido ($79 vs $99/vehículo). Para más de 20 vehículos, contáctanos para una cotización especial.' },
-              { q: '¿El botón SOS siempre será gratis?', a: 'Sí. El botón de emergencia ciudadano SOS es y será gratuito para siempre. No necesitas GPS ni plan de pago para usarlo.' },
-            ].map((item, i) => (
+            {preciosFaq.map((item, i) => (
               <details key={i} className="group">
                 <summary className="flex items-center justify-between py-4 cursor-pointer text-[15px] font-semibold text-zinc-900 hover:text-zinc-600 transition-colors">
                   {item.q}
