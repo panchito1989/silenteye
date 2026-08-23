@@ -67,7 +67,11 @@ const TCP_PORT_ALT = process.env.TCP_PORT_ALT ? parseInt(process.env.TCP_PORT_AL
 const TCP_PORT_ALT2 = process.env.TCP_PORT_ALT2 ? parseInt(process.env.TCP_PORT_ALT2, 10) : null;
 // En Fly.io: PORT=8080 (un solo puerto para HTTP+WebSocket)
 const HTTP_PORT = parseInt(process.env.PORT || process.env.HTTP_PORT || '3001', 10);
-const RATE_LIMIT_MAX = parseInt(process.env.RATE_LIMIT_MAX || '200', 10);
+// 900/15min ≈ 1 req/s por IP. Los dashboards sondean por REST (posiciones
+// cada 5s + listas), así que 200 se agotaba con el uso normal de un solo
+// usuario tras ~15 min y todo devolvía 429 «Demasiadas peticiones». La
+// protección fuerte sigue en los límites por ruta (auth 20/15min, writes).
+const RATE_LIMIT_MAX = parseInt(process.env.RATE_LIMIT_MAX || '900', 10);
 
 const app = express();
 
