@@ -67,7 +67,11 @@ trailerRouter.get('/', readLimit, asyncHandler(async (req, res) => {
   res.json(rows);
 }));
 
-trailerRouter.get('/:vehicleId', readLimit, asyncHandler(async (req, res) => {
+// El patrón UUID evita que este param-route capture las rutas estáticas
+// declaradas después (`/risk-zones`, `/risk-score`): antes cualquier GET
+// /api/trailers/<algo> caía aquí y `WHERE v.id = 'risk-zones'` reventaba
+// con 22P02 → 500.
+trailerRouter.get('/:vehicleId([0-9a-fA-F-]{36})', readLimit, asyncHandler(async (req, res) => {
   const { rows } = await pool.query(
     `SELECT v.id, v.plate, v.imei, v.name, v.driver_id,
             t.cargo_type, t.capacity_kg, t.trailer_plates, t.has_temperature_sensor,
