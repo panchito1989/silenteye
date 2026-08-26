@@ -12,6 +12,9 @@ primary_region = 'dfw'
 [env]
   CORS_ORIGINS = 'https://silenteye.fly.dev,https://silenteye-3rrwnq.fly.dev,https://silent-eye-frontend.vercel.app,https://silenteye.mx,https://www.silenteye.mx'
   NODE_ENV = 'production'
+  # Dominio canónico vivo — usado en los links de los correos del sistema
+  # (avisos de emergencia, testigos). Sin esto, el default es silenteye.mx (muerto).
+  PUBLIC_SITE_URL = 'https://silenteye.com.mx'
   PORT = '8080'
   TCP_PORT = '5000'
   TCP_PORT_ALT = '8443'
