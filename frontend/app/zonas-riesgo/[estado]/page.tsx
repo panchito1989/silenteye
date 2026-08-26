@@ -10,6 +10,7 @@ import {
   getNationalRank,
 } from '@/lib/risk-zones';
 import JsonLd, { getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
+import { getCitiesByState } from '@/lib/cities';
 
 interface Props {
   params: { estado: string };
@@ -25,7 +26,9 @@ export function generateMetadata({ params }: Props): Metadata {
   const band = getRiskBand(s.risk_score);
   const bandLabel = getRiskBandLabel(band).toLowerCase();
   const rank = getNationalRank(s.code);
-  const title = `GPS y rastreo vehicular en ${s.name} — Zona de ${bandLabel} (#${rank} en México) | SilentEye`;
+  // El layout raíz ya agrega "| SilentEye — ..." vía title.template;
+  // incluir "| SilentEye" aquí duplicaba la marca en el <title>.
+  const title = `GPS y rastreo vehicular en ${s.name} — Zona de ${bandLabel} (#${rank} en México)`;
   const description = `${s.name} tiene un índice de riesgo SESNSP de ${s.risk_score}/100 (puesto ${rank} de 32). Rastreo GPS para autos, motos, camionetas, trailers y flotillas con alerta a red ciudadana en menos de 3 segundos. Cobertura en ${s.principalCities.slice(0, 3).join(', ')}.`;
   return {
     title,
@@ -70,6 +73,9 @@ export default function EstadoPage({ params }: Props) {
   if (!narrative) notFound();
   const { intro, recommendation, band, rank } = narrative;
   const colors = getRiskBandColor(band);
+
+  // Landings comerciales de ciudades de este estado (si existen)
+  const stateCities = getCitiesByState(s.slug);
 
   // Related states (same band, different state)
   const related = stateRisk
@@ -218,6 +224,34 @@ export default function EstadoPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {/* City landings for this state */}
+      {stateCities.length > 0 && (
+        <section className="px-6 pb-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 md:p-8">
+              <h2 className="text-lg font-extrabold text-zinc-900 mb-2">
+                Rastreo GPS por ciudad en {s.name}
+              </h2>
+              <p className="text-[14px] text-zinc-600 leading-relaxed mb-4">
+                Contexto local, corredores a vigilar y GPS recomendado para cada ciudad:
+              </p>
+              <div className="flex flex-wrap gap-2.5">
+                {stateCities.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/rastreo-gps/${c.slug}`}
+                    className="inline-flex items-center gap-1.5 bg-white border border-blue-200 rounded-lg px-4 py-2 text-[13px] font-semibold text-blue-700 hover:border-blue-500 transition-colors"
+                  >
+                    Rastreo GPS en {c.name}
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Recommendation */}
       <section className="px-6 py-16 bg-zinc-50 border-y border-zinc-100">

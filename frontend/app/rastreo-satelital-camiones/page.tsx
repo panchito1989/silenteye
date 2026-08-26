@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    title: 'Rastreo Satelital para Camiones, Trailers y Flotas | SilentEye',
+    title: 'Rastreo Satelital para Camiones, Trailers y Flotas',
     description:
       'Rastreo satelital y GPS para camiones de carga: alerta en 3 segundos, sin central. Desde $79 MXN/mes por unidad. Cotiza tu flota en menos de 1 minuto.',
     url: 'https://silenteye.com.mx/rastreo-satelital-camiones',

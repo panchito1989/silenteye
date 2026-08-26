@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 // metadata vive aquí — mismo patrón que /login y /sos. Sin este layout
 // la página no tenía title único, description ni canonical.
 export const metadata: Metadata = {
-  title: 'Cotizar GPS para Flotilla en México — Respuesta en 1 Minuto | SilentEye',
+  title: 'Cotizar GPS para Flotilla en México — Respuesta en 1 Minuto',
   description:
     'Cotiza rastreo GPS para tu flotilla en México: trailers, camiones de carga, camionetas y unidades mixtas. Desde $79 MXN/mes por vehículo (4+ unidades), sin contrato de permanencia. Cobertura nacional en los 32 estados. Respuesta por WhatsApp en menos de 1 minuto.',
   keywords: [

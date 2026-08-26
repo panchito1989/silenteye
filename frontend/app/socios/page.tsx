@@ -4,7 +4,7 @@ import JsonLd, { getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/Json
 import SociosForm from './SociosForm';
 
 export const metadata: Metadata = {
-  title: 'Programa para cámaras y asociaciones de transporte | SilentEye',
+  title: 'Programa para cámaras y asociaciones de transporte',
   description:
     'SilentEye se asocia con CANACAR, AMOTAC, ANTP y cámaras estatales para llevar rastreo GPS con red de respuesta ciudadana a sus socios. Tarifa preferente, pilot gratuito 30 días con 5 unidades, reportes agregados.',
   alternates: { canonical: 'https://silenteye.com.mx/socios' },

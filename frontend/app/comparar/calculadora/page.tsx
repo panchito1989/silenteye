@@ -3,7 +3,7 @@ import JsonLd, { getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/Json
 import CalculadoraClient from './CalculadoraClient';
 
 export const metadata: Metadata = {
-  title: 'Calculadora: ¿cuánto ahorras vs Hunter, LoJack o Skyguard? | SilentEye',
+  title: 'Calculadora: ¿cuánto ahorras vs Hunter, LoJack o Skyguard?',
   description:
     'Calcula cuánto te ahorras al año cambiando de Hunter, LoJack o Skyguard a SilentEye. Personal $99 MXN/mes, Flotillas $79 MXN/mes. Sin contrato, sin permanencia.',
   alternates: { canonical: 'https://silenteye.com.mx/comparar/calculadora' },

@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { blogPosts } from '@/lib/blog-posts';
 import { competitors } from '@/lib/competitors';
 import { stateRisk } from '@/lib/risk-zones';
+import { cities } from '@/lib/cities';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://silenteye.com.mx';
@@ -77,6 +78,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     {
+      url: `${baseUrl}/rastreo-gps`,
+      lastModified: '2026-08-25',
+      changeFrequency: 'monthly',
+      priority: 0.95,
+    },
+    {
       url: `${baseUrl}/login`,
       lastModified: '2026-03-01',
       changeFrequency: 'monthly',
@@ -122,6 +129,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
+  // Landings comerciales por ciudad. Las 8 metrópolis más grandes con
+  // prioridad ligeramente mayor — son las de más volumen de búsqueda
+  // ("rastreo gps monterrey", "gps para autos guadalajara").
+  const topCities = new Set([
+    'cdmx', 'guadalajara', 'monterrey', 'puebla', 'tijuana', 'leon', 'queretaro', 'merida',
+  ]);
+  const cityPages: MetadataRoute.Sitemap = cities.map((c) => ({
+    url: `${baseUrl}/rastreo-gps/${c.slug}`,
+    lastModified: '2026-08-25',
+    changeFrequency: 'monthly' as const,
+    priority: topCities.has(c.slug) ? 0.85 : 0.8,
+  }));
+
   const zonasRiesgoPages: MetadataRoute.Sitemap = stateRisk.map((s) => ({
     url: `${baseUrl}/zonas-riesgo/${s.slug}`,
     lastModified: '2026-05-04',
@@ -131,5 +151,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: s.risk_score >= 70 ? 0.8 : 0.7,
   }));
 
-  return [...staticPages, ...blogPages, ...compararPages, ...zonasRiesgoPages];
+  return [...staticPages, ...blogPages, ...compararPages, ...cityPages, ...zonasRiesgoPages];
 }

@@ -642,6 +642,7 @@ export default function Home() {
                 <Link href="/estadisticas-robo-vehicular-mexico" className="block hover:text-zinc-900 transition-colors">Estadísticas de robo vehicular</Link>
                 <Link href="/comparar" className="block hover:text-zinc-900 transition-colors">{t.landing.footer.compareCompetitors}</Link>
                 <Link href="/zonas-riesgo" className="block hover:text-zinc-900 transition-colors">{t.landing.footer.riskZones}</Link>
+                <Link href="/rastreo-gps" className="block hover:text-zinc-900 transition-colors">{t.landing.footer.cityCoverage}</Link>
                 <Link href="/socios" className="block hover:text-zinc-900 transition-colors">{t.landing.footer.partners}</Link>
                 <Link href="/sos" className="block hover:text-zinc-900 transition-colors">{t.common.sosFull}</Link>
                 <Link href="/precios" className="block hover:text-zinc-900 transition-colors">{t.nav.pricing}</Link>

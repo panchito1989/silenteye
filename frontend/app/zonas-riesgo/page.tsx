@@ -5,7 +5,7 @@ import JsonLd, { getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/Json
 import RiskMapClient from '@/components/RiskMapClient';
 
 export const metadata: Metadata = {
-  title: 'Zonas de riesgo de robo vehicular en México por estado | SilentEye',
+  title: 'Zonas de riesgo de robo vehicular en México por estado',
   description:
     'Mapa de riesgo de robo de auto, trailer y carga por estado en México. Ranking nacional con datos SESNSP, ciudades principales, carreteras críticas y plataforma GPS de rastreo en tiempo real.',
   alternates: { canonical: 'https://silenteye.com.mx/zonas-riesgo' },
@@ -43,6 +43,7 @@ export default function ZonasRiesgoIndexPage() {
             <span className="text-lg font-bold tracking-tight">SilentEye</span>
           </Link>
           <div className="flex items-center gap-3">
+            <Link href="/rastreo-gps" className="hidden sm:inline-flex text-[13px] font-medium text-zinc-500 hover:text-zinc-900 transition-colors">Por ciudad</Link>
             <Link href="/comparar" className="hidden sm:inline-flex text-[13px] font-medium text-zinc-500 hover:text-zinc-900 transition-colors">Comparar</Link>
             <Link href="/precios" className="hidden sm:inline-flex text-[13px] font-medium text-zinc-500 hover:text-zinc-900 transition-colors">Precios</Link>
             <Link href="/login" className="px-4 py-1.5 text-[13px] font-semibold text-white bg-zinc-900 rounded-lg hover:bg-zinc-800 transition-colors">Comenzar gratis</Link>

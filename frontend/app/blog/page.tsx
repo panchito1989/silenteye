@@ -4,7 +4,7 @@ import { blogPosts } from '@/lib/blog-posts';
 import JsonLd, { getBlogIndexJsonLd, getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Blog — GPS, Rastreo Vehicular y Seguridad en México | SilentEye',
+  title: 'Blog — GPS, Rastreo Vehicular y Seguridad en México',
   description:
     'Guías, tutoriales y comparativas sobre GPS para autos, motos, camiones, trailers y flotillas en México. Aprende sobre rastreo GPS en tiempo real, geocercas, recuperación vehicular y prevención de robo.',
   alternates: { canonical: 'https://silenteye.com.mx/blog' },

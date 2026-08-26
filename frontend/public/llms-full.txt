@@ -2,7 +2,7 @@
 
 > Plataforma mexicana de rastreo GPS vehicular con alerta de robo en menos de 3 segundos a la red cercana. Rastreo en tiempo real para autos, motos, camiones, trailers y flotillas en los 32 estados de Mexico. Sin central, sin llamada, sin app, sin contrato. Boton SOS gratuito. Desde $79 MXN/mes por vehiculo.
 
-Ultima actualizacion: 2026-08-23. Indice corto: https://silenteye.com.mx/llms.txt
+Ultima actualizacion: 2026-08-25. Indice corto: https://silenteye.com.mx/llms.txt
 
 ## Que es SilentEye
 
@@ -131,11 +131,26 @@ Normatividad relevante en Mexico: la NOM-012-SCT-2-2017 exige rastreo satelital 
 - Funciona para flotillas grandes? Si: panel multi-vehiculo, conductores asignados, alertas por unidad y reportes PDF. Para 20+ unidades hay cotizacion especial.
 - Emiten reportes para la aseguradora? Si: historial de recorridos exportable y reporte PDF del incidente.
 
+## Cobertura por ciudad (landings locales)
+
+SilentEye opera en toda la republica; el precio es el mismo en cualquier ciudad (desde $79 MXN/mes por vehiculo, sin contrato). Hay paginas con contexto local — quien usa GPS, corredores y zonas a vigilar, FAQ local — para 33 ciudades, en el formato https://silenteye.com.mx/rastreo-gps/[ciudad]:
+
+- Centro: CDMX (cdmx), Ecatepec, Toluca, Puebla, Cuernavaca, Pachuca
+- Bajio y Occidente: Guadalajara, Leon, Celaya, Queretaro, Aguascalientes, San Luis Potosi (san-luis-potosi), Morelia
+- Noreste: Monterrey, Saltillo, Torreon, Nuevo Laredo (nuevo-laredo), Reynosa, Tampico
+- Norte: Chihuahua, Ciudad Juarez (ciudad-juarez)
+- Noroeste: Tijuana, Mexicali, Hermosillo, Culiacan, Mazatlan
+- Golfo y Sureste: Veracruz, Villahermosa, Tuxtla Gutierrez (tuxtla-gutierrez), Merida, Cancun
+- Sur: Oaxaca, Acapulco
+
+Indice completo: https://silenteye.com.mx/rastreo-gps
+
 ## Directorio de paginas
 
 - Inicio: https://silenteye.com.mx
 - Precios: https://silenteye.com.mx/precios
 - Cotizar flota: https://silenteye.com.mx/cotizar-flota
+- Rastreo GPS por ciudad (33 ciudades): https://silenteye.com.mx/rastreo-gps
 - Rastreo satelital para camiones: https://silenteye.com.mx/rastreo-satelital-camiones
 - Guia GPS para flotillas: https://silenteye.com.mx/guia-gps-flotillas-mexico
 - Estadisticas de robo vehicular: https://silenteye.com.mx/estadisticas-robo-vehicular-mexico

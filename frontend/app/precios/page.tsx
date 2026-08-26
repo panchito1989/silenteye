@@ -3,7 +3,7 @@ import Link from 'next/link';
 import JsonLd, { getBreadcrumbJsonLd, getFaqPageJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Precios de Rastreo GPS en México — Desde $79 MXN/mes | SilentEye',
+  title: 'Precios de Rastreo GPS en México — Desde $79 MXN/mes',
   description:
     'Precios de rastreo GPS vehicular en México: botón SOS gratuito, plan Personal $99 MXN/mes por vehículo y plan Flotillas $79 MXN/mes por vehículo (4+). Sin contratos ni permanencia. Cobertura nacional: CDMX, Edomex, Jalisco, Nuevo León y los 32 estados.',
   alternates: { canonical: 'https://silenteye.com.mx/precios' },
