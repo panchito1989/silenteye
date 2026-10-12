@@ -5,7 +5,8 @@
  * Unauthorized copying, modification, or distribution is strictly prohibited.
  *
  * Servidor TCP Multi-Protocolo GPS
- * Soporta: Teltonika (Codec 8/8E), Queclink (+RESP/+BUFF), Concox/GT06 (0x7878)
+ * Soporta: Teltonika (Codec 8/8E), Queclink (+RESP/+BUFF), Concox/GT06 (0x7878),
+ *          Cobán GPS103 (imei:...;) y Sinotrack H02 (*HQ,...#)
  * Auto-detecta protocolo por primeros bytes de cada conexión.
  */
 
@@ -15,6 +16,8 @@ import type { AVLRecord } from './teltonika-parser.js';
 import { detectAlert } from './alert-detector.js';
 import { isQueclinkData, parseQueclinkBuffer } from './queclink-parser.js';
 import { isConcoxData, extractConcoxPackets, parseConcoxPacket } from './concox-parser.js';
+import { isGps103Data, parseGps103Buffer } from './gps103-parser.js';
+import { isH02Data, parseH02Buffer } from './h02-parser.js';
 import { pool } from '../db/pool.js';
 import { logger } from '../utils/logger.js';
 import { processGpsData, processPanicEvent } from '../services/gps-service.js';
@@ -45,7 +48,24 @@ if (SKIP_WHITELIST && process.env.NODE_ENV === 'production') {
 }
 
 type ConnectionState = 'imei' | 'validating' | 'avl';
-type ProtocolType = 'unknown' | 'teltonika' | 'queclink' | 'concox';
+type ProtocolType = 'unknown' | 'teltonika' | 'queclink' | 'concox' | 'gps103' | 'h02';
+
+/** Forma común de los mensajes de los protocolos de texto (Queclink, GPS103, H02). */
+interface TextProtocolMessage {
+  imei: string;
+  messageType: string;
+  records: AVLRecord[];
+  needsAck: boolean;
+  ackResponse: string | null;
+}
+type TextProtocolParser = (buffer: string) => { messages: TextProtocolMessage[]; remainder: string };
+
+/** Protocolos de texto: sin handshake, el IMEI viene dentro de cada mensaje. */
+const TEXT_PROTOCOLS: Record<string, { label: string; parse: TextProtocolParser }> = {
+  queclink: { label: 'Queclink', parse: parseQueclinkBuffer },
+  gps103:   { label: 'GPS103',   parse: parseGps103Buffer },
+  h02:      { label: 'H02',      parse: parseH02Buffer },
+};
 
 interface TeltonikaConnection {
   socket: net.Socket;
@@ -82,6 +102,10 @@ function startWhitelistGate(conn: TeltonikaConnection, socket: net.Socket, proto
 
 function isValidImei(imei: string): boolean {
   return /^\d{15}$/.test(imei);
+}
+
+function isPrintableAscii(byte: number | undefined): boolean {
+  return byte !== undefined && byte >= 0x20 && byte <= 0x7e;
 }
 
 async function isImeiWhitelisted(imei: string): Promise<boolean> {
@@ -175,14 +199,21 @@ setInterval(() => {
   }
 }, 60_000).unref();
 
-/* ── Queclink message handler ── */
-function handleQueclinkData(
+/* ── Text protocol handler (Queclink, GPS103, H02) ── */
+function handleTextProtocolData(
   conn: TeltonikaConnection,
   socket: net.Socket,
   addr: string,
   onData?: (imei: string, records: AVLRecord[]) => void,
 ): void {
-  const { messages, remainder } = parseQueclinkBuffer(conn.textBuffer);
+  const proto = TEXT_PROTOCOLS[conn.protocol];
+  if (!proto) return;
+  const { label, parse } = proto;
+
+  // Acumular texto y extraer mensajes completos
+  conn.textBuffer += conn.buffer.toString('ascii');
+  conn.buffer = Buffer.alloc(0);
+  const { messages, remainder } = parse(conn.textBuffer);
   conn.textBuffer = remainder;
 
   for (const msg of messages) {
@@ -191,28 +222,28 @@ function handleQueclinkData(
       conn.imei = msg.imei;
       conn.state = 'avl';
       conn.imeiReceivedAt = Date.now();
-      logger.info(`[Queclink][${addr}] IMEI=${msg.imei} | tipo=${msg.messageType} | protocolo=${msg.protocolVersion}`);
-      startWhitelistGate(conn, socket, 'Queclink');
+      logger.info(`[${label}][${addr}] IMEI=${msg.imei} | tipo=${msg.messageType}`);
+      startWhitelistGate(conn, socket, label);
     }
 
-    // Send heartbeat ACK
+    // Send ACK (heartbeat / login) when the protocol requires it
     if (msg.needsAck && msg.ackResponse) {
       try {
         socket.write(msg.ackResponse);
-        logger.debug(`[Queclink][${conn.imei}] ACK enviado: ${msg.ackResponse.substring(0, 40)}`);
+        logger.debug(`[${label}][${conn.imei}] ACK enviado: ${msg.ackResponse.substring(0, 40)}`);
       } catch (err) {
-        logger.error(`[Queclink] Error enviando ACK:`, err);
+        logger.error(`[${label}] Error enviando ACK:`, err);
       }
     }
 
     if (msg.records.length === 0) {
-      if (msg.messageType !== 'GTHBD') {
-        logger.debug(`[Queclink][${conn.imei}] ${msg.messageType} sin GPS data (info/status)`);
+      if (!msg.needsAck) {
+        logger.debug(`[${label}][${conn.imei}] ${msg.messageType} sin GPS data (info/status)`);
       }
       continue;
     }
 
-    logger.info(`[Queclink][${conn.imei}] ${msg.messageType}: ${msg.records.length} registro(s) | isPanic=${msg.records[0]?.isPanic}`);
+    logger.info(`[${label}][${conn.imei}] ${msg.messageType}: ${msg.records.length} registro(s) | isPanic=${msg.records[0]?.isPanic}`);
 
     // Process through same pipeline as Teltonika
     (async () => {
@@ -222,7 +253,7 @@ function handleQueclinkData(
           const record = msg.records[i];
           const ts = new Date(record.timestamp).toISOString();
           logger.info(
-            `[Queclink][${conn.imei}][rec=${i + 1}] ts=${ts} lat=${record.latitude.toFixed(5)} lng=${record.longitude.toFixed(5)} ` +
+            `[${label}][${conn.imei}][rec=${i + 1}] ts=${ts} lat=${record.latitude.toFixed(5)} lng=${record.longitude.toFixed(5)} ` +
             `speed=${record.speed} alt=${record.altitude} azimuth=${record.angle} sat=${record.satellites} priority=${record.priority} isPanic=${record.isPanic}`
           );
           try {
@@ -231,17 +262,17 @@ function handleQueclinkData(
               await processPanicEvent(conn.imei!, record);
             }
           } catch (err) {
-            logger.warn('[Queclink] Error processGpsData:', err);
+            logger.warn(`[${label}] Error processGpsData:`, err);
           }
           const alert = detectAlert(conn.imei!, record);
           if (alert) {
-            logger.info(`[Queclink][ALERT] type=${alert.alertType} priority=${alert.priority}`);
-            processAlert(alert).catch((err) => logger.error('Error procesando alerta Queclink:', err));
+            logger.info(`[${label}][ALERT] type=${alert.alertType} priority=${alert.priority}`);
+            processAlert(alert).catch((err) => logger.error(`Error procesando alerta ${label}:`, err));
           }
         }
         onData?.(conn.imei!, msg.records);
       } catch (err) {
-        logger.error('[Queclink] Error procesando datos GPS:', err);
+        logger.error(`[${label}] Error procesando datos GPS:`, err);
       }
     })();
   }
@@ -357,7 +388,7 @@ export function createTeltonikaTcpServer(port: number, onData?: (imei: string, r
     const remotePort = socket.remotePort || 0;
     const addr = `${remoteAddr}:${remotePort}`;
 
-    logger.info(`[GPS] TCP client connected | ${addr} | Configure device: Domain=silenteye-3rrwnq.fly.dev Port=5000`);
+    logger.info(`[GPS] TCP client connected | ${addr} | Configure device: Domain=gps.silenteye.com.mx Port=5000`);
 
     socket.setKeepAlive(true, 30000);
     socket.setNoDelay(true);
@@ -394,6 +425,17 @@ export function createTeltonikaTcpServer(port: number, onData?: (imei: string, r
             } else if (isConcoxData(conn.buffer)) {
               conn.protocol = 'concox';
               logger.info(`[GPS][${addr}] Protocolo detectado: Concox/GT06`);
+            } else if (isH02Data(conn.buffer)) {
+              conn.protocol = 'h02';
+              logger.info(`[GPS][${addr}] Protocolo detectado: Sinotrack/H02`);
+            } else if (isGps103Data(conn.buffer)) {
+              conn.protocol = 'gps103';
+              logger.info(`[GPS][${addr}] Protocolo detectado: Cobán/GPS103`);
+            } else if (isPrintableAscii(conn.buffer[0]) && conn.buffer.length < 16) {
+              // Protocolo de texto que llegó fragmentado: esperar más bytes antes
+              // de decidir. Teltonika empieza con 0x00 (longitud del IMEI), así
+              // que nunca cae aquí.
+              return;
             } else {
               conn.protocol = 'teltonika';
               logger.info(`[GPS][${addr}] Protocolo detectado: Teltonika`);
@@ -406,11 +448,9 @@ export function createTeltonikaTcpServer(port: number, onData?: (imei: string, r
             return;
           }
 
-          // ── Queclink: no handshake, IMEI comes inside each message ──
-          if (conn.protocol === 'queclink') {
-            conn.textBuffer += conn.buffer.toString('ascii');
-            conn.buffer = Buffer.alloc(0);
-            handleQueclinkData(conn, socket, addr, onData);
+          // ── Queclink / GPS103 / H02: no handshake, IMEI comes inside each message ──
+          if (conn.protocol in TEXT_PROTOCOLS) {
+            handleTextProtocolData(conn, socket, addr, onData);
             return;
           }
 
@@ -467,11 +507,9 @@ export function createTeltonikaTcpServer(port: number, onData?: (imei: string, r
           // ── Concox AVL: binary packets ──
           handleConcoxData(conn, socket, addr, onData);
 
-        } else if (conn.state === 'avl' && conn.imei && conn.protocol === 'queclink') {
-          // ── Queclink AVL: accumulate text and process ──
-          conn.textBuffer += conn.buffer.toString('ascii');
-          conn.buffer = Buffer.alloc(0);
-          handleQueclinkData(conn, socket, addr, onData);
+        } else if (conn.state === 'avl' && conn.imei && conn.protocol in TEXT_PROTOCOLS) {
+          // ── Queclink / GPS103 / H02 AVL: accumulate text and process ──
+          handleTextProtocolData(conn, socket, addr, onData);
 
         } else if (conn.state === 'avl' && conn.imei) {
           while (conn.buffer.length >= 12) {
@@ -568,7 +606,7 @@ export function createTeltonikaTcpServer(port: number, onData?: (imei: string, r
   imeiTimeoutCheck = setInterval(() => {
     const now = Date.now();
     for (const [sock, c] of connections) {
-      if (c.state === 'imei' && c.protocol !== 'queclink' && c.protocol !== 'concox' && now - c.lastActivityAt > IMEI_LOGIN_TIMEOUT_MS) {
+      if (c.state === 'imei' && !(c.protocol in TEXT_PROTOCOLS) && c.protocol !== 'concox' && now - c.lastActivityAt > IMEI_LOGIN_TIMEOUT_MS) {
         logger.warn(`[TCP] Timeout IMEI: ${sock.remoteAddress}:${sock.remotePort} sin login en ${IMEI_LOGIN_TIMEOUT_MS / 1000}s`);
         sock.destroy();
       } else if (c.state === 'avl' && c.imei && now - c.lastActivityAt > AVL_IDLE_TIMEOUT_MS) {
@@ -583,7 +621,7 @@ export function createTeltonikaTcpServer(port: number, onData?: (imei: string, r
   });
 
   server.listen(port, '0.0.0.0', () => {
-    logger.info(`[TCP] Servidor GPS multi-protocolo en 0.0.0.0:${port} | Teltonika+Queclink+Concox | accept_all_imei=${SKIP_WHITELIST}`);
+    logger.info(`[TCP] Servidor GPS multi-protocolo en 0.0.0.0:${port} | Teltonika+Queclink+Concox+GPS103+H02 | accept_all_imei=${SKIP_WHITELIST}`);
   });
 
   return server;

@@ -46,3 +46,6 @@ silenteye-*.json
 # Claude Code (local/temporary — not shared)
 .claude/settings.local.json
 .claude/worktrees/
+
+# Videos de marketing (pesados, no van al repo)
+marketing/video/

@@ -11,7 +11,7 @@ Plataforma de seguridad vehicular en tiempo real. Monitoreo GPS de flotas, botó
 |------|-----------|
 | **Backend** | Node.js · Express · TypeScript · PostgreSQL + PostGIS |
 | **Frontend** | Next.js 14 · React · Tailwind CSS · Leaflet/OpenStreetMap |
-| **GPS** | Teltonika FMC130 · Codec 8/8E · TCP (via ngrok) |
+| **GPS** | Servidor TCP multiprotocolo: Teltonika (Codec 8/8E) · Concox/GT06 · Queclink · Cobán/Sinotrack |
 | **Tiempo real** | WebSocket · Push Notifications (VAPID) |
 | **Email** | Nodemailer · Gmail SMTP (OTP + notificaciones) |
 | **PDF** | PDFKit (reportes de incidentes) |
@@ -42,7 +42,7 @@ SilentEye/
 │   │   ├── push-service.ts      # Push notifications (VAPID/web-push)
 │   │   └── websocket.ts         # Broadcast tiempo real
 │   ├── teltonika/
-│   │   ├── tcp-server.ts        # Servidor TCP para GPS Teltonika
+│   │   ├── tcp-server.ts        # Servidor TCP multiprotocolo (auto-detecta marca)
 │   │   ├── avl-decoder.ts       # Decodificador Codec 8/8E
 │   │   ├── alert-detector.ts    # Clasifica eventos AVL → alertas
 │   │   └── crc16.ts             # Checksum CRC-16
@@ -148,8 +148,8 @@ Ver [`backend/.env.example`](backend/.env.example) para referencia completa.
 
 ## Funcionalidades principales
 
-- **Rastreo GPS en vivo** — Teltonika FMC130 via TCP (ngrok tunnel), ubicación en mapa OpenStreetMap
-- **Botón de pánico físico** — DIN1 del GPS genera incidente automático (priority=2)
+- **Rastreo GPS en vivo** — GPS comerciales (Teltonika, Concox, Queclink, Cobán, Sinotrack) via TCP a `gps.silenteye.com.mx`, ubicación en mapa OpenStreetMap
+- **Botón de pánico físico** — El botón SOS cableado al GPS genera incidente automático (priority=2) y alerta a la red cercana
 - **Botón SOS móvil** — Cualquier persona desde el navegador, sin app
 - **Notificaciones** — WebSocket + Push + Email al ciudadano cuando un helper responde
 - **Gestión de incidentes** — Estados: active → attending → resolved
@@ -157,9 +157,58 @@ Ver [`backend/.env.example`](backend/.env.example) para referencia completa.
 - **Sistema de testigos** — Solicitud voluntaria por email con aceptar/declinar
 - **PWA** — Instalable como app, funciona offline para el service worker
 
-## GPS Teltonika (FMC130)
+## GPS: cómo funciona y cómo se configura
 
-### Conexión del botón de pánico
+SilentEye **no fabrica GPS**. Usa rastreadores comerciales que ya existen en el mercado y lo que construimos es el servidor que los recibe (`backend/src/gps/tcp-server.ts`). El cliente solo apunta su GPS a nuestro servidor, igual que lo haría con cualquier plataforma de rastreo.
+
+### Servidor
+
+| Parámetro | Valor |
+|-----------|-------|
+| **Host** | `gps.silenteye.com.mx` (IP fija: `213.188.221.189`) |
+| **Puerto principal** | `5000` |
+| **Puertos alternos** | `8443` y `15140` — por si la operadora móvil bloquea el 5000 |
+| **Protocolo** | TCP |
+
+Los tres puertos van al mismo servidor (`backend/fly.toml`). El servidor detecta la marca del GPS por los primeros bytes de la conexión y usa el parser correspondiente (`teltonika-parser.ts`, `concox-parser.ts`, `queclink-parser.ts`). Solo acepta IMEIs registrados en la plataforma (whitelist); un GPS que no esté dado de alta es rechazado.
+
+> ⚠️ El dominio viejo `silenteye.mx` apunta a Vercel y **no sirve para TCP**. Usar siempre `gps.silenteye.com.mx`.
+
+### Flujo para el cliente
+
+1. Crea su cuenta y registra el vehículo (placa + IMEI de 15 dígitos) en `/setup`.
+2. Apunta el GPS al servidor con el comando de su marca (abajo). La misma página `/setup` muestra estos comandos (`frontend/app/setup/page.tsx`).
+3. En 2–5 minutos el vehículo aparece en el mapa.
+
+### Configuración por marca
+
+Los comandos se mandan por **SMS al chip del GPS** (salvo Teltonika, que se configura por USB). Reemplaza `tu-apn` por el APN de la operadora del chip (Telcel: `internet.itelcel.com`).
+
+| Marca | Modelos | Comando |
+|-------|---------|---------|
+| **Concox** | GT06N, WeTrack2, GV20, JM-VL | `APN,tu-apn#` y luego `SERVER,1,gps.silenteye.com.mx,5000,0#` |
+| **Cobán** | TK103, TK303, GPS103 | `apn123456 tu-apn` · `adminip123456 gps.silenteye.com.mx 5000` · `gprs123456` (password default `123456`) |
+| **Sinotrack** | ST-901, ST-906 | `8030000 tu-apn` · `8040000 gps.silenteye.com.mx 5000` (password default `0000`; confirmar en el manual del modelo). Los clones "TK103" con firmware GT06 usan los comandos de Concox |
+| **Queclink** | GL300, GV300, GV58CEU | `AT+GTSVR=gl300,1,gps.silenteye.com.mx,5000,,,,,FFFF$` (password `gl300`/`gv300` según modelo) |
+| **Teltonika** | FMB920, FMC920, FMC130 | Teltonika Configurator → GPRS → Server Settings: Domain `gps.silenteye.com.mx`, Port `5000`, Protocol TCP, Codec 8 Extended |
+
+> ℹ️ Cobán habla el protocolo de texto **GPS103** (`imei:...,tracker,...;`) y Sinotrack el protocolo **H02** (`*HQ,...#`); ambos tienen parser propio (`gps103-parser.ts`, `h02-parser.ts`, agregados 2026-10-11) con pruebas en `backend/src/scripts/test-gps-text-parsers.ts`. Falta validarlos contra un equipo físico real. Nota: algunos H02 reportan un ID corto en vez del IMEI de 15 dígitos; esos equipos no pasan la whitelist.
+
+Para flotas, el alta masiva de IMEIs se hace con `npm run onboard:fleet -w backend` a partir de un CSV (`backend/src/scripts/onboard-fleet.ts`). Los IMEIs deben estar registrados **antes** de reconfigurar los GPS, por la whitelist.
+
+### Botón de pánico físico
+
+El botón va cableado al GPS, no al celular. Al oprimirlo, el GPS manda un evento de pánico y el servidor crea el incidente (priority=2) y difunde la ubicación a la red cercana. Lo que detecta cada parser:
+
+| Marca | Qué manda el GPS | Dónde se detecta |
+|-------|------------------|------------------|
+| Teltonika | DIN1 cambia de estado (AVL ID 1) o Priority = Panic | `alert-detector.ts` |
+| Concox/GT06 | Paquete de alarma `0x16`/`0x26` con tipo SOS (`0x01`) | `concox-parser.ts` |
+| Queclink | Mensaje `+RESP:GTSOS` | `queclink-parser.ts` |
+| Cobán | Reporte con tipo `help me` | `gps103-parser.ts` |
+| Sinotrack | Bit 1 o bit 18 del status en 0 (`*HQ,...,V1,...,FFFFFFFD`) | `h02-parser.ts` |
+
+**Teltonika FMC130** (el único que requiere configurar la entrada a mano):
 
 ```
 Pin 5 (DIN1) ──── Cable 1 del botón (normalmente abierto)
@@ -168,33 +217,30 @@ Pin 1 (+V)   ──── +12V batería vehículo
 Pin 7 (GND)  ──── GND batería vehículo
 ```
 
-### Configuración en Teltonika Configurator
+En Teltonika Configurator → I/O → DIN1 (AVL ID 1): Priority **Panic**, Operand **On Change**. El detector acepta tanto DIN1=1 como DIN1=0 como pánico, así que funciona con botón a +V o a GND.
 
-| Parámetro | Valor |
-|-----------|-------|
-| **Domain** | `7.tcp.ngrok.io` |
-| **Port** | `22704` |
-| **Protocol** | TCP |
-| **Codec** | Codec 8 Extended |
+**Concox, Cobán, Sinotrack y Queclink:** el arnés ya trae dos cables (o un conector de 2 pines) marcados **SOS**. Se conecta ahí un botón normalmente abierto; no hay que configurar nada más, el GPS manda la alarma SOS por sí solo. Los colores de los cables cambian por modelo, así que hay que verificar la etiqueta "SOS" en el manual del equipo.
 
-**I/O → DIN1 (AVL ID 1)**:
-- Priority: **Panic**
-- Operand: **On Change**
+Recomendación de instalación: el botón escondido donde el conductor lo alcance sin bajar la vista (bajo el tablero, junto a la rodilla, o en el lado izquierdo del asiento), y el GPS escondido fuera de la vista del pasajero.
 
 ### Verificar conexión
 
 ```bash
-flyctl logs --app silenteye-3rrwnq
-# Debe mostrar:
-# [GPS] IMEI recibido: 865124071489548
-# ACK IMEI enviado: 0x01 (aceptar)
+flyctl logs --app silenteye
+# Debe mostrar algo como:
+# [GPS][1.2.3.4:5678] Protocolo detectado: Concox/GT06
+# [GT06][1.2.3.4:5678] Login IMEI=865124071489548 | proto=0x1
 ```
 
-### Comandos SMS (contraseña default `0000`)
+Si el GPS no aparece: 1) el chip debe tener saldo y datos activos, 2) confirmar que apunta a `gps.silenteye.com.mx:5000`, 3) probar el puerto `8443` o `15140`, 4) reiniciar el GPS (quitar y reconectar alimentación), 5) confirmar que el IMEI está registrado (whitelist).
 
-- `0000 getinfo` — Estado del dispositivo
-- `0000 flush` — Forzar envío de datos
-- `0000 cpureset` — Reiniciar dispositivo
+### Comandos SMS útiles
+
+| Marca | Comando | Qué hace |
+|-------|---------|----------|
+| Teltonika | `0000 getinfo` / `0000 flush` / `0000 cpureset` | Estado / forzar envío / reiniciar (password default `0000`) |
+| Concox / GT06 | `STATUS#` / `PARAM#` / `RESET#` | Estado / ver parámetros (server, APN) / reiniciar |
+| Queclink | `AT+GTRTO=gl300,3,,,,,,FFFF$` | Reiniciar |
 
 ## Licencia
 

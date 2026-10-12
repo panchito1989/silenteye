@@ -123,8 +123,9 @@ socket.on('close', () => {
   process.exit(0);
 });
 
-let lat = -12.0464;
-let lng = -77.0428;
+// Coordenadas de arranque configurables (LAT/LNG env); default Lima para pruebas.
+let lat = parseFloat(process.env.LAT || '-12.0464');
+let lng = parseFloat(process.env.LNG || '-77.0428');
 
 function sendAvlPacket(panic: boolean) {
   lat += (Math.random() - 0.5) * 0.001;

@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "start": "npm run build && node dist/gps-simulator.js",
-    "start:tsx": "node ../node_modules/tsx/dist/cli.mjs src/gps-simulator.ts"
+    "start:tsx": "node ../node_modules/tsx/dist/cli.mjs src/gps-simulator.ts",
+    "gt06": "node ../node_modules/tsx/dist/cli.mjs src/gt06-simulator.ts"
   },
   "dependencies": {
     "dotenv": "^16.3.1"
