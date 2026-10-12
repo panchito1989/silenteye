@@ -5,6 +5,7 @@
  * Unauthorized copying, modification, or distribution is strictly prohibited.
  */
 
+import type { PoolClient } from 'pg';
 import { pool } from '../db/pool.js';
 import { hasPostGis } from '../db/postgis-check.js';
 import type { AVLRecord } from '../gps/avl-decoder.js';
@@ -263,6 +264,47 @@ export async function processGpsData(imei: string, record: AVLRecord): Promise<v
 const PANIC_COOLDOWN_MS = parseInt(process.env.PANIC_COOLDOWN_MS || '60000', 10);
 const panicCooldowns = new Map<string, number>();
 
+/** Ventana máxima para considerar "vigente" un incidente abierto y pegarle un pánico repetido. */
+const OPEN_INCIDENT_MAX_AGE_HOURS = 12;
+
+/**
+ * Un pánico repetido del mismo vehículo (el conductor vuelve a oprimir el botón
+ * mientras el incidente sigue abierto) actualiza la ubicación del incidente
+ * existente en vez de crear otro; así el panel no se llena de duplicados.
+ */
+async function upsertPanicIncident(
+  client: PoolClient,
+  p: { vehicleId: string | null; driverId: string | null; imei: string; latitude: number; longitude: number; postgis: boolean },
+): Promise<{ id: string; isNew: boolean }> {
+  const open = await client.query(
+    `SELECT id FROM incidents
+     WHERE status IN ('active', 'attending', 'localizado')
+       AND started_at > NOW() - make_interval(hours => $3)
+       AND (($1::uuid IS NOT NULL AND vehicle_id = $1) OR imei = $2)
+     ORDER BY started_at DESC LIMIT 1`,
+    [p.vehicleId, p.imei, OPEN_INCIDENT_MAX_AGE_HOURS]
+  );
+  if (open.rows[0]) {
+    const id: string = open.rows[0].id;
+    await client.query(
+      p.postgis
+        ? `UPDATE incidents SET geom = ST_SetSRID(ST_MakePoint($3, $2), 4326), latitude = $2, longitude = $3, updated_at = NOW() WHERE id = $1`
+        : `UPDATE incidents SET latitude = $2, longitude = $3, updated_at = NOW() WHERE id = $1`,
+      [id, p.latitude, p.longitude]
+    );
+    return { id, isNew: false };
+  }
+  const inserted = await client.query(
+    p.postgis
+      ? `INSERT INTO incidents (vehicle_id, driver_id, imei, status, geom, latitude, longitude, started_at)
+         VALUES ($1, $2, $3, 'active', ST_SetSRID(ST_MakePoint($5, $4), 4326), $4, $5, NOW()) RETURNING id`
+      : `INSERT INTO incidents (vehicle_id, driver_id, imei, status, latitude, longitude, started_at)
+         VALUES ($1, $2, $3, 'active', $4, $5, NOW()) RETURNING id`,
+    [p.vehicleId, p.driverId, p.imei, p.latitude, p.longitude]
+  );
+  return { id: inserted.rows[0].id, isNew: true };
+}
+
 export async function processPanicEvent(imei: string, record: AVLRecord): Promise<void> {
   const { latitude, longitude, timestamp } = record;
 
@@ -301,15 +343,12 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
     if (vehicle?.owner_id && !cameraTargetIds.includes(vehicle.owner_id)) cameraTargetIds.push(vehicle.owner_id);
 
     if (postgis) {
-      const incidentResult = await client.query(
-        `INSERT INTO incidents (vehicle_id, driver_id, imei, status, geom, latitude, longitude, started_at)
-         VALUES ($1, $2, $3, 'active', ST_SetSRID(ST_MakePoint($5, $4), 4326), $4, $5, NOW())
-         RETURNING id`,
-        [vehicle?.id ?? null, vehicle?.driver_id ?? null, imei, latitude, longitude]
-      );
-      const incident = incidentResult.rows[0];
+      const incident = await upsertPanicIncident(client, {
+        vehicleId: vehicle?.id ?? null, driverId: vehicle?.driver_id ?? null, imei, latitude, longitude, postgis: true,
+      });
       // Notify the driver's emergency contacts (family) — best-effort, async.
-      void notifyEmergencyContacts({ driverUserId: vehicle?.driver_id, latitude, longitude, phase: 'triggered' });
+      // Solo en el primer pánico: si vuelve a oprimir el botón, la familia ya sabe.
+      if (incident.isNew) void notifyEmergencyContacts({ driverUserId: vehicle?.driver_id, latitude, longitude, phase: 'triggered' });
       const nearbyResult = await client.query(
         `SELECT DISTINCT u.id, u.phone, u.name
          FROM users u
@@ -358,7 +397,7 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
       );
       // Camera activation is delivered ONLY to the driver and fleet owner of
       // the vehicle that triggered the panic — never to nearby bystanders.
-      if (cameraTargetIds.length > 0) {
+      if (incident.isNew && cameraTargetIds.length > 0) {
         sendCameraActivation(cameraTargetIds, {
           incidentId: incident.id,
           plate: vehicle?.plate,
@@ -380,7 +419,7 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
         }
       ).catch((err) => logger.error('Push send error (GPS panic):', err));
       // Push to driver + owner: activate camera
-      if (cameraTargetIds.length > 0) {
+      if (incident.isNew && cameraTargetIds.length > 0) {
         sendPushToUsers(
           cameraTargetIds,
           {
@@ -393,17 +432,13 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
           }
         ).catch((err) => logger.error('Push send error (GPS panic camera):', err));
       }
-      logger.info(`PANIC IMEI=${imei} conductores_cercanos=${nearbyDrivers.length} camera_targets=${cameraTargetIds.length}`);
+      logger.info(`PANIC IMEI=${imei} incidente=${incident.id} ${incident.isNew ? 'nuevo' : 'repetido (reutilizado)'} conductores_cercanos=${nearbyDrivers.length} camera_targets=${cameraTargetIds.length}`);
     } else {
-      const incidentResult = await client.query(
-        `INSERT INTO incidents (vehicle_id, driver_id, imei, status, latitude, longitude, started_at)
-         VALUES ($1, $2, $3, 'active', $4, $5, NOW())
-         RETURNING id`,
-        [vehicle?.id ?? null, vehicle?.driver_id ?? null, imei, latitude, longitude]
-      );
-      const incident = incidentResult.rows[0];
-      // Notify the driver's emergency contacts (family) — best-effort, async.
-      void notifyEmergencyContacts({ driverUserId: vehicle?.driver_id, latitude, longitude, phase: 'triggered' });
+      const incident = await upsertPanicIncident(client, {
+        vehicleId: vehicle?.id ?? null, driverId: vehicle?.driver_id ?? null, imei, latitude, longitude, postgis: false,
+      });
+      // Notify the driver's emergency contacts (family) — best-effort, async. Solo en el primer pánico.
+      if (incident.isNew) void notifyEmergencyContacts({ driverUserId: vehicle?.driver_id, latitude, longitude, phase: 'triggered' });
       const nearbyResult = await client.query(
         `SELECT DISTINCT u.id, u.phone, u.name
          FROM users u
@@ -446,7 +481,7 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
         },
         allRecipientIds
       );
-      if (cameraTargetIds.length > 0) {
+      if (incident.isNew && cameraTargetIds.length > 0) {
         sendCameraActivation(cameraTargetIds, {
           incidentId: incident.id,
           plate: vehicle?.plate,
@@ -467,7 +502,7 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
           data: { url: '/sos', incidentId: incident.id, latitude, longitude },
         }
       ).catch((err) => logger.error('Push send error (GPS panic simple):', err));
-      if (cameraTargetIds.length > 0) {
+      if (incident.isNew && cameraTargetIds.length > 0) {
         sendPushToUsers(
           cameraTargetIds,
           {
@@ -480,7 +515,7 @@ export async function processPanicEvent(imei: string, record: AVLRecord): Promis
           }
         ).catch((err) => logger.error('Push send error (GPS panic camera simple):', err));
       }
-      logger.info(`PANIC IMEI=${imei} conductores_cercanos=${nearbyDrivers.length} camera_targets=${cameraTargetIds.length}`);
+      logger.info(`PANIC IMEI=${imei} incidente=${incident.id} ${incident.isNew ? 'nuevo' : 'repetido (reutilizado)'} conductores_cercanos=${nearbyDrivers.length} camera_targets=${cameraTargetIds.length}`);
     }
   } finally {
     client.release();
