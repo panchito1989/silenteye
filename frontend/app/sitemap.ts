@@ -84,6 +84,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
+      url: `${baseUrl}/gps-para-auto`,
+      lastModified: '2026-10-26',
+      changeFrequency: 'monthly',
+      priority: 0.95,
+    },
+    {
       url: `${baseUrl}/login`,
       lastModified: '2026-03-01',
       changeFrequency: 'monthly',
@@ -117,7 +123,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
-    lastModified: post.date,
+    lastModified: post.updated ?? post.date,
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));

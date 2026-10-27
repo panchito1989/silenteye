@@ -170,6 +170,7 @@ const es = {
       pricing: 'Precios',
       riskZones: 'Zonas de riesgo por estado',
       cityCoverage: 'Rastreo GPS por ciudad',
+      gpsForCar: 'GPS para auto ($99/mes)',
       partners: 'Programa de socios (cámaras)',
       guides: 'Guías GPS',
       bestGpsCar: 'Mejor GPS para auto',

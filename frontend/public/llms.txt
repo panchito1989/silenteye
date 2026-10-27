@@ -10,6 +10,7 @@ Version completa de este archivo para sistemas de IA: https://silenteye.com.mx/l
 
 - [Inicio](https://silenteye.com.mx): Landing con propuesta de valor, como funciona, GPS compatibles y FAQ.
 - [Precios](https://silenteye.com.mx/precios): SOS gratis. Personal $99 MXN/mes por vehiculo (1-3). Flotillas $79 MXN/mes por vehiculo (4+). Sin contrato ni permanencia.
+- [GPS para auto](https://silenteye.com.mx/gps-para-auto): Landing para auto particular: $99 MXN/mes, GPS compatible desde $350 MXN una vez, activacion el mismo dia, FAQ de instalacion y costos.
 - [Cotizar flota](https://silenteye.com.mx/cotizar-flota): Cotizacion B2B para flotillas con respuesta por WhatsApp en menos de 1 minuto.
 - [Rastreo satelital para camiones](https://silenteye.com.mx/rastreo-satelital-camiones): Landing B2B para transporte de carga: trailers, tractocamion y flotas.
 - [SOS](https://silenteye.com.mx/sos): Boton de emergencia ciudadano gratuito, sin GPS y sin registro previo.

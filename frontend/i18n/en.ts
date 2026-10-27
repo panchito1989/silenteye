@@ -172,6 +172,7 @@ const en: Translations = {
       pricing: 'Pricing',
       riskZones: 'Risk zones by state',
       cityCoverage: 'GPS tracking by city',
+      gpsForCar: 'GPS for your car ($99/mo)',
       partners: 'Partners program (chambers)',
       guides: 'GPS Guides',
       bestGpsCar: 'Best GPS for Cars',

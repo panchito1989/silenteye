@@ -4,21 +4,51 @@ export interface BlogPost {
   description: string;
   keyword: string;
   date: string;
+  /** Última actualización significativa (ISO). Alimenta dateModified
+   *  en JSON-LD, og:modified_time y lastModified del sitemap. */
+  updated?: string;
   readTime: string;
   category: string;
   content: string;
+  /** FAQ visible al final del post + FAQPage JSON-LD. Apuntar a las
+   *  queries que ya rankean en Search Console para ese post. */
+  faq?: { q: string; a: string }[];
 }
 
 export const blogPosts: BlogPost[] = [
   {
     slug: 'mejor-gps-para-auto-mexico',
-    title: 'Mejor GPS para auto en México 2026: Guía completa de rastreadores',
-    description: 'Descubre cuál es el mejor GPS para auto en México. Comparamos Cobán TK103, Sinotrack ST-901 y Teltonika FMB920. Precios, instalación y funciones de rastreo en tiempo real.',
+    // Title con gancho de precio: este post concentra ~35% de las
+    // impresiones del sitio (GSC oct-2026) pero tenía CTR 1.1% con el
+    // title genérico anterior. ≤60 caracteres antes del sufijo de marca.
+    title: 'Mejor GPS para auto en México 2026: Top 3 desde $350 MXN',
+    description: 'Comparamos Cobán TK103, Sinotrack ST-901 y Teltonika FMB920: precios reales, instalación y cuál conviene según tu auto. Guía actualizada octubre 2026.',
     keyword: 'GPS para auto',
     date: '2026-03-10',
+    updated: '2026-10-26',
     readTime: '8 min',
     category: 'Guías',
-    content: `## ¿Por qué necesitas un GPS para tu auto?
+    faq: [
+      {
+        q: '¿Cuál es el mejor localizador GPS para autos en México?',
+        a: 'Para la mayoría de los autos particulares, el Cobán TK103 ($400-700 MXN) o el Sinotrack ST-901 ($350-600 MXN): son baratos, fáciles de instalar y compatibles con plataformas de rastreo como SilentEye. Si buscas máxima confiabilidad, el Teltonika FMB920 ($1,500-2,500 MXN) es grado industrial. Los tres dan rastreo en tiempo real, geocercas y alerta de robo.',
+      },
+      {
+        q: '¿Cuánto cuesta un GPS para auto con todo y servicio?',
+        a: 'Tres costos: el GPS se compra una sola vez ($350-2,500 MXN según modelo), el chip SIM con datos cuesta $50-150 MXN al mes, y la plataforma de rastreo desde $99 MXN al mes por vehículo (SilentEye, sin contrato). En total, proteger un auto cuesta desde unos $150-250 MXN mensuales después de la compra inicial.',
+      },
+      {
+        q: '¿Puedo usar un GPS para auto sin pagar mensualidad?',
+        a: 'Parcialmente: los GPS tipo TK103 o ST-901 pueden responder su ubicación por SMS sin plataforma, pero pierdes el rastreo continuo en mapa, el historial, las geocercas y la alerta automática de robo. El chip SIM siempre genera un costo. La plataforma ($99 MXN/mes) es lo que convierte el aparato en un sistema de seguridad real.',
+      },
+      {
+        q: '¿Dónde se esconde el GPS en un auto?',
+        a: 'Los puntos más usados son debajo del tablero, detrás de la guantera, bajo un asiento o en la cajuela, siempre conectado a corriente de la batería. El Sinotrack ST-901 es el más fácil de ocultar por su tamaño. Lo importante es que no quede a la vista desde el asiento del conductor: en un robo, lo primero que buscan es el GPS.',
+      },
+    ],
+    content: `*Actualización octubre 2026: precios verificados con distribuidores en México y preguntas frecuentes agregadas al final.*
+
+## ¿Por qué necesitas un GPS para tu auto?
 
 En México se roban más de 200 autos al día según datos del Secretariado Ejecutivo del Sistema Nacional de Seguridad Pública. Un rastreador GPS para auto es la herramienta más efectiva para proteger tu vehículo: te permite saber dónde está en tiempo real, recibir alertas si se mueve sin tu autorización y coordinarte para recuperarlo en caso de robo.
 

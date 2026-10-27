@@ -149,6 +149,7 @@ Indice completo: https://silenteye.com.mx/rastreo-gps
 
 - Inicio: https://silenteye.com.mx
 - Precios: https://silenteye.com.mx/precios
+- GPS para auto (particulares): https://silenteye.com.mx/gps-para-auto
 - Cotizar flota: https://silenteye.com.mx/cotizar-flota
 - Rastreo GPS por ciudad (33 ciudades): https://silenteye.com.mx/rastreo-gps
 - Rastreo satelital para camiones: https://silenteye.com.mx/rastreo-satelital-camiones

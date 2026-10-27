@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { blogPosts, getPostBySlug, getAllSlugs } from '@/lib/blog-posts';
-import JsonLd, { getArticleJsonLd } from '@/components/JsonLd';
+import JsonLd, { getArticleJsonLd, getFaqPageJsonLd } from '@/components/JsonLd';
 
 interface Props {
   params: { slug: string };
@@ -25,7 +25,7 @@ export function generateMetadata({ params }: Props): Metadata {
       description: post.description,
       url: `https://silenteye.com.mx/blog/${post.slug}`,
       publishedTime: post.date,
-      modifiedTime: post.date,
+      modifiedTime: post.updated ?? post.date,
       authors: ['SilentEye'],
       tags: [post.keyword, 'GPS', 'rastreo vehicular', 'seguridad'],
       images: [{ url: 'https://silenteye.com.mx/opengraph-image', width: 1200, height: 630, alt: post.title }],
@@ -205,7 +205,7 @@ export default function BlogPostPage({ params }: Props) {
     description: post.description,
     url: `https://silenteye.com.mx/blog/${post.slug}`,
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.updated ?? post.date,
     category: post.category,
     wordCount,
     keyword: post.keyword,
@@ -225,6 +225,7 @@ export default function BlogPostPage({ params }: Props) {
     <div className="min-h-screen bg-white">
       <JsonLd data={articleJsonLd} />
       <JsonLd data={breadcrumbJsonLd} />
+      {post.faq && post.faq.length > 0 && <JsonLd data={getFaqPageJsonLd(post.faq)} />}
 
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100 px-6 py-3">
@@ -267,6 +268,11 @@ export default function BlogPostPage({ params }: Props) {
             <span className="text-[12px] text-zinc-400">
               {new Date(post.date).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' })}
             </span>
+            {post.updated && (
+              <span className="text-[12px] text-emerald-600 font-medium">
+                Actualizado {new Date(post.updated).toLocaleDateString('es-MX', { year: 'numeric', month: 'long' })}
+              </span>
+            )}
           </div>
 
           {/* Title */}
@@ -282,8 +288,41 @@ export default function BlogPostPage({ params }: Props) {
             {renderMarkdown(post.content)}
           </div>
 
+          {/* FAQ (visible + FAQPage JSON-LD arriba) */}
+          {post.faq && post.faq.length > 0 && (
+            <section className="mt-12">
+              <h2 className="text-xl md:text-2xl font-extrabold text-zinc-900 tracking-tight mb-6">
+                Preguntas frecuentes
+              </h2>
+              <div className="space-y-5">
+                {post.faq.map((item) => (
+                  <div key={item.q} className="border-b border-zinc-100 pb-5">
+                    <h3 className="font-bold text-zinc-900 text-[15px] mb-2">{item.q}</h3>
+                    <p className="text-[14px] text-zinc-600 leading-relaxed">{item.a}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Links internos a páginas de conversión — anchors descriptivos.
+              GSC oct-2026: /precios pos 11.4, /cotizar-flota 18.7 y
+              /rastreo-satelital-camiones 30.2 por falta de enlaces internos
+              desde el blog (que concentra el tráfico). */}
+          <nav className="mt-12 bg-zinc-50 border border-zinc-200 rounded-xl p-6" aria-label="Páginas relacionadas">
+            <h3 className="text-[13px] font-bold uppercase tracking-wider text-zinc-500 mb-4">También te puede servir</h3>
+            <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5 text-[14px]">
+              <Link href="/gps-para-auto" className="text-blue-600 font-semibold hover:underline">GPS para auto: planes desde $99 MXN/mes</Link>
+              <Link href="/precios" className="text-blue-600 font-semibold hover:underline">Precios de rastreo GPS en México</Link>
+              <Link href="/rastreo-satelital-camiones" className="text-blue-600 font-semibold hover:underline">Rastreo satelital para camiones y trailers</Link>
+              <Link href="/cotizar-flota" className="text-blue-600 font-semibold hover:underline">Cotizar GPS para flotilla (respuesta en 1 min)</Link>
+              <Link href="/rastreo-gps" className="text-blue-600 font-semibold hover:underline">Rastreo GPS en tu ciudad (33 ciudades)</Link>
+              <Link href="/comparar" className="text-blue-600 font-semibold hover:underline">SilentEye vs Hunter, LoJack y Skyguard</Link>
+            </div>
+          </nav>
+
           {/* CTA */}
-          <div className="mt-12 bg-zinc-900 text-white rounded-xl px-6 py-8 md:px-8">
+          <div className="mt-10 bg-zinc-900 text-white rounded-xl px-6 py-8 md:px-8">
             <h3 className="font-bold text-lg mb-2">¿Listo para proteger tu vehículo?</h3>
             <p className="text-zinc-400 text-[14px] mb-4">Conecta tu GPS a SilentEye y activa alertas automáticas, rastreo en tiempo real y coordinación de respuesta.</p>
             <div className="flex flex-wrap gap-3">
