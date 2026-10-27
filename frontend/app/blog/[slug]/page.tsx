@@ -47,6 +47,21 @@ function renderMarkdown(content: string) {
   let tableHeader: string[] = [];
   let inList = false;
   let listItems: string[] = [];
+  let inCode = false;
+  let codeLines: string[] = [];
+
+  const flushCode = () => {
+    elements.push(
+      <pre
+        key={`code-${elements.length}`}
+        className="bg-zinc-900 text-zinc-100 rounded-lg px-4 py-3.5 my-5 overflow-x-auto text-[13px] font-mono leading-relaxed"
+      >
+        {codeLines.join('\n')}
+      </pre>
+    );
+    codeLines = [];
+    inCode = false;
+  };
 
   const flushList = () => {
     if (listItems.length > 0) {
@@ -83,9 +98,11 @@ function renderMarkdown(content: string) {
               {tableRows.map((row, i) => (
                 <tr key={i} className="border-b border-zinc-100">
                   {row.map((cell, j) => (
-                    <td key={j} className="py-2.5 px-3 text-zinc-600">
-                      {cell.trim()}
-                    </td>
+                    <td
+                      key={j}
+                      className="py-2.5 px-3 text-zinc-600"
+                      dangerouslySetInnerHTML={{ __html: inlineFormat(cell.trim()) }}
+                    />
                   ))}
                 </tr>
               ))}
@@ -115,6 +132,7 @@ function renderMarkdown(content: string) {
      .replace(/'/g, '&#39;');
   const inlineFormat = (text: string) => {
     return escapeHtml(text)
+      .replace(/`([^`]+)`/g, '<code class="bg-zinc-100 text-zinc-800 rounded px-1.5 py-0.5 text-[13px] font-mono">$1</code>')
       .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-zinc-900">$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>');
   };
@@ -122,6 +140,23 @@ function renderMarkdown(content: string) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
     const trimmed = line.trim();
+
+    // Code fences (```) — must go before the empty-line skip so blank
+    // lines inside a block are preserved.
+    if (trimmed.startsWith('```')) {
+      if (inCode) {
+        flushCode();
+      } else {
+        flushList();
+        flushTable();
+        inCode = true;
+      }
+      continue;
+    }
+    if (inCode) {
+      codeLines.push(line);
+      continue;
+    }
 
     if (!trimmed) {
       flushList();
@@ -188,6 +223,7 @@ function renderMarkdown(content: string) {
 
   flushList();
   flushTable();
+  if (inCode) flushCode();
 
   return elements;
 }

@@ -39,7 +39,11 @@ Version completa de este archivo para sistemas de IA: https://silenteye.com.mx/l
 
 ## Blog
 
-- [Indice del blog](https://silenteye.com.mx/blog): 21 guias y comparativas sobre GPS y seguridad vehicular en Mexico.
+- [Indice del blog](https://silenteye.com.mx/blog): 25 guias y comparativas sobre GPS y seguridad vehicular en Mexico.
+- [Comandos SMS del Coban TK103](https://silenteye.com.mx/blog/comandos-sms-coban-tk103): Lista completa 2026 — APN, servidor, intervalo, corte de motor; firmware clasico y clones GT06.
+- [Configurar Sinotrack ST-901 paso a paso](https://silenteye.com.mx/blog/configurar-sinotrack-st901-paso-a-paso): Chip, comandos 805#/803#/804#, conexion a plataforma y verificacion.
+- [Que chip SIM usar para tu GPS](https://silenteye.com.mx/blog/que-chip-sim-para-gps-mexico): Telcel vs AT&T vs Movistar, consumo real (<50 MB/mes), prepago vs plan vs M2M, tema 2G/4G.
+- [GPS no reporta posicion: 7 causas](https://silenteye.com.mx/blog/gps-no-reporta-posicion-que-hacer): Checklist de diagnostico ordenado: chip, APN, servidor, IMEI, senal GPS, corriente, red 2G.
 - [Mejor GPS para auto en Mexico](https://silenteye.com.mx/blog/mejor-gps-para-auto-mexico): Comparativa de Coban TK103, Sinotrack ST-901 y Teltonika FMB920.
 - [GPS para trailers y camiones de carga](https://silenteye.com.mx/blog/gps-para-trailers-camiones-carga): Teltonika FMC130, Queclink GV500, monitoreo en carretera y boton de panico.
 - [GPS para flotillas](https://silenteye.com.mx/blog/gps-para-flotillas-gestion-vehiculos): Gestion de multiples vehiculos desde un solo panel.

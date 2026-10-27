@@ -112,6 +112,358 @@ Si buscas proteger tu auto particular con el mejor balance entre precio y funcio
 Para quienes necesitan la máxima confiabilidad, el **Teltonika FMB920** es la opción profesional.`,
   },
   {
+    slug: 'comandos-sms-coban-tk103',
+    title: 'Comandos SMS del Cobán TK103: lista completa 2026',
+    description: 'Todos los comandos SMS del GPS Cobán TK103: APN, servidor, intervalo de reporte, corte de motor y alertas. Incluye el firmware clásico y los clones GT06, y cómo conectarlo a una plataforma.',
+    keyword: 'comandos Cobán TK103',
+    date: '2026-10-26',
+    readTime: '7 min',
+    category: 'Tutoriales',
+    faq: [
+      {
+        q: '¿Cuál es la contraseña de fábrica del Cobán TK103?',
+        a: 'Es 123456 y va pegada al comando, sin espacio: begin123456, apn123456, etc. Cámbiala con el comando password123456 seguido de la nueva contraseña de 6 dígitos (ejemplo: password123456 888888) y guárdala bien: sin ella no puedes reconfigurar el equipo.',
+      },
+      {
+        q: '¿Por qué mi TK103 no responde a los comandos SMS?',
+        a: 'Las 4 causas más comunes: el chip del GPS no tiene saldo para responder SMS, el comando tiene un espacio o mayúscula de más (deben ir exactos), tu unidad es un clon con firmware GT06 que usa otra familia de comandos (prueba PARAM# o STATUS#), o la contraseña ya no es la de fábrica.',
+      },
+      {
+        q: '¿Puedo usar el TK103 solo por SMS, sin plataforma de rastreo?',
+        a: 'Sí: llamas al número del chip y el GPS responde con un SMS de coordenadas. Pero pierdes el mapa en tiempo real, el historial, las geocercas y la alerta automática de robo. Una plataforma como SilentEye cuesta $99 MXN/mes y convierte el TK103 en un sistema de seguridad completo.',
+      },
+      {
+        q: '¿Es seguro usar el corte de motor del TK103?',
+        a: 'El comando stop123456 activa un relevador que debe instalarse interrumpiendo la bomba de gasolina o la marcha. Úsalo solo con el vehículo detenido o a baja velocidad: cortar motor en movimiento es peligroso. El comando resume123456 lo restablece.',
+      },
+    ],
+    content: `## Antes de empezar: ¿TK103 clásico o clon GT06?
+
+El Cobán TK103 es el GPS más vendido de México — y también el más clonado. En Mercado Libre conviven dos familias con el mismo nombre y carcasa, pero **comandos distintos**:
+
+- **TK103 clásico (protocolo GPS103)**: comandos con la contraseña pegada, tipo \`begin123456\`.
+- **Clon con firmware GT06**: comandos cortos terminados en \`#\`, tipo \`PARAM#\`.
+
+La prueba rápida: envía \`check123456\` por SMS al número del chip del GPS. Si responde con su estado, es clásico. Si no, envía \`PARAM#\` — si esa sí responde, es un clon GT06. Todos los comandos se envían **por SMS al número del chip SIM que está dentro del GPS**, desde cualquier celular.
+
+## Comandos del TK103 clásico
+
+La contraseña de fábrica es **123456** y va pegada al comando, sin espacio.
+
+| Comando | Qué hace |
+|---|---|
+| \`begin123456\` | Inicializa el equipo (responde "begin ok") |
+| \`admin123456 5512345678\` | Registra tu número como administrador |
+| \`password123456 888888\` | Cambia la contraseña a 888888 |
+| \`apn123456 internet.itelcel.com\` | Configura el APN (Telcel en el ejemplo) |
+| \`apnuser123456 webgprs\` | Usuario del APN |
+| \`apnpasswd123456 webgprs2002\` | Contraseña del APN |
+| \`adminip123456 IP PUERTO\` | Apunta el GPS al servidor de tu plataforma |
+| \`fix030s***n123456\` | Reporta posición cada 30 segundos, sin límite |
+| \`check123456\` | Estado del equipo: batería, señal GPS y GSM |
+| \`speed123456 080\` | Alerta si supera 80 km/h |
+| \`move123456\` / \`nomove123456\` | Activa / desactiva alerta de movimiento |
+| \`shock123456\` / \`noshock123456\` | Activa / desactiva alerta de vibración |
+| \`stop123456\` / \`resume123456\` | Corta / restablece el motor (requiere relevador) |
+
+Además, si **llamas al número del chip**, el TK103 clásico rechaza la llamada y responde con un SMS con sus coordenadas — útil como plan B sin plataforma.
+
+Los APN de AT&T y Movistar están en nuestra guía de [APN por operador](/blog/apn-gps-tracker-telcel-att-movistar).
+
+## Comandos si tu TK103 es clon GT06
+
+| Comando | Qué hace |
+|---|---|
+| \`APN,internet.itelcel.com,webgprs,webgprs2002#\` | Configura APN, usuario y contraseña |
+| \`SERVER,1,dominio,puerto,0#\` | Apunta el GPS al servidor (acepta dominio) |
+| \`TIMER,30#\` | Reporta cada 30 segundos |
+| \`PARAM#\` | Muestra la configuración actual |
+| \`STATUS#\` | Estado de batería y señal |
+| \`RESET#\` | Reinicia el equipo |
+
+## Conectar tu TK103 a SilentEye (3 SMS)
+
+1. **APN** según tu operador: \`apn123456 internet.itelcel.com\` (clásico) o \`APN,internet.itelcel.com,webgprs,webgprs2002#\` (clon).
+2. **Servidor**: en clones, \`SERVER,1,gps.silenteye.com.mx,5000,0#\`. En el clásico, usa \`adminip123456\` con la IP y puerto que te mostramos al registrar tu GPS en la plataforma.
+3. **Da de alta el IMEI** en tu cuenta de SilentEye (viene en la etiqueta del equipo). Importante: la plataforma solo acepta reportes de equipos registrados — si el IMEI no está dado de alta o tiene un dígito mal, el GPS no aparecerá aunque esté transmitiendo.
+
+En 2-5 minutos tu TK103 aparece en el mapa, y desde ahí tienes rastreo en vivo, geocercas, historial y alerta de robo en menos de 3 segundos por $99 MXN/mes, sin app y sin contrato.
+
+## Si el GPS no responde o no aparece en el mapa
+
+Revisa en este orden: que el chip tenga saldo y datos (la causa #1), que el APN sea el correcto para tu operador, que el comando esté escrito exacto y que estés usando la familia de comandos correcta (clásico vs clon). Tenemos una guía completa de diagnóstico: [GPS no reporta posición: 7 causas y su solución](/blog/gps-no-reporta-posicion-que-hacer).`,
+  },
+  {
+    slug: 'configurar-sinotrack-st901-paso-a-paso',
+    title: 'Configurar Sinotrack ST-901 paso a paso (guía 2026)',
+    description: 'Guía completa del Sinotrack ST-901: qué chip ponerle, comandos SMS (805#, 803#, 804#), cómo conectarlo a una plataforma de rastreo y qué hacer si no reporta. De la caja al mapa en 20 minutos.',
+    keyword: 'configurar Sinotrack ST-901',
+    date: '2026-10-26',
+    readTime: '7 min',
+    category: 'Tutoriales',
+    faq: [
+      {
+        q: '¿Dónde conviene esconder el ST-901 en el auto?',
+        a: 'Su ventaja es el tamaño: cabe detrás del tablero, dentro de la consola, bajo un asiento o junto a la caja de fusibles. Evita encerrarlo en metal por todos lados (bloquea la señal GPS) y déjalo con la cara hacia arriba o hacia una superficie plástica. En un robo, lo primero que buscan es el GPS: mientras menos obvio, mejor.',
+      },
+      {
+        q: '¿Cuánto dura la batería interna del ST-901 si cortan la corriente?',
+        a: 'Es una batería de respaldo pequeña: piensa en decenas de minutos a unas pocas horas según el lote y el intervalo de reporte, no en días. Su función es avisarte del corte de corriente y dar los últimos reportes de ubicación — exactamente los minutos que importan en un robo.',
+      },
+      {
+        q: '¿El ST-901 sirve para motos?',
+        a: 'Sí, es de los más usados en motos por su tamaño y porque trabaja con el voltaje de la batería de la moto (12V). Combinado con la alerta de vibración y movimiento de una plataforma, es la protección antirrobo más barata para el vehículo más robado de México. Tenemos una guía específica de GPS para motos en el blog.',
+      },
+      {
+        q: '¿Qué plataforma uso con el ST-901?',
+        a: 'Cualquiera que soporte su protocolo (H02 o GT06 según el lote). Con SilentEye lo conectas apuntándolo al servidor gps.silenteye.com.mx puerto 5000 y cuesta $99 MXN/mes por vehículo: rastreo en tiempo real desde el navegador, geocercas, historial de 30 días y alerta de robo en menos de 3 segundos.',
+      },
+    ],
+    content: `## Qué necesitas
+
+- El **Sinotrack ST-901** (desde $350-600 MXN).
+- Un **chip SIM con datos activos y sin PIN** — micro-SIM en la mayoría de los lotes. Si no sabes cuál comprar, lee [qué chip SIM usar para tu GPS](/blog/que-chip-sim-para-gps-mexico).
+- Un celular para enviar los SMS de configuración.
+
+Tiempo total: unos 20 minutos, más la instalación en el vehículo.
+
+## Paso 1: prepara el chip
+
+Antes de meterlo al GPS, prueba el chip **en un celular**: desactiva el PIN de la SIM, verifica que navega con datos móviles (sin WiFi) y que tiene vigencia. Un chip sin datos es la causa #1 de "mi GPS no funciona".
+
+## Paso 2: conéctalo a corriente
+
+Inserta el chip (con el GPS apagado) y conecta el cable **rojo al positivo** y el **negro a tierra** de la batería del vehículo (12V/24V). Para probar en tu mesa antes de instalar, sirve cualquier fuente de 12V. El LED empieza a parpadear mientras busca señal; el primer fix GPS puede tardar 5-15 minutos **a cielo abierto**.
+
+## Paso 3: configura el APN por SMS
+
+Envía este SMS al número del chip del GPS (ejemplo con Telcel):
+
+\`\`\`
+805#internet.itelcel.com#webgprs#webgprs2002#
+\`\`\`
+
+Los APN de AT&T y Movistar están en nuestra [guía de APN por operador](/blog/apn-gps-tracker-telcel-att-movistar). El GPS responde confirmando el cambio.
+
+**¿No responde a los comandos numéricos?** Algunos lotes del ST-901 vienen con firmware GT06. Prueba entonces el formato alterno:
+
+\`\`\`
+APN,internet.itelcel.com,webgprs,webgprs2002#
+\`\`\`
+
+## Paso 4: apúntalo a la plataforma
+
+Para conectarlo a SilentEye, envía:
+
+\`\`\`
+803#IP#PUERTO#
+\`\`\`
+
+con la IP y puerto que te mostramos al registrar tu GPS — o, en lotes con firmware GT06:
+
+\`\`\`
+SERVER,1,gps.silenteye.com.mx,5000,0#
+\`\`\`
+
+Después **da de alta el IMEI** (viene en la etiqueta del equipo) en tu cuenta. La plataforma solo acepta equipos registrados: si el IMEI no coincide dígito por dígito, el GPS no aparecerá en el mapa aunque esté transmitiendo.
+
+## Paso 5: verifica
+
+Envía \`804#\` para revisar la configuración, espera 2-5 minutos y tu ST-901 debe aparecer en el mapa. Muévelo unos metros y confirma que el punto se actualiza.
+
+## Comandos útiles del ST-901
+
+| Comando | Qué hace |
+|---|---|
+| \`805#apn#usuario#contraseña#\` | Configura el APN |
+| \`803#IP#puerto#\` | Apunta al servidor de la plataforma |
+| \`804#\` | Muestra la configuración actual |
+| \`777#nueva#\` | Cambia la contraseña del equipo |
+| \`DY#\` | Corta el motor (requiere relevador instalado) |
+| \`TY#\` | Restablece el motor |
+
+En la mayoría de los lotes, **llamar al número del chip** hace que el GPS responda con un SMS de ubicación con liga a Google Maps — tu plan B si algún día no tienes acceso a la plataforma.
+
+## Si algo no funciona
+
+El 80% de los problemas son el chip (saldo, datos, PIN, vigencia) o el APN mal escrito. El resto: instalación encerrada en metal, servidor mal apuntado o IMEI sin dar de alta. Guía completa de diagnóstico: [GPS no reporta posición: 7 causas y su solución](/blog/gps-no-reporta-posicion-que-hacer).
+
+Con el ST-901 reportando, SilentEye te da el mapa en tiempo real, geocercas, historial y alerta de robo en menos de 3 segundos por $99 MXN/mes — desde el navegador, sin app.`,
+  },
+  {
+    slug: 'que-chip-sim-para-gps-mexico',
+    title: 'Qué chip SIM usar para tu GPS en México (guía 2026)',
+    description: 'Telcel, AT&T o Movistar: qué chip conviene para un GPS tracker, cuántos datos gasta realmente (menos de 50 MB/mes), prepago vs plan vs SIM M2M, y los 4 errores que dejan mudo a tu rastreador.',
+    keyword: 'chip SIM para GPS',
+    date: '2026-10-26',
+    readTime: '6 min',
+    category: 'Tutoriales',
+    faq: [
+      {
+        q: '¿Cuántos datos gasta un GPS tracker al mes?',
+        a: 'Muy pocos: un GPS reportando cada 30 segundos consume típicamente entre 10 y 50 MB al mes. Cualquier paquete de datos pequeño sobra; no necesitas (ni te conviene pagar) un plan de gigas. Lo crítico no es la cantidad de datos sino que la vigencia no se venza.',
+      },
+      {
+        q: '¿Qué pasa si al chip se le acaba el saldo o la vigencia?',
+        a: 'El GPS deja de reportar y "desaparece" del mapa — es la causa #1 de soporte. Al recargar, vuelve a reportar solo; algunos modelos guardan posiciones sin conexión y las suben al reconectar, otros no. Recomendación: pon un recordatorio mensual de recarga o usa un plan sin vencimiento.',
+      },
+      {
+        q: '¿Puedo usar un chip viejo o el que regalan con recarga?',
+        a: 'Sí, siempre que esté activo, tenga datos y le quites el PIN. Pruébalo primero en un celular: si navega con datos móviles (sin WiFi), sirve para el GPS. Ojo con chips muy viejos que solo registran 3G: si tu zona ya no tiene esa red, no van a conectar.',
+      },
+      {
+        q: '¿Los GPS aceptan eSIM?',
+        a: 'Los GPS económicos (Cobán, Sinotrack, Concox) usan SIM física — normalmente micro-SIM. La eSIM existe en equipos industriales de gama alta, pero para un auto particular en México la respuesta práctica es: compra un chip físico de prepago.',
+      },
+    ],
+    content: `## Lo que el chip debe cumplir
+
+Tu rastreador GPS transmite su posición por la red celular, así que el chip es tan importante como el GPS mismo. Requisitos:
+
+- **Datos móviles activos** (el GPS usa internet, no llamadas).
+- **Sin PIN de SIM** — un chip con PIN deja al GPS esperando una contraseña que nadie va a teclear.
+- **Saldo para SMS** si quieres que el GPS responda a comandos de configuración.
+- **Tamaño correcto**: la mayoría usa micro-SIM; compra el chip "3 en 1" y listo.
+- **Red compatible con tu GPS**: este punto merece su propia sección, abajo.
+
+## Cuántos datos gasta realmente un GPS
+
+Mucho menos de lo que crees:
+
+| Intervalo de reporte | Consumo mensual aproximado |
+|---|---|
+| Cada 10 segundos | 30-80 MB |
+| Cada 30 segundos | 10-50 MB |
+| Cada 60 segundos | 5-25 MB |
+
+Conclusión: **no pagues planes de gigas**. Un paquete pequeño de datos sobra; lo que mata al GPS no es quedarse sin megas, sino quedarse sin **vigencia**.
+
+## ¿Telcel, AT&T o Movistar?
+
+| Operador | Cobertura en carretera y zonas rurales | Veredicto para GPS |
+|---|---|---|
+| **Telcel** | La más amplia del país | **Recomendado**, sobre todo si el vehículo sale a carretera |
+| **AT&T** | Buena en ciudades y corredores principales | Alternativa válida y a veces más barata |
+| **Movistar** | Limitada fuera de zonas urbanas | Solo si el vehículo vive en ciudad |
+
+El patrón es simple: el GPS reporta donde hay red. Si tu auto cruza carreteras o zonas rurales, la diferencia de cobertura de Telcel se nota — por eso es lo que recomendamos en SilentEye para los 32 estados.
+
+## Prepago, plan o SIM M2M
+
+- **Prepago (Amigo, Unefon, etc.)**: la opción típica. $50-100 MXN al mes en recargas. Riesgo: si la vigencia vence, el GPS enmudece — pon recordatorio mensual.
+- **Plan de datos básico**: un poco más caro, pero sin vencimientos ni recargas olvidadas. Vale la pena si el GPS protege algo importante.
+- **SIM M2M / IoT**: tarjetas diseñadas para dispositivos (a veces multi-operador: usan la red con mejor señal). Tienen sentido para **flotillas de 10+ unidades**; para un auto particular son más trámite que beneficio.
+
+## Ojo con el tema 2G/4G
+
+Muchos GPS económicos (el TK103 clásico, por ejemplo) solo hablan **2G**, y las operadoras mexicanas están apagando gradualmente sus redes 2G/3G para liberar espectro. Qué hacer:
+
+- Si vas a **comprar GPS hoy**, elige la versión **4G LTE**: Sinotrack ST-901L, Teltonika FMC920, Queclink GV500MAP. Cuestan un poco más y te evitan quedarte sin red a medio contrato... sin contrato, en nuestro caso.
+- Si **ya tienes un GPS 2G funcionando**, no hay urgencia: mientras reporte, sigue; pero si "muere" sin razón en tu zona, la red puede ser la causa.
+
+## Los 4 errores que dejan mudo a tu GPS
+
+1. **PIN activado** — quítalo en un celular antes de meter el chip al GPS.
+2. **Vigencia vencida** — recarga mensual o plan.
+3. **Chip sin probar** — confirma que navega con datos en un celular, sin WiFi.
+4. **APN mal configurado** — cada operador tiene el suyo: [guía de APN con comandos por marca](/blog/apn-gps-tracker-telcel-att-movistar).
+
+Con el chip resuelto, conectar el GPS a SilentEye toma 2 SMS y da rastreo en tiempo real con alerta de robo en menos de 3 segundos por $99 MXN/mes. Si algo no jala, revisa [GPS no reporta posición: 7 causas y su solución](/blog/gps-no-reporta-posicion-que-hacer).`,
+  },
+  {
+    slug: 'gps-no-reporta-posicion-que-hacer',
+    title: 'GPS no reporta posición: 7 causas y su solución (2026)',
+    description: 'Tu rastreador GPS no aparece en el mapa o dejó de actualizar: checklist de 7 causas ordenadas de más a menos común — chip SIM, APN, servidor, IMEI, señal GPS, corriente y red 2G. Con comandos.',
+    keyword: 'GPS no reporta posición',
+    date: '2026-10-26',
+    readTime: '7 min',
+    category: 'Tutoriales',
+    faq: [
+      {
+        q: '¿Cuánto tarda un GPS en reportar la primera vez?',
+        a: 'Conectarse a la red celular toma 2-5 minutos, pero el primer fix GPS (la primera vez que el equipo "encuentra" los satélites) puede tardar 5-15 minutos y necesita cielo abierto. Después de ese primer fix, las siguientes conexiones son casi inmediatas. Si tras 20 minutos al aire libre no reporta, ya es otro problema: empieza por el chip.',
+      },
+      {
+        q: '¿Por qué el GPS me ubica a varias cuadras (o kilómetros) de donde está?',
+        a: 'Cuando no tiene señal de satélites, muchos equipos reportan ubicación por torres celulares (LBS), que puede fallar por cientos de metros o más. Pasa en estacionamientos techados, sótanos o instalaciones encerradas en metal. Al volver a cielo abierto, el fix GPS real regresa con precisión de pocos metros.',
+      },
+      {
+        q: '¿El GPS funciona en un estacionamiento subterráneo?',
+        a: 'La señal de satélite normalmente no llega bajo tierra, y a veces tampoco la celular. El equipo guarda su última posición válida (la entrada del estacionamiento) y la plataforma la muestra; al salir, el rastreo se recupera solo. Para un robo esto casi nunca es problema: el vehículo tiene que salir a la calle.',
+      },
+      {
+        q: '¿Conviene hacer reset de fábrica si nada funciona?',
+        a: 'Es el último recurso: borra APN, servidor y configuración, y tendrás que reconfigurar todo desde cero. Antes agota el checklist (chip, APN, servidor, IMEI, instalación, corriente). Si decides hacerlo, ten a la mano los comandos de tu modelo y la contraseña de fábrica (123456 en Cobán, por ejemplo).',
+      },
+    ],
+    content: `## Primero: ¿nunca ha reportado, o dejó de reportar?
+
+Este diagnóstico cambia según tu caso:
+
+- **Nunca ha aparecido en el mapa** → el problema casi siempre es configuración: chip, APN, servidor o IMEI (causas 1 a 4).
+- **Reportaba bien y dejó de hacerlo** → el problema casi siempre es físico o de saldo: vigencia del chip, corriente, o red (causas 1, 6 y 7).
+
+Ve en orden; cada causa es más común que la siguiente.
+
+## Causa 1: el chip SIM (la causa #1 por mucho)
+
+Saca el chip del GPS y pruébalo **en un celular**:
+
+- ¿Navega con datos móviles (WiFi apagado)? Si no, recarga o revisa que el paquete de datos esté activo.
+- ¿La **vigencia** está vencida? En prepago, es el asesino silencioso: el GPS "muere" el día que vence la recarga.
+- ¿Tiene **PIN activado**? Quítaselo — el GPS no puede teclearlo.
+
+Si el chip navega en el celular, regrésalo al GPS y espera 5 minutos. Guía completa: [qué chip SIM usar para tu GPS](/blog/que-chip-sim-para-gps-mexico).
+
+## Causa 2: APN mal configurado
+
+Sin el APN correcto, el GPS tiene señal pero no internet. Cada operador usa el suyo (Telcel: \`internet.itelcel.com\`). Reenvía el comando de APN exacto para tu marca — están todos en la [guía de APN por operador](/blog/apn-gps-tracker-telcel-att-movistar).
+
+## Causa 3: servidor mal apuntado
+
+El GPS puede estar transmitiendo... al servidor equivocado (el del vendedor chino, por ejemplo). Apúntalo al de tu plataforma. Para SilentEye:
+
+\`\`\`
+SERVER,1,gps.silenteye.com.mx,5000,0#
+\`\`\`
+
+(formato GT06: Concox, clones de Cobán y lotes de Sinotrack). Para TK103 clásico usa \`adminip123456 IP PUERTO\` y para Sinotrack H02, \`803#IP#PUERTO#\` — los detalles están en nuestras guías del [Cobán TK103](/blog/comandos-sms-coban-tk103) y del [Sinotrack ST-901](/blog/configurar-sinotrack-st901-paso-a-paso).
+
+## Causa 4: el IMEI no está dado de alta
+
+Las plataformas serias solo aceptan reportes de equipos registrados — SilentEye incluida. Si el GPS transmite pero su IMEI no está en tu cuenta (o tiene **un dígito diferente** al de la etiqueta), la plataforma ignora sus reportes y el equipo "no existe". Compara el IMEI de tu cuenta contra el de la etiqueta del GPS, dígito por dígito.
+
+## Causa 5: sin señal de satélites
+
+El GPS necesita "ver" el cielo. Instalaciones encerradas en metal por todos lados (bajo el piso metálico, dentro de la caja de un camión) bloquean el fix. Síntomas: el equipo aparece "en línea" pero con ubicación vieja o por torres celulares (LBS), desplazada cuadras o kilómetros.
+
+- Primer encendido: dale **5-15 minutos a cielo abierto**.
+- Reubica el equipo con al menos una cara hacia plástico o cristal.
+
+## Causa 6: alimentación
+
+- ¿El fusible del cable sigue bueno? ¿Los empalmes firmes?
+- ¿Lo conectaron a corriente **conmutada** (que se corta al apagar el auto) en vez de constante? El GPS reportará solo con el motor encendido hasta agotar su batería interna.
+- La batería interna de respaldo dura minutos u horas, no días: sin corriente externa, el equipo muere.
+
+## Causa 7: la red 2G/3G de tu zona
+
+Si tu GPS es viejo (2G) y "murió" sin razón aparente, puede que la operadora haya apagado esa red en tu zona. La prueba: el mismo chip navega en un celular pero el GPS jamás conecta, en varios puntos de la ciudad. La solución es hardware 4G (desde $500-700 MXN) — más detalle en la [guía del chip SIM](/blog/que-chip-sim-para-gps-mexico).
+
+## Checklist exprés
+
+| Síntoma | Primer sospechoso |
+|---|---|
+| Nunca ha aparecido en el mapa | APN, servidor o IMEI sin dar de alta |
+| Dejó de reportar de un día a otro | Vigencia / saldo del chip |
+| Reporta solo con el motor encendido | Conectado a corriente conmutada |
+| Ubicación desplazada cuadras/km | Sin fix GPS: reporta por torres (LBS) |
+| "En línea" pero congelado | Sin señal de satélite donde quedó instalado |
+| No responde a SMS | Chip sin saldo SMS o comando/contraseña incorrectos |
+
+¿Ya revisaste todo y sigue mudo? Escríbenos por WhatsApp desde [silenteye.com.mx/gps-para-auto](/gps-para-auto) y lo diagnosticamos contigo. Y si tu GPS sí reporta pero tu plataforma actual no te avisa de nada: SilentEye da alerta de robo en menos de 3 segundos, geocercas e historial por $99 MXN/mes, con el equipo que ya tienes.`,
+  },
+  {
     slug: 'gps-para-trailers-camiones-carga',
     title: 'GPS para trailers y camiones de carga: Cómo proteger tu unidad en carretera',
     description: 'Guía completa de GPS para trailers y camiones de carga en México. Teltonika FMC130, Queclink GV500, monitoreo en carretera 24/7, alertas de desvío y botón de pánico.',

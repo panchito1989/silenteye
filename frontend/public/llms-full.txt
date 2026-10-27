@@ -157,7 +157,7 @@ Indice completo: https://silenteye.com.mx/rastreo-gps
 - Estadisticas de robo vehicular: https://silenteye.com.mx/estadisticas-robo-vehicular-mexico
 - Zonas de riesgo (32 estados): https://silenteye.com.mx/zonas-riesgo
 - Comparativas: https://silenteye.com.mx/comparar
-- Blog (21 articulos): https://silenteye.com.mx/blog
+- Blog (25 articulos): https://silenteye.com.mx/blog
 - SOS gratuito: https://silenteye.com.mx/sos
 - Socios instaladores: https://silenteye.com.mx/socios
 - Privacidad (LFPDPPP): https://silenteye.com.mx/privacidad
