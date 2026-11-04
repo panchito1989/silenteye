@@ -22,7 +22,7 @@ const WHATSAPP_TEXT = encodeURIComponent(
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${WHATSAPP_TEXT}`;
 
 export const metadata: Metadata = {
-  title: 'GPS para auto en México — rastreo en tiempo real desde $99/mes',
+  title: 'GPS para Auto en México desde $99/mes',
   description:
     'Protege tu auto con rastreo GPS en tiempo real y alerta de robo en menos de 3 segundos. $99 MXN/mes por vehículo, sin contrato y sin app. Compatible con Cobán, Sinotrack y Teltonika desde $350 MXN. Activación el mismo día.',
   alternates: { canonical: 'https://silenteye.com.mx/gps-para-auto' },
@@ -32,6 +32,13 @@ export const metadata: Metadata = {
     description:
       'Rastreo GPS para tu auto con alerta de robo en menos de 3 segundos. Sin contrato, sin app. Desde $99 MXN/mes.',
     url: 'https://silenteye.com.mx/gps-para-auto',
+  },
+  // Sin esto hereda la twitter card del layout, que habla de camiones.
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GPS para auto en México — rastreo en tiempo real desde $99/mes',
+    description:
+      'Rastreo GPS para tu auto con alerta de robo en menos de 3 segundos. Sin contrato, sin app. Desde $99 MXN/mes.',
   },
 };
 

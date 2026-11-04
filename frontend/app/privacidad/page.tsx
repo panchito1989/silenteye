@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import JsonLd, { getLegalPageJsonLd, getBreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Política de Privacidad — Plataforma GPS de Seguridad Vehicular',
+  title: 'Política de Privacidad',
   description:
     'Política de privacidad de SilentEye. Cómo protegemos tus datos de ubicación GPS, información vehicular y datos personales en nuestra plataforma de rastreo GPS y seguridad vehicular.',
   alternates: { canonical: 'https://silenteye.com.mx/privacidad' },

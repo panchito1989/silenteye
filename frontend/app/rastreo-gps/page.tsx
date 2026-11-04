@@ -5,7 +5,7 @@ import { getStateBySlug, getRiskBand, getRiskBandColor } from '@/lib/risk-zones'
 import JsonLd, { getBreadcrumbJsonLd, getWebPageJsonLd, getFaqPageJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Rastreo GPS en México por ciudad — cobertura en toda la república',
+  title: 'Rastreo GPS en México por Ciudad',
   description:
     'Rastreo GPS vehicular con cobertura nacional: CDMX, Guadalajara, Monterrey, Puebla, Tijuana, Mérida, Cancún y toda la república. Alerta de robo en menos de 3 segundos, desde $79 MXN/mes por vehículo, sin app y sin contrato.',
   alternates: { canonical: 'https://silenteye.com.mx/rastreo-gps' },

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import JsonLd, { getBreadcrumbJsonLd, getFaqPageJsonLd, getWebPageJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Precios de Rastreo GPS en México — Desde $79 MXN/mes',
+  title: 'Precios GPS México: desde $79/mes por vehículo',
   description:
     'Precios de rastreo GPS vehicular en México: botón SOS gratuito, plan Personal $99 MXN/mes por vehículo y plan Flotillas $79 MXN/mes por vehículo (4+). Sin contratos ni permanencia. Cobertura nacional: CDMX, Edomex, Jalisco, Nuevo León y los 32 estados.',
   alternates: { canonical: 'https://silenteye.com.mx/precios' },
@@ -38,6 +38,36 @@ export default function PreciosPage() {
         url: 'https://silenteye.com.mx/precios',
       })} />
       <JsonLd data={getFaqPageJsonLd(preciosFaq)} />
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: 'SilentEye — Rastreo GPS vehicular',
+          brand: { '@type': 'Brand', name: 'SilentEye' },
+          description:
+            'Plataforma mexicana de rastreo GPS con alerta de robo en menos de 3 segundos. Botón SOS gratis, plan personal $99 MXN/mes por vehículo y flotillas $79 MXN/mes por vehículo (4+).',
+          url: 'https://silenteye.com.mx/precios',
+          offers: [
+            { '@type': 'Offer', name: 'Botón SOS', price: '0', priceCurrency: 'MXN', availability: 'https://schema.org/InStock' },
+            {
+              '@type': 'Offer',
+              name: 'Plan Personal (1–3 vehículos)',
+              price: '99',
+              priceCurrency: 'MXN',
+              availability: 'https://schema.org/InStock',
+              priceSpecification: { '@type': 'UnitPriceSpecification', price: '99', priceCurrency: 'MXN', unitText: 'vehículo al mes' },
+            },
+            {
+              '@type': 'Offer',
+              name: 'Plan Flotillas (4+ vehículos)',
+              price: '79',
+              priceCurrency: 'MXN',
+              availability: 'https://schema.org/InStock',
+              priceSpecification: { '@type': 'UnitPriceSpecification', price: '79', priceCurrency: 'MXN', unitText: 'vehículo al mes' },
+            },
+          ],
+        }}
+      />
 
       {/* Nav */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100 px-6 py-3">
@@ -64,8 +94,11 @@ export default function PreciosPage() {
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-[13px] font-semibold text-blue-600 tracking-wide uppercase mb-4">Precios</p>
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-zinc-900 mb-4">
-            Protege tu vehículo desde $99/mes
+            Rastreo GPS desde $79/mes por vehículo
           </h1>
+          <p className="text-lg text-zinc-700 font-medium max-w-xl mx-auto mb-2">
+            Flotillas (4+ vehículos): $79/mes por unidad · Plan personal (1–3): $99/mes · Botón SOS gratis
+          </p>
           <p className="text-lg text-zinc-500 max-w-xl mx-auto">
             Sin contratos. Sin permanencia. Cancela cuando quieras. El botón de emergencia SOS es y siempre será gratuito.
           </p>

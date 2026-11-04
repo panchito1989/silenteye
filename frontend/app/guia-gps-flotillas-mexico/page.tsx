@@ -16,7 +16,7 @@ const LAST_UPDATED = '2026-08-23';
 const PAGE_URL = 'https://silenteye.com.mx/guia-gps-flotillas-mexico';
 
 export const metadata: Metadata = {
-  title: 'Cómo Elegir GPS para tu Flotilla en México (2026): Guía Completa B2B',
+  title: 'Cómo Elegir GPS para Flotillas en México (2026)',
   description:
     'Guía para elegir GPS de flotilla en México: 7 criterios técnicos, comparativa de hardware (Teltonika, Queclink, Concox, Cobán, Sinotrack), costo total real por unidad, NOM-012 y Carta Porte, requisitos de aseguradoras y 10 preguntas para tu proveedor.',
   keywords: [

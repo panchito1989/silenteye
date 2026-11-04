@@ -7,8 +7,7 @@ import JsonLd, {
 import RoiCalculator from '@/components/RoiCalculator';
 
 export const metadata: Metadata = {
-  title:
-    'Rastreo Satelital para Camiones, Trailers y Flotas de Carga | SilentEye México',
+  title: 'Rastreo Satelital para Camiones desde $79/mes',
   description:
     'Rastreo satelital y GPS para camiones, trailers, tractocamión y flotas de carga en México. Alerta a la red en 3 segundos: sin central, sin llamada. Compatible con Teltonika FMC130, Queclink GV500 y Concox GT06N. Desde $79 MXN/mes por unidad.',
   keywords: [
