@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import JsonLd, { getLegalPageJsonLd, getBreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Términos de Servicio — Plataforma GPS de Seguridad Vehicular',
+  title: 'Términos de Servicio',
   description:
     'Términos y condiciones de uso de SilentEye. Reglas de uso de la plataforma GPS de rastreo vehicular, monitoreo de flotillas GPS y botón de pánico.',
   alternates: { canonical: 'https://silenteye.com.mx/terminos' },

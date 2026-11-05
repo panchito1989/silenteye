@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Botón de Pánico SOS — Emergencia Vehicular GPS en Tiempo Real',
+  title: 'Botón de Pánico SOS para Emergencia Vehicular',
   description:
     'Botón de emergencia SOS gratuito de SilentEye. Envía tu ubicación GPS a la red de apoyo cercana en menos de 3 segundos. Sin app, sin descargas. Alerta de pánico GPS para robo vehicular, asalto o emergencia.',
   keywords: [

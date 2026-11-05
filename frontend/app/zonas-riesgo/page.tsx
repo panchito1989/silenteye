@@ -5,7 +5,7 @@ import JsonLd, { getBreadcrumbJsonLd, getWebPageJsonLd } from '@/components/Json
 import RiskMapClient from '@/components/RiskMapClient';
 
 export const metadata: Metadata = {
-  title: 'Zonas de riesgo de robo vehicular en México por estado',
+  title: 'Zonas de Riesgo de Robo Vehicular por Estado',
   description:
     'Mapa de riesgo de robo de auto, trailer y carga por estado en México. Ranking nacional con datos SESNSP, ciudades principales, carreteras críticas y plataforma GPS de rastreo en tiempo real.',
   alternates: { canonical: 'https://silenteye.com.mx/zonas-riesgo' },

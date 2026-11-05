@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import JsonLd, { getLegalPageJsonLd, getBreadcrumbJsonLd } from '@/components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Política de Cookies — Plataforma GPS de Rastreo Vehicular',
+  title: 'Política de Cookies',
   description:
     'Política de cookies de SilentEye. Cookies esenciales utilizadas en nuestra plataforma GPS de rastreo vehicular y monitoreo en tiempo real.',
   alternates: { canonical: 'https://silenteye.com.mx/cookies' },

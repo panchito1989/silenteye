@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Iniciar Sesión — Plataforma GPS de Rastreo Vehicular',
+  title: 'Iniciar Sesión',
   description:
     'Accede a tu plataforma GPS de rastreo vehicular SilentEye. Monitorea tus vehículos en tiempo real, gestiona flotillas GPS y recibe alertas de seguridad. Ingresa con teléfono, email o IMEI de tu rastreador GPS.',
   openGraph: {

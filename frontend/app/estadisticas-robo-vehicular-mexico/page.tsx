@@ -27,7 +27,7 @@ const LAST_UPDATED = '2026-08-23';
 const PAGE_URL = 'https://silenteye.com.mx/estadisticas-robo-vehicular-mexico';
 
 export const metadata: Metadata = {
-  title: 'Robo de Vehículos en México 2026: Estadísticas y Ranking por Estado',
+  title: 'Robo de Vehículos en México 2026 por Estado',
   description:
     'Estadísticas de robo de vehículos y carga en México 2026: ranking de riesgo de los 32 estados (índice basado en datos SESNSP), cifras nacionales de AMIS y OCRA, corredores críticos de robo al autotransporte según ANERPV, y cómo prevenirlo con GPS.',
   keywords: [
